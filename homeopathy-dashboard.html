@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homeopathy Dashboard | HealthUnify by LuminaTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body homeopathy-theme">
+    
+    <aside class="sidebar glass-effect homeopathy-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
+            <div class="logo-text">
+                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar homeopathy-avatar">
+                <i class="fas fa-droplet"></i>
+            </div>
+            <div class="user-info">
+                <h4 id="userName">Demo Patient</h4>
+                <span class="user-system homeopathy-system">Homeopathy System</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#remedies" class="nav-item" data-section="remedies">
+                <i class="fas fa-vial"></i>
+                <span>Remedies Tracker</span>
+            </a>
+            <a href="#symptoms" class="nav-item" data-section="symptoms">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Symptom Journal</span>
+            </a>
+            <a href="#constitution" class="nav-item" data-section="constitution">
+                <i class="fas fa-user-check"></i>
+                <span>Constitutional Type</span>
+            </a>
+            <a href="#response" class="nav-item" data-section="response">
+                <i class="fas fa-chart-line"></i>
+                <span>Treatment Response</span>
+            </a>
+            <a href="#consultations" class="nav-item" data-section="consultations">
+                <i class="fas fa-user-doctor"></i>
+                <span>Consultations</span>
+            </a>
+            <a href="#repertory" class="nav-item" data-section="repertory">
+                <i class="fas fa-book-medical"></i>
+                <span>Repertorization</span>
+            </a>
+            <a href="#settings" class="nav-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="choose-system.html" class="btn-switch-system ripple-effect homeopathy-btn">
+                <i class="fas fa-repeat"></i> Switch System
+            </a>
+            <button class="btn-logout-sidebar ripple-effect" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    
+    <main class="main-content">
+        
+        <header class="content-header glass-effect">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title-header" id="pageTitle">Homeopathy Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search remedies...">
+                </div>
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="user-menu">
+                    <img src="https://ui-avatars.com/api/?name=Demo+Patient&background=9B59B6&color=fff" alt="User" class="user-avatar-small">
+                </div>
+            </div>
+        </header>
+
+       
+        <div class="content-body">
+           
+            <section id="section-dashboard" class="content-section active">
+                <div class="dashboard-grid">
+                   
+                    <div class="welcome-card glass-card homeopathy-card fade-in-up">
+                        <div class="welcome-content">
+                            <div class="homeopathy-icon-lg">
+                                <i class="fas fa-droplet"></i>
+                            </div>
+                            <h2>Welcome, <span id="dashboardUserName">Demo Patient</span></h2>
+                            <p>Personalized healing with homeopathic remedies</p>
+                            <div class="welcome-date">
+                                <i class="fas fa-calendar"></i>
+                                <span id="currentDate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="stat-card glass-card fade-in-up delay-1 homeo-stat">
+                        <div class="stat-icon remedy-icon">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Active Remedies</span>
+                            <h3 class="stat-value"><span class="counter" data-target="3">0</span></h3>
+                            <span class="stat-status">Currently taking</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card fade-in-up delay-2 homeo-stat">
+                        <div class="stat-icon symptom-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Symptoms Tracked</span>
+                            <h3 class="stat-value"><span class="counter" data-target="12">0</span></h3>
+                            <span class="stat-status">This month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card fade-in-up delay-3 homeo-stat">
+                        <div class="stat-icon improvement-icon">
+                            <i class="fas fa-arrow-trend-up"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Improvement Rate</span>
+                            <h3 class="stat-value"><span class="counter" data-target="78">0</span>%</h3>
+                            <span class="stat-status positive">Excellent progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="constitution-card glass-card fade-in-up">
+                        <h3><i class="fas fa-user-check"></i> Constitutional Type</h3>
+                        <div class="constitution-result">
+                            <div class="constitution-badge">
+                                <i class="fas fa-person"></i>
+                                <span>Phosphorus</span>
+                            </div>
+                            <div class="constitution-description">
+                                <h4>Primary Constitution: Phosphorus</h4>
+                                <p>Sensitive, sympathetic, and imaginative personality. Responds well to emotional support and reassurance.</p>
+                                <div class="miasm-info">
+                                    <h5>Miasmatic Tendency:</h5>
+                                    <span class="miasm-badge">Tubercular</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="remedies-active-card glass-card fade-in-up delay-1">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-vial"></i> Current Remedies</h3>
+                            <button class="btn-link">View All</button>
+                        </div>
+                        <div class="remedies-list">
+                            <div class="remedy-item">
+                                <div class="remedy-icon">
+                                    <i class="fas fa-droplet"></i>
+                                </div>
+                                <div class="remedy-details">
+                                    <h4>Arsenicum Album 200C</h4>
+                                    <p>3 globules, twice daily</p>
+                                    <div class="remedy-meta">
+                                        <span class="potency-badge">200C</span>
+                                        <span class="frequency">Twice daily</span>
+                                    </div>
+                                </div>
+                                <div class="remedy-status">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+
+                            <div class="remedy-item">
+                                <div class="remedy-icon">
+                                    <i class="fas fa-droplet"></i>
+                                </div>
+                                <div class="remedy-details">
+                                    <h4>Nux Vomica 30C</h4>
+                                    <p>4 globules, morning only</p>
+                                    <div class="remedy-meta">
+                                        <span class="potency-badge">30C</span>
+                                        <span class="frequency">Once daily</span>
+                                    </div>
+                                </div>
+                                <div class="remedy-status">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+
+                            <div class="remedy-item">
+                                <div class="remedy-icon">
+                                    <i class="fas fa-droplet"></i>
+                                </div>
+                                <div class="remedy-details">
+                                    <h4>Phosphorus 1M</h4>
+                                    <p>Single dose weekly</p>
+                                    <div class="remedy-meta">
+                                        <span class="potency-badge high-potency">1M</span>
+                                        <span class="frequency">Weekly</span>
+                                    </div>
+                                </div>
+                                <div class="remedy-status">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="symptom-journal-card glass-card fade-in-up">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-book-medical"></i> Recent Symptom Entries</h3>
+                            <button class="btn-link">Add Entry</button>
+                        </div>
+                        <div class="journal-timeline">
+                            <div class="journal-entry">
+                                <div class="entry-date">
+                                    <span class="date-circle">02</span>
+                                    <span class="date-month">Oct</span>
+                                </div>
+                                <div class="entry-content">
+                                    <h4>Headache - Better with cold compress</h4>
+                                    <p><strong>Intensity:</strong> 6/10 | <strong>Time:</strong> 3:00 PM</p>
+                                    <p><strong>Modalities:</strong> Better in fresh air, worse with heat</p>
+                                    <span class="entry-remedy">After: Belladonna 30C</span>
+                                </div>
+                            </div>
+
+                            <div class="journal-entry">
+                                <div class="entry-date">
+                                    <span class="date-circle">01</span>
+                                    <span class="date-month">Oct</span>
+                                </div>
+                                <div class="entry-content">
+                                    <h4>Digestive discomfort after meals</h4>
+                                    <p><strong>Intensity:</strong> 4/10 | <strong>Time:</strong> After lunch</p>
+                                    <p><strong>Modalities:</strong> Better with warm drinks</p>
+                                    <span class="entry-remedy">After: Nux Vomica 30C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="response-tracking-card glass-card fade-in-up delay-1">
+                        <h3><i class="fas fa-chart-line"></i> Treatment Response</h3>
+                        <div class="response-chart-container">
+                            <canvas id="responseChart"></canvas>
+                        </div>
+                        <div class="response-summary">
+                            <div class="summary-item">
+                                <span class="summary-label">Overall Improvement:</span>
+                                <div class="progress-bar-inline">
+                                    <div class="progress-fill" style="width: 78%"></div>
+                                </div>
+                                <span class="summary-value">78%</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Symptom Reduction:</span>
+                                <div class="progress-bar-inline">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                                <span class="summary-value">65%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="repertory-card glass-card fade-in-up">
+                        <h3><i class="fas fa-book-medical"></i> Last Repertorization</h3>
+                        <div class="repertory-result">
+                            <p class="repertory-date"><i class="fas fa-calendar"></i> September 28, 2025 - Dr. James Wilson</p>
+                            <div class="repertory-symptoms">
+                                <h4>Symptoms Analyzed:</h4>
+                                <div class="symptom-chips">
+                                    <span class="symptom-chip">Anxiety - worse evening</span>
+                                    <span class="symptom-chip">Restlessness</span>
+                                    <span class="symptom-chip">Insomnia from worry</span>
+                                    <span class="symptom-chip">Better from company</span>
+                                </div>
+                            </div>
+                            <div class="repertory-remedies">
+                                <h4>Top Matching Remedies:</h4>
+                                <div class="remedy-matches">
+                                    <div class="match-item">
+                                        <span class="match-remedy">Arsenicum Album</span>
+                                        <div class="match-score">
+                                            <div class="score-bar" style="width: 95%"></div>
+                                            <span>95%</span>
+                                        </div>
+                                    </div>
+                                    <div class="match-item">
+                                        <span class="match-remedy">Phosphorus</span>
+                                        <div class="match-score">
+                                            <div class="score-bar" style="width: 88%"></div>
+                                            <span>88%</span>
+                                        </div>
+                                    </div>
+                                    <div class="match-item">
+                                        <span class="match-remedy">Lycopodium</span>
+                                        <div class="match-score">
+                                            <div class="score-bar" style="width: 75%"></div>
+                                            <span>75%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="followup-card glass-card fade-in-up delay-1">
+                        <h3><i class="fas fa-calendar-check"></i> Follow-up Schedule</h3>
+                        <div class="followup-list">
+                            <div class="followup-item upcoming">
+                                <div class="followup-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="followup-details">
+                                    <h4>Next Consultation</h4>
+                                    <p>Dr. James Wilson - Homeopath</p>
+                                    <div class="followup-time">
+                                        <i class="fas fa-calendar"></i> October 15, 2025
+                                        <i class="fas fa-clock"></i> 11:00 AM
+                                    </div>
+                                </div>
+                                <button class="btn-followup">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                            </div>
+
+                            <div class="followup-item">
+                                <div class="followup-icon completed">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="followup-details">
+                                    <h4>Last Consultation</h4>
+                                    <p>Dr. James Wilson - Homeopath</p>
+                                    <div class="followup-time">
+                                        <i class="fas fa-calendar"></i> September 28, 2025
+                                    </div>
+                                </div>
+                                <button class="btn-followup-view">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section id="section-remedies" class="content-section">
+                <div class="remedies-tracker-container">
+                    <div class="section-header-flex">
+                        <div>
+                            <h2 class="section-title-main">Remedies Tracker</h2>
+                            <p class="section-subtitle">Track potency, dosage, and effectiveness of your homeopathic remedies</p>
+                        </div>
+                        <button class="btn btn-primary ripple-effect">
+                            <i class="fas fa-plus"></i> Add Remedy
+                        </button>
+                    </div>
+
+                    <div class="remedies-grid">
+                        <div class="remedy-card-detailed glass-card">
+                            <div class="remedy-card-header">
+                                <div class="remedy-name-section">
+                                    <h3>Arsenicum Album</h3>
+                                    <span class="potency-badge-large">200C</span>
+                                </div>
+                                <span class="remedy-status-badge active">Active</span>
+                            </div>
+                            <div class="remedy-card-body">
+                                <div class="remedy-info-row">
+                                    <div class="info-col">
+                                        <span class="info-label">Dosage:</span>
+                                        <span class="info-value">3 globules</span>
+                                    </div>
+                                    <div class="info-col">
+                                        <span class="info-label">Frequency:</span>
+                                        <span class="info-value">Twice daily</span>
+                                    </div>
+                                </div>
+                                <div class="remedy-info-row">
+                                    <div class="info-col">
+                                        <span class="info-label">Started:</span>
+                                        <span class="info-value">Sept 20, 2025</span>
+                                    </div>
+                                    <div class="info-col">
+                                        <span class="info-label">Duration:</span>
+                                        <span class="info-value">4 weeks</span>
+                                    </div>
+                                </div>
+                                <div class="remedy-purpose-section">
+                                    <h4>Indications:</h4>
+                                    <p>Anxiety, restlessness, digestive issues. Better with warmth and company.</p>
+                                </div>
+                                <div class="effectiveness-meter">
+                                    <span class="meter-label">Effectiveness:</span>
+                                    <div class="meter-bar">
+                                        <div class="meter-fill" style="width: 85%"></div>
+                                    </div>
+                                    <span class="meter-value">85%</span>
+                                </div>
+                            </div>
+                            <div class="remedy-card-footer">
+                                <button class="btn-remedy-action">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-remedy-action">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="remedy-card-detailed glass-card">
+                            <div class="remedy-card-header">
+                                <div class="remedy-name-section">
+                                    <h3>Nux Vomica</h3>
+                                    <span class="potency-badge-large">30C</span>
+                                </div>
+                                <span class="remedy-status-badge active">Active</span>
+                            </div>
+                            <div class="remedy-card-body">
+                                <div class="remedy-info-row">
+                                    <div class="info-col">
+                                        <span class="info-label">Dosage:</span>
+                                        <span class="info-value">4 globules</span>
+                                    </div>
+                                    <div class="info-col">
+                                        <span class="info-label">Frequency:</span>
+                                        <span class="info-value">Once daily (morning)</span>
+                                    </div>
+                                </div>
+                                <div class="remedy-info-row">
+                                    <div class="info-col">
+                                        <span class="info-label">Started:</span>
+                                        <span class="info-value">Sept 25, 2025</span>
+                                    </div>
+                                    <div class="info-col">
+                                        <span class="info-label">Duration:</span>
+                                        <span class="info-value">3 weeks</span>
+                                    </div>
+                                </div>
+                                <div class="remedy-purpose-section">
+                                    <h4>Indications:</h4>
+                                    <p>Digestive discomfort, irritability, sensitivity to stimulants. Better with rest.</p>
+                                </div>
+                                <div class="effectiveness-meter">
+                                    <span class="meter-label">Effectiveness:</span>
+                                    <div class="meter-bar">
+                                        <div class="meter-fill" style="width: 72%"></div>
+                                    </div>
+                                    <span class="meter-value">72%</span>
+                                </div>
+                            </div>
+                            <div class="remedy-card-footer">
+                                <button class="btn-remedy-action">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-remedy-action">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            initDashboard();
+            initResponseChart();
+        });
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userType = localStorage.getItem('userType');
+
+            if (!isLoggedIn || userType !== 'patient') {
+                window.location.href = 'patient-login.html';
+            }
+
+            const userName = localStorage.getItem('userName') || 'Patient';
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('dashboardUserName').textContent = userName;
+        }
+
+        function initDashboard() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+
+            
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.dataset.target);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    switchSection(section);
+                });
+            });
+
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+            });
+        }
+
+        function switchSection(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === section) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById('section-' + section).classList.add('active');
+
+            const titles = {
+                'dashboard': 'Homeopathy Dashboard',
+                'remedies': 'Remedies Tracker',
+                'symptoms': 'Symptom Journal',
+                'constitution': 'Constitutional Type',
+                'response': 'Treatment Response',
+                'consultations': 'Consultations',
+                'repertory': 'Repertorization',
+                'settings': 'Settings'
+            };
+            document.getElementById('pageTitle').textContent = titles[section];
+        }
+
+        function initResponseChart() {
+            const ctx = document.getElementById('responseChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Symptom Intensity',
+                        data: [8, 6, 4, 3],
+                        borderColor: '#9B59B6',
+                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.clear();
+            showToast('Logged out successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

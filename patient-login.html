@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Login | HealthUnify by LuminaTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div class="particles-bg" id="particles"></div>
+
+    
+    <div class="login-page">
+        
+        <a href="index.html" class="back-btn glass-effect">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+
+        <div class="login-container">
+            
+            <div class="login-left fade-in-left">
+                <div class="login-brand">
+                    <img src="images/logo.png" alt="HealthUnify Logo" class="login-logo" onerror="this.style.display='none'">
+                    <div class="logo-text">
+                        <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+                        <span class="by-lumina">by LuminaTech</span>
+                    </div>
+                </div>
+
+                <h1 class="login-hero-title">Welcome Back, Patient!</h1>
+                <p class="login-hero-desc">Access your complete health records across Allopathy, Ayurveda, and Homeopathy in one unified platform.</p>
+
+                <div class="login-features">
+                    <div class="login-feature">
+                        <i class="fas fa-shield-check"></i>
+                        <span>Secure & Private</span>
+                    </div>
+                    <div class="login-feature">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Complete Health Data</span>
+                    </div>
+                    <div class="login-feature">
+                        <i class="fas fa-mobile-screen"></i>
+                        <span>Access Anywhere</span>
+                    </div>
+                </div>
+
+                <div class="login-visual">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring delay-1"></div>
+                    <div class="pulse-ring delay-2"></div>
+                </div>
+            </div>
+
+            
+            <div class="login-right fade-in-right">
+                <div class="login-form-container glass-card">
+                    <div class="form-header">
+                        <div class="user-icon-large">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h2>Patient Login</h2>
+                        <p>Demo credentials are pre-filled for quick access</p>
+                    </div>
+
+                    <form class="login-form" id="patientLoginForm">
+                        <div class="form-group">
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <input 
+                                type="email" 
+                                class="form-input" 
+                                id="patientEmail" 
+                                value="patient@demo.com"
+                                placeholder=" " 
+                                required 
+                                readonly
+                            >
+                            <label class="form-label">Email Address</label>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                id="patientPassword" 
+                                value="patient123"
+                                placeholder=" " 
+                                required
+                                readonly
+                            >
+                            <label class="form-label">Password</label>
+                            <button type="button" class="password-toggle" id="togglePatientPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+
+                        <div class="demo-notice">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Demo Mode: Credentials are pre-filled. Just click Login!</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full ripple-effect">
+                            <span class="btn-text">Login to Dashboard</span>
+                            <span class="btn-loader" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i> Authenticating...
+                            </span>
+                        </button>
+
+                        <div class="form-footer">
+                            <p>Are you a healthcare provider? <a href="doctor-login.html" class="text-link">Doctor Login</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Login successful!</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        
+        document.getElementById('patientLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('patientEmail').value;
+            const password = document.getElementById('patientPassword').value;
+            const btnText = document.querySelector('.btn-text');
+            const btnLoader = document.querySelector('.btn-loader');
+            const submitBtn = document.querySelector('.btn-primary');
+
+            
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline-block';
+            submitBtn.disabled = true;
+
+            
+            setTimeout(function() {
+                
+                if (email === 'patient@demo.com' && password === 'patient123') {
+                    
+                    localStorage.setItem('userType', 'patient');
+                    localStorage.setItem('userName', 'Demo Patient');
+                    localStorage.setItem('isLoggedIn', 'true');
+
+                    
+                    showToast('Login Successful! Redirecting...', 'success');
+
+                    
+                    setTimeout(function() {
+                        window.location.href = 'choose-system.html';
+                    }, 1500);
+                } else {
+                    
+                    showToast('Invalid credentials! Use demo account.', 'error');
+                    btnText.style.display = 'inline-block';
+                    btnLoader.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            }, 1000);
+        });
+
+        
+        document.getElementById('togglePatientPassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('patientPassword');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    </script>
+</body>
+</html>

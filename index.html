@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthUnify | Unified Healthcare Platform by LuminaTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div class="particles-bg" id="particles"></div>
+
+   
+    <nav class="navbar glass-effect">
+        <div class="container nav-container">
+            <div class="logo-container">
+                <img src="images/logo.png" alt="HealthUnify Logo" class="logo-img" onerror="this.style.display='none'">
+                <div class="logo-text">
+                    <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+                    <span class="by-lumina">by LuminaTech</span>
+                </div>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#team" class="nav-link">Team</a></li>
+                <li><a href="patient-login.html" class="btn-nav patient-btn">Patient Login</a></li>
+                <li><a href="doctor-login.html" class="btn-nav doctor-btn">Doctor Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="badge pulse-animation">
+                        <i class="fas fa-heart-pulse"></i> Healthcare Innovation
+                    </div>
+                    <h1 class="hero-title fade-in-up">
+                        Your Health,<br>
+                        <span class="gradient-text-animated">Unified & Secure</span>
+                    </h1>
+                    <p class="hero-description fade-in-up delay-1">
+                        Experience the future of healthcare with HealthUnify - a revolutionary platform that brings together Allopathy, Ayurveda, and Homeopathy under one unified ecosystem.
+                    </p>
+                    <div class="hero-buttons fade-in-up delay-2">
+                        <a href="patient-login.html" class="btn btn-primary ripple-effect">
+                            <i class="fas fa-user"></i> Get Started
+                        </a>
+                        <a href="#features" class="btn btn-secondary ripple-effect">
+                            <i class="fas fa-play-circle"></i> Learn More
+                        </a>
+                    </div>
+                    <div class="stats-row fade-in-up delay-3">
+                        <div class="stat-item">
+                            <div class="stat-number counter" data-target="10000">0</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number counter" data-target="500">0</div>
+                            <div class="stat-label">Healthcare Providers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number counter" data-target="99">0</div>
+                            <div class="stat-label">Success Rate %</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Health Monitoring</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-pills"></i>
+                        <span>Medicine Tracker</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-user-md"></i>
+                        <span>Expert Doctors</span>
+                    </div>
+                    <div class="hero-circle pulse-circle"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="about" class="problem-section">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <span class="section-tag">The Challenge</span>
+                <h2 class="section-title">The Fragmented Health Data Crisis</h2>
+                <p class="section-description">Healthcare data scattered across multiple systems creates barriers to effective patient care</p>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card glass-card slide-in-left">
+                    <div class="problem-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Data Silos</h3>
+                    <p>Patient records scattered across hospitals, clinics, and apps - impossible to access complete health history</p>
+                    <div class="problem-stat">68%</div>
+                    <span class="stat-label">of medical errors due to incomplete data</span>
+                </div>
+
+                <div class="problem-card glass-card slide-in-up">
+                    <div class="problem-icon">
+                        <i class="fas fa-repeat"></i>
+                    </div>
+                    <h3>Repeated Tests</h3>
+                    <p>Patients undergo the same diagnostic tests multiple times because previous results are inaccessible</p>
+                    <div class="problem-stat">$750B</div>
+                    <span class="stat-label">wasted annually on duplicate tests</span>
+                </div>
+
+                <div class="problem-card glass-card slide-in-right">
+                    <div class="problem-icon">
+                        <i class="fas fa-shield-virus"></i>
+                    </div>
+                    <h3>Medication Errors</h3>
+                    <p>Dangerous drug interactions occur when healthcare providers lack complete medication histories</p>
+                    <div class="problem-stat">1.5M</div>
+                    <span class="stat-label">preventable adverse drug events yearly</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="solution-section">
+        <div class="container">
+            <div class="solution-content">
+                <div class="solution-text fade-in-left">
+                    <span class="section-tag">Our Solution</span>
+                    <h2 class="section-title">HealthUnify: One Platform, Complete Care</h2>
+                    <p class="solution-desc">A revolutionary unified platform that empowers patients with complete control over their health data across three comprehensive medical systems.</p>
+
+                    <div class="solution-features">
+                        <div class="solution-feature">
+                            <div class="feature-icon-check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <h4>Complete Data Ownership</h4>
+                                <p>Patients control who sees their health information and when</p>
+                            </div>
+                        </div>
+                        <div class="solution-feature">
+                            <div class="feature-icon-check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <h4>AI-Powered Insights</h4>
+                                <p>Intelligent health recommendations and risk predictions</p>
+                            </div>
+                        </div>
+                        <div class="solution-feature">
+                            <div class="feature-icon-check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <h4>Emergency Access</h4>
+                                <p>QR code provides critical information in life-threatening situations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="solution-visual fade-in-right">
+                    <div class="phone-mockup">
+                        <div class="phone-content">
+                            <div class="mock-header">
+                                <div class="mock-avatar"></div>
+                                <div class="mock-welcome">Welcome, John</div>
+                            </div>
+                            <div class="mock-stats">
+                                <div class="mock-stat pulse-animation">
+                                    <i class="fas fa-heartbeat"></i> 72 BPM
+                                </div>
+                                <div class="mock-stat pulse-animation delay-1">
+                                    <i class="fas fa-lungs"></i> 98% O2
+                                </div>
+                            </div>
+                            <div class="mock-chart">
+                                <div class="chart-bar" style="height: 40%"></div>
+                                <div class="chart-bar" style="height: 70%"></div>
+                                <div class="chart-bar" style="height: 50%"></div>
+                                <div class="chart-bar" style="height: 90%"></div>
+                                <div class="chart-bar" style="height: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="features" class="systems-section">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <span class="section-tag">Three Systems, One Platform</span>
+                <h2 class="section-title">Holistic Healthcare Approach</h2>
+                <p class="section-description">Choose your preferred medical system or integrate all three for comprehensive care</p>
+            </div>
+
+            <div class="systems-grid">
+                <div class="system-card allopathy-card morph-card">
+                    <div class="system-icon-large">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3>Allopathy</h3>
+                    <p>Modern evidence-based medicine with advanced diagnostics, lab results, and conventional treatments</p>
+                    <ul class="system-features">
+                        <li><i class="fas fa-check-circle"></i> Lab Results & Imaging</li>
+                        <li><i class="fas fa-check-circle"></i> Prescription Management</li>
+                        <li><i class="fas fa-check-circle"></i> Surgical Records</li>
+                        <li><i class="fas fa-check-circle"></i> Vaccination History</li>
+                    </ul>
+                    <div class="system-badge">Evidence-Based</div>
+                </div>
+
+                <div class="system-card ayurveda-card morph-card delay-1">
+                    <div class="system-icon-large">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Ayurveda</h3>
+                    <p>Traditional Indian medicine focusing on dosha balance, herbal remedies, and holistic wellness</p>
+                    <ul class="system-features">
+                        <li><i class="fas fa-check-circle"></i> Dosha Analysis (Vata, Pitta, Kapha)</li>
+                        <li><i class="fas fa-check-circle"></i> Herbal Medication Tracking</li>
+                        <li><i class="fas fa-check-circle"></i> Panchakarma Records</li>
+                        <li><i class="fas fa-check-circle"></i> Lifestyle & Diet Guidance</li>
+                    </ul>
+                    <div class="system-badge">Natural Healing</div>
+                </div>
+
+                <div class="system-card homeopathy-card morph-card delay-2">
+                    <div class="system-icon-large">
+                        <i class="fas fa-droplet"></i>
+                    </div>
+                    <h3>Homeopathy</h3>
+                    <p>Alternative medicine with personalized remedies, symptom tracking, and potency management</p>
+                    <ul class="system-features">
+                        <li><i class="fas fa-check-circle"></i> Remedy & Potency Tracker</li>
+                        <li><i class="fas fa-check-circle"></i> Symptom Journal</li>
+                        <li><i class="fas fa-check-circle"></i> Constitutional Type Analysis</li>
+                        <li><i class="fas fa-check-circle"></i> Treatment Response Monitoring</li>
+                    </ul>
+                    <div class="system-badge">Personalized Care</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="features-grid-section">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <span class="section-tag">Platform Features</span>
+                <h2 class="section-title">Everything You Need for Better Health</h2>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4>Unified Records</h4>
+                    <p>All medical records in one secure location</p>
+                </div>
+
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4>AI Health Assistant</h4>
+                    <p>Intelligent insights and recommendations</p>
+                </div>
+
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h4>Appointment Scheduler</h4>
+                    <p>Book and manage healthcare appointments</p>
+                </div>
+
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h4>Medication Reminders</h4>
+                    <p>Never miss a dose with smart alerts</p>
+                </div>
+
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Health Analytics</h4>
+                    <p>Visual trends and health tracking</p>
+                </div>
+
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h4>Emergency QR Code</h4>
+                    <p>Instant access to critical health info</p>
+                </div>
+
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h4>Bank-Grade Security</h4>
+                    <p>End-to-end encryption for your data</p>
+                </div>
+
+                <div class="feature-item glass-hover">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-screen"></i>
+                    </div>
+                    <h4>Cross-Platform</h4>
+                    <p>Access from any device, anywhere</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="team" class="team-section">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <span class="section-tag">Meet The Innovators</span>
+                <h2 class="section-title">Team <span class="lumina-gradient">LuminaTech</span></h2>
+                <p class="section-description">Passionate developers and designers revolutionizing healthcare technology</p>
+            </div>
+
+            <div class="team-showcase">
+                <div class="team-image-container">
+                    
+                    <div class="skeleton-loader" id="teamSkeleton">
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+
+                    
+                    <img src="images/team.jpg" alt="LuminaTech Team" class="team-image" id="teamImage" onload="imageLoaded()" onerror="imageError()">
+
+                    
+                    <div class="team-glow-effect"></div>
+                    <div class="team-particles">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+
+                <div class="team-description fade-in-right">
+                    <h3>Innovating Healthcare, One Line of Code at a Time</h3>
+                    <p>We are a dedicated team of developers, designers, and healthcare enthusiasts committed to solving the fragmented health data crisis. Our mission is to empower patients with complete control over their health information while enabling seamless care coordination across all medical systems.</p>
+
+                    <div class="team-values">
+                        <div class="value-item">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Innovation First</span>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-heart"></i>
+                            <span>Patient-Centric</span>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Privacy-Focused</span>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-rocket"></i>
+                            <span>Future-Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-text fade-in-left">
+                    <span class="section-tag">Get In Touch</span>
+                    <h2 class="section-title">Let's Transform Healthcare Together</h2>
+                    <p>Have questions or want to learn more about HealthUnify? We'd love to hear from you!</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>contact@luminatech.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 1234 567 890</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>India</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact-form glass-card fade-in-right" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" class="form-input" placeholder=" " required>
+                        <label class="form-label">Your Name</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" placeholder=" " required>
+                        <label class="form-label">Your Email</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-input" rows="4" placeholder=" " required></textarea>
+                        <label class="form-label">Message</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary ripple-effect">
+                        <span>Send Message</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-text">
+                        <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+                    </div>
+                    <p>Empowering patients with unified healthcare data management</p>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Quick Links</h4>
+                        <a href="index.html">Home</a>
+                        <a href="#about">About</a>
+                        <a href="#features">Features</a>
+                        <a href="#team">Team</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Access Portal</h4>
+                        <a href="patient-login.html">Patient Login</a>
+                        <a href="doctor-login.html">Doctor Login</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 <span class="lumina-gradient">LuminaTech</span>. All rights reserved. | Developed with <i class="fas fa-heart"></i> by Team LuminaTech</p>
+            </div>
+        </div>
+    </footer>
+
+   
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard | HealthUnify by LuminaTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body doctor-theme">
+   
+    <aside class="sidebar glass-effect doctor-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
+            <div class="logo-text">
+                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar doctor-avatar-icon">
+                <i class="fas fa-user-doctor"></i>
+            </div>
+            <div class="user-info">
+                <h4 id="userName">Dr. Demo</h4>
+                <span class="user-system doctor-system">Healthcare Provider</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#patients" class="nav-item" data-section="patients">
+                <i class="fas fa-users"></i>
+                <span>My Patients</span>
+            </a>
+            <a href="#appointments" class="nav-item" data-section="appointments">
+                <i class="fas fa-calendar-check"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="#consultations" class="nav-item" data-section="consultations">
+                <i class="fas fa-stethoscope"></i>
+                <span>Consultations</span>
+            </a>
+            <a href="#messages" class="nav-item" data-section="messages">
+                <i class="fas fa-comments"></i>
+                <span>Messages</span>
+                <span class="notification-badge">5</span>
+            </a>
+            <a href="#schedule" class="nav-item" data-section="schedule">
+                <i class="fas fa-clock"></i>
+                <span>My Schedule</span>
+            </a>
+            <a href="#settings" class="nav-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout-sidebar ripple-effect" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+   
+    <main class="main-content">
+       
+        <header class="content-header glass-effect">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title-header" id="pageTitle">Doctor Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search patients...">
+                </div>
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="user-menu">
+                    <img src="https://ui-avatars.com/api/?name=Dr+Demo&background=1E88E5&color=fff" alt="Doctor" class="user-avatar-small">
+                </div>
+            </div>
+        </header>
+
+        
+        <div class="content-body">
+            
+            <section id="section-dashboard" class="content-section active">
+                <div class="dashboard-grid">
+                    
+                    <div class="welcome-card glass-card doctor-card fade-in-up">
+                        <div class="welcome-content">
+                            <div class="doctor-icon-lg">
+                                <i class="fas fa-user-doctor"></i>
+                            </div>
+                            <h2>Good Morning, <span id="dashboardUserName">Dr. Demo</span></h2>
+                            <p>You have 8 appointments scheduled for today</p>
+                            <div class="welcome-date">
+                                <i class="fas fa-calendar"></i>
+                                <span id="currentDate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="stat-card glass-card fade-in-up delay-1 doctor-stat">
+                        <div class="stat-icon patients-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Patients</span>
+                            <h3 class="stat-value"><span class="counter" data-target="156">0</span></h3>
+                            <span class="stat-status">Active patients</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card fade-in-up delay-2 doctor-stat">
+                        <div class="stat-icon appointments-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Today's Appointments</span>
+                            <h3 class="stat-value"><span class="counter" data-target="8">0</span></h3>
+                            <span class="stat-status">Scheduled</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card fade-in-up delay-3 doctor-stat">
+                        <div class="stat-icon consultations-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">This Month</span>
+                            <h3 class="stat-value"><span class="counter" data-target="92">0</span></h3>
+                            <span class="stat-status">Consultations</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="todays-appointments-card glass-card fade-in-up">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-calendar-day"></i> Today's Appointments</h3>
+                            <button class="btn-link">View All</button>
+                        </div>
+                        <div class="appointments-timeline">
+                            <div class="appointment-item-doctor current">
+                                <div class="appointment-time-slot">
+                                    <i class="fas fa-clock"></i>
+                                    <span>10:00 AM</span>
+                                </div>
+                                <div class="appointment-patient-info">
+                                    <div class="patient-avatar-mini">
+                                        <img src="https://ui-avatars.com/api/?name=John+Smith&background=0078D4&color=fff" alt="Patient">
+                                    </div>
+                                    <div class="patient-details">
+                                        <h4>John Smith</h4>
+                                        <p>General Checkup • Age: 45</p>
+                                    </div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="btn-appointment-start ripple-effect">
+                                        <i class="fas fa-video"></i> Start
+                                    </button>
+                                </div>
+                                <span class="current-badge">In Progress</span>
+                            </div>
+
+                            <div class="appointment-item-doctor upcoming">
+                                <div class="appointment-time-slot">
+                                    <i class="fas fa-clock"></i>
+                                    <span>11:00 AM</span>
+                                </div>
+                                <div class="appointment-patient-info">
+                                    <div class="patient-avatar-mini">
+                                        <img src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=00B04F&color=fff" alt="Patient">
+                                    </div>
+                                    <div class="patient-details">
+                                        <h4>Sarah Johnson</h4>
+                                        <p>Follow-up Consultation • Age: 32</p>
+                                    </div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="btn-appointment-view">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="appointment-item-doctor upcoming">
+                                <div class="appointment-time-slot">
+                                    <i class="fas fa-clock"></i>
+                                    <span>2:30 PM</span>
+                                </div>
+                                <div class="appointment-patient-info">
+                                    <div class="patient-avatar-mini">
+                                        <img src="https://ui-avatars.com/api/?name=Michael+Chen&background=FF8C00&color=fff" alt="Patient">
+                                    </div>
+                                    <div class="patient-details">
+                                        <h4>Michael Chen</h4>
+                                        <p>Lab Results Review • Age: 58</p>
+                                    </div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="btn-appointment-view">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-stats-card glass-card fade-in-up delay-1">
+                        <h3><i class="fas fa-chart-pie"></i> Quick Stats</h3>
+                        <div class="quick-stats-grid">
+                            <div class="quick-stat-item">
+                                <div class="stat-icon-small pending-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-text">
+                                    <h4>3</h4>
+                                    <p>Pending Reviews</p>
+                                </div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="stat-icon-small messages-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="stat-text">
+                                    <h4>5</h4>
+                                    <p>Unread Messages</p>
+                                </div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="stat-icon-small prescriptions-icon">
+                                    <i class="fas fa-file-prescription"></i>
+                                </div>
+                                <div class="stat-text">
+                                    <h4>12</h4>
+                                    <p>Prescriptions Today</p>
+                                </div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="stat-icon-small reports-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-text">
+                                    <h4>7</h4>
+                                    <p>Lab Reports</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="patient-satisfaction">
+                            <h4>Patient Satisfaction</h4>
+                            <div class="satisfaction-meter">
+                                <div class="satisfaction-fill" style="width: 94%"></div>
+                            </div>
+                            <div class="satisfaction-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>4.7/5.0 (156 reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="dashboard-row">
+                    <div class="recent-patients-card glass-card fade-in-up">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-users"></i> Recent Patients</h3>
+                            <button class="btn-link">View All</button>
+                        </div>
+                        <div class="patients-list">
+                            <div class="patient-list-item">
+                                <div class="patient-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=Emily+Rodriguez&background=9B59B6&color=fff" alt="Patient">
+                                </div>
+                                <div class="patient-info">
+                                    <h4>Emily Rodriguez</h4>
+                                    <p>Last visit: Oct 1, 2025</p>
+                                </div>
+                                <div class="patient-tags">
+                                    <span class="tag allopathy-tag">Allopathy</span>
+                                </div>
+                                <button class="btn-view-patient ripple-effect">
+                                    <i class="fas fa-folder-open"></i> View
+                                </button>
+                            </div>
+
+                            <div class="patient-list-item">
+                                <div class="patient-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=David+Kim&background=2D7A2E&color=fff" alt="Patient">
+                                </div>
+                                <div class="patient-info">
+                                    <h4>David Kim</h4>
+                                    <p>Last visit: Sept 29, 2025</p>
+                                </div>
+                                <div class="patient-tags">
+                                    <span class="tag ayurveda-tag">Ayurveda</span>
+                                </div>
+                                <button class="btn-view-patient ripple-effect">
+                                    <i class="fas fa-folder-open"></i> View
+                                </button>
+                            </div>
+
+                            <div class="patient-list-item">
+                                <div class="patient-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=Lisa+Anderson&background=E74C3C&color=fff" alt="Patient">
+                                </div>
+                                <div class="patient-info">
+                                    <h4>Lisa Anderson</h4>
+                                    <p>Last visit: Sept 28, 2025</p>
+                                </div>
+                                <div class="patient-tags">
+                                    <span class="tag homeopathy-tag">Homeopathy</span>
+                                </div>
+                                <button class="btn-view-patient ripple-effect">
+                                    <i class="fas fa-folder-open"></i> View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pending-tasks-card glass-card fade-in-up delay-1">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-tasks"></i> Pending Tasks</h3>
+                            <button class="btn-link">Mark All Read</button>
+                        </div>
+                        <div class="tasks-list">
+                            <div class="task-item priority-high">
+                                <div class="task-icon">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="task-content">
+                                    <h4>Review Lab Results - John Smith</h4>
+                                    <p>CBC report awaiting review</p>
+                                    <span class="task-time">2 hours ago</span>
+                                </div>
+                                <button class="btn-task-complete">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+
+                            <div class="task-item">
+                                <div class="task-icon">
+                                    <i class="fas fa-file-prescription"></i>
+                                </div>
+                                <div class="task-content">
+                                    <h4>Approve Prescription Refill</h4>
+                                    <p>Sarah Johnson - Aspirin 75mg</p>
+                                    <span class="task-time">5 hours ago</span>
+                                </div>
+                                <button class="btn-task-complete">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+
+                            <div class="task-item">
+                                <div class="task-icon">
+                                    <i class="fas fa-comment-medical"></i>
+                                </div>
+                                <div class="task-content">
+                                    <h4>Respond to Patient Query</h4>
+                                    <p>Michael Chen - Medication side effects</p>
+                                    <span class="task-time">Yesterday</span>
+                                </div>
+                                <button class="btn-task-complete">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section id="section-patients" class="content-section">
+                <div class="patients-container">
+                    <div class="section-header-flex">
+                        <div>
+                            <h2 class="section-title-main">My Patients</h2>
+                            <p class="section-subtitle">Manage and view patient records across all medical systems</p>
+                        </div>
+                        <div class="patients-filter-tabs">
+                            <button class="filter-tab-btn active">All Patients</button>
+                            <button class="filter-tab-btn">Allopathy</button>
+                            <button class="filter-tab-btn">Ayurveda</button>
+                            <button class="filter-tab-btn">Homeopathy</button>
+                        </div>
+                    </div>
+
+                    <div class="patients-grid">
+                        <div class="patient-card-detail glass-card">
+                            <div class="patient-card-header">
+                                <div class="patient-avatar-large">
+                                    <img src="https://ui-avatars.com/api/?name=John+Smith&background=0078D4&color=fff" alt="Patient">
+                                </div>
+                                <div class="patient-basic-info">
+                                    <h3>John Smith</h3>
+                                    <p>Patient ID: #PT12345</p>
+                                    <span class="tag allopathy-tag">Allopathy</span>
+                                </div>
+                            </div>
+                            <div class="patient-card-body">
+                                <div class="patient-info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Age:</span>
+                                        <span class="info-value">45 years</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Blood Type:</span>
+                                        <span class="info-value">O+</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Last Visit:</span>
+                                        <span class="info-value">Oct 1, 2025</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Condition:</span>
+                                        <span class="info-value">Hypertension</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="patient-card-footer">
+                                <button class="btn btn-primary ripple-effect btn-sm">
+                                    <i class="fas fa-folder-open"></i> View Records
+                                </button>
+                                <button class="btn btn-secondary ripple-effect btn-sm">
+                                    <i class="fas fa-message"></i> Message
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="patient-card-detail glass-card">
+                            <div class="patient-card-header">
+                                <div class="patient-avatar-large">
+                                    <img src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=2D7A2E&color=fff" alt="Patient">
+                                </div>
+                                <div class="patient-basic-info">
+                                    <h3>Sarah Johnson</h3>
+                                    <p>Patient ID: #PT12346</p>
+                                    <span class="tag ayurveda-tag">Ayurveda</span>
+                                </div>
+                            </div>
+                            <div class="patient-card-body">
+                                <div class="patient-info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Age:</span>
+                                        <span class="info-value">32 years</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Prakriti:</span>
+                                        <span class="info-value">Pitta-Kapha</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Last Visit:</span>
+                                        <span class="info-value">Sept 29, 2025</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Treatment:</span>
+                                        <span class="info-value">Digestive Health</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="patient-card-footer">
+                                <button class="btn btn-primary ripple-effect btn-sm">
+                                    <i class="fas fa-folder-open"></i> View Records
+                                </button>
+                                <button class="btn btn-secondary ripple-effect btn-sm">
+                                    <i class="fas fa-message"></i> Message
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="patient-card-detail glass-card">
+                            <div class="patient-card-header">
+                                <div class="patient-avatar-large">
+                                    <img src="https://ui-avatars.com/api/?name=Michael+Chen&background=9B59B6&color=fff" alt="Patient">
+                                </div>
+                                <div class="patient-basic-info">
+                                    <h3>Michael Chen</h3>
+                                    <p>Patient ID: #PT12347</p>
+                                    <span class="tag homeopathy-tag">Homeopathy</span>
+                                </div>
+                            </div>
+                            <div class="patient-card-body">
+                                <div class="patient-info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Age:</span>
+                                        <span class="info-value">58 years</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Constitution:</span>
+                                        <span class="info-value">Lycopodium</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Last Visit:</span>
+                                        <span class="info-value">Sept 28, 2025</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Treatment:</span>
+                                        <span class="info-value">Anxiety</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="patient-card-footer">
+                                <button class="btn btn-primary ripple-effect btn-sm">
+                                    <i class="fas fa-folder-open"></i> View Records
+                                </button>
+                                <button class="btn btn-secondary ripple-effect btn-sm">
+                                    <i class="fas fa-message"></i> Message
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+   
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            initDashboard();
+        });
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userType = localStorage.getItem('userType');
+
+            if (!isLoggedIn || userType !== 'doctor') {
+                window.location.href = 'doctor-login.html';
+            }
+
+            const userName = localStorage.getItem('userName') || 'Doctor';
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('dashboardUserName').textContent = userName;
+        }
+
+        function initDashboard() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+
+            
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.dataset.target);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    switchSection(section);
+                });
+            });
+
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+            });
+        }
+
+        function switchSection(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === section) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById('section-' + section).classList.add('active');
+
+            const titles = {
+                'dashboard': 'Doctor Dashboard',
+                'patients': 'My Patients',
+                'appointments': 'Appointments',
+                'consultations': 'Consultations',
+                'messages': 'Messages',
+                'schedule': 'My Schedule',
+                'settings': 'Settings'
+            };
+            document.getElementById('pageTitle').textContent = titles[section];
+        }
+
+        function logout() {
+            // Backend : Clear server session
+            localStorage.clear();
+            showToast('Logged out successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

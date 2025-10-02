@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Medical System | HealthUnify by LuminaTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+   
+    <div class="particles-bg" id="particles"></div>
+
+    
+    <header class="dashboard-header glass-effect">
+        <div class="header-left">
+            <img src="images/logo.png" alt="HealthUnify Logo" class="header-logo" onerror="this.style.display='none'">
+            <div class="logo-text">
+                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="welcome-text">Welcome, <span id="patientName">Demo Patient</span></span>
+            <button class="btn-logout ripple-effect" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    
+    <div class="choose-system-page">
+        <div class="container">
+            <div class="system-selection-header fade-in-up">
+                <h1 class="page-title">Choose Your Medical System</h1>
+                <p class="page-description">Select your preferred healthcare approach to access your personalized dashboard</p>
+            </div>
+
+            <div class="medical-systems-grid">
+                
+                <div class="medical-system-card allopathy-system morph-card-3d" onclick="selectSystem('allopathy')">
+                    <div class="system-glow allopathy-glow"></div>
+                    <div class="system-card-header">
+                        <div class="system-icon-mega">
+                            <i class="fas fa-hospital"></i>
+                        </div>
+                        <h2>Allopathy</h2>
+                        <span class="system-subtitle">Modern Medicine</span>
+                    </div>
+
+                    <div class="system-card-body">
+                        <p class="system-description">Evidence-based modern medicine with advanced diagnostics, lab results, and conventional treatments.</p>
+
+                        <div class="system-highlights">
+                            <div class="highlight-item">
+                                <i class="fas fa-microscope"></i>
+                                <span>Lab Results & Diagnostics</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-pills"></i>
+                                <span>Prescription Management</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-x-ray"></i>
+                                <span>Imaging & Scans</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-syringe"></i>
+                                <span>Vaccination Records</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="system-card-footer">
+                        <button class="btn-select-system ripple-effect">
+                            <span>Access Dashboard</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="card-badge">Evidence-Based</div>
+                </div>
+
+                
+                <div class="medical-system-card ayurveda-system morph-card-3d delay-1" onclick="selectSystem('ayurveda')">
+                    <div class="system-glow ayurveda-glow"></div>
+                    <div class="system-card-header">
+                        <div class="system-icon-mega ayurveda-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h2>Ayurveda</h2>
+                        <span class="system-subtitle">Traditional Indian Medicine</span>
+                    </div>
+
+                    <div class="system-card-body">
+                        <p class="system-description">Ancient holistic healing system focusing on dosha balance, herbal remedies, and natural wellness.</p>
+
+                        <div class="system-highlights">
+                            <div class="highlight-item">
+                                <i class="fas fa-yin-yang"></i>
+                                <span>Dosha Analysis</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-seedling"></i>
+                                <span>Herbal Medicine</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-spa"></i>
+                                <span>Panchakarma Therapy</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-apple-alt"></i>
+                                <span>Diet & Lifestyle</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="system-card-footer">
+                        <button class="btn-select-system ripple-effect">
+                            <span>Access Dashboard</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="card-badge ayurveda-badge">Natural Healing</div>
+                </div>
+
+               
+                <div class="medical-system-card homeopathy-system morph-card-3d delay-2" onclick="selectSystem('homeopathy')">
+                    <div class="system-glow homeopathy-glow"></div>
+                    <div class="system-card-header">
+                        <div class="system-icon-mega homeopathy-icon">
+                            <i class="fas fa-droplet"></i>
+                        </div>
+                        <h2>Homeopathy</h2>
+                        <span class="system-subtitle">Alternative Medicine</span>
+                    </div>
+
+                    <div class="system-card-body">
+                        <p class="system-description">Personalized treatment approach with individualized remedies based on symptoms and constitution.</p>
+
+                        <div class="system-highlights">
+                            <div class="highlight-item">
+                                <i class="fas fa-vial"></i>
+                                <span>Remedy Tracking</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Symptom Journal</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-user-check"></i>
+                                <span>Constitutional Type</span>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Treatment Response</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="system-card-footer">
+                        <button class="btn-select-system ripple-effect">
+                            <span>Access Dashboard</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="card-badge homeopathy-badge">Personalized</div>
+                </div>
+            </div>
+
+            <div class="system-info-note fade-in-up delay-3">
+                <i class="fas fa-info-circle"></i>
+                <p>You can switch between medical systems anytime from your dashboard settings</p>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">System selected!</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userType = localStorage.getItem('userType');
+
+            if (!isLoggedIn || userType !== 'patient') {
+                window.location.href = 'patient-login.html';
+            }
+
+            
+            const userName = localStorage.getItem('userName') || 'Patient';
+            document.getElementById('patientName').textContent = userName;
+        });
+
+        
+        function selectSystem(system) {
+            // Backend : Store user's selected medical system preference
+            // fetch('/api/patient/select-system', {
+            //     method: 'POST',
+            //     headers: { 
+            //         'Content-Type': 'application/json',
+            //         'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+            //     },
+            //     body: JSON.stringify({ system })
+            // }).then(response => response.json())
+            //   .then(data => {
+            //       if (data.success) {
+            //           localStorage.setItem('selectedSystem', system);
+            //           window.location.href = system + '-dashboard.html';
+            //       }
+            //   });
+
+            // Store selected system
+            localStorage.setItem('selectedSystem', system);
+
+            
+            showToast('Loading ' + system.charAt(0).toUpperCase() + system.slice(1) + ' Dashboard...', 'success');
+
+            
+            setTimeout(function() {
+                window.location.href = system + '-dashboard.html';
+            }, 1000);
+        }
+
+        
+        function logout() {
+            // Backend : Clear server session
+            // fetch('/api/logout', {
+            //     method: 'POST',
+            //     headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+            // });
+
+            localStorage.clear();
+            showToast('Logged out successfully!', 'success');
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allopathy Dashboard | HealthUnify by LuminaTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body">
+    
+    <aside class="sidebar glass-effect" id="sidebar">
+        <div class="sidebar-header">
+            <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
+            <div class="logo-text">
+                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="user-info">
+                <h4 id="userName">Demo Patient</h4>
+                <span class="user-system">Allopathy System</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#records" class="nav-item" data-section="records">
+                <i class="fas fa-folder-open"></i>
+                <span>Health Records</span>
+            </a>
+            <a href="#medications" class="nav-item" data-section="medications">
+                <i class="fas fa-pills"></i>
+                <span>Medications</span>
+            </a>
+            <a href="#appointments" class="nav-item" data-section="appointments">
+                <i class="fas fa-calendar-check"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="#lab-results" class="nav-item" data-section="lab-results">
+                <i class="fas fa-flask"></i>
+                <span>Lab Results</span>
+            </a>
+            <a href="#analytics" class="nav-item" data-section="analytics">
+                <i class="fas fa-chart-line"></i>
+                <span>Health Analytics</span>
+            </a>
+            <a href="#ai-assistant" class="nav-item" data-section="ai-assistant">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+            </a>
+            <a href="#messages" class="nav-item" data-section="messages">
+                <i class="fas fa-comments"></i>
+                <span>Messages</span>
+                <span class="notification-badge">3</span>
+            </a>
+            <a href="#emergency" class="nav-item" data-section="emergency">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Emergency Profile</span>
+            </a>
+            <a href="#settings" class="nav-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="choose-system.html" class="btn-switch-system ripple-effect">
+                <i class="fas fa-repeat"></i> Switch System
+            </a>
+            <button class="btn-logout-sidebar ripple-effect" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    
+    <main class="main-content">
+        
+        <header class="content-header glass-effect">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title-header" id="pageTitle">Dashboard Overview</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search health records...">
+                </div>
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="user-menu">
+                    <img src="https://ui-avatars.com/api/?name=Demo+Patient&background=0078D4&color=fff" alt="User" class="user-avatar-small">
+                </div>
+            </div>
+        </header>
+
+       
+        <div class="content-body">
+            
+            <section id="section-dashboard" class="content-section active">
+                <div class="dashboard-grid">
+                    
+                    <div class="welcome-card glass-card fade-in-up">
+                        <div class="welcome-content">
+                            <h2>Welcome back, <span id="dashboardUserName">Demo Patient</span>!</h2>
+                            <p>Here's your health overview for today</p>
+                            <div class="welcome-date">
+                                <i class="fas fa-calendar"></i>
+                                <span id="currentDate"></span>
+                            </div>
+                        </div>
+                        <div class="welcome-visual">
+                            <div class="health-score-circle">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring-circle" stroke="#0078D4" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                </svg>
+                                <div class="score-text">
+                                    <span class="score-number">87</span>
+                                    <span class="score-label">Health Score</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                   
+                    <div class="vital-card glass-card fade-in-up delay-1" style="--delay: 0.1s">
+                        <div class="vital-icon heart-rate">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="vital-info">
+                            <span class="vital-label">Heart Rate</span>
+                            <h3 class="vital-value"><span class="counter" data-target="72">0</span> BPM</h3>
+                            <span class="vital-status normal">Normal</span>
+                        </div>
+                        <div class="vital-trend">
+                            <i class="fas fa-arrow-up"></i> 2%
+                        </div>
+                    </div>
+
+                    <div class="vital-card glass-card fade-in-up delay-2" style="--delay: 0.2s">
+                        <div class="vital-icon blood-pressure">
+                            <i class="fas fa-droplet"></i>
+                        </div>
+                        <div class="vital-info">
+                            <span class="vital-label">Blood Pressure</span>
+                            <h3 class="vital-value">120/80</h3>
+                            <span class="vital-status normal">Normal</span>
+                        </div>
+                        <div class="vital-trend">
+                            <i class="fas fa-minus"></i> Stable
+                        </div>
+                    </div>
+
+                    <div class="vital-card glass-card fade-in-up delay-3" style="--delay: 0.3s">
+                        <div class="vital-icon temperature">
+                            <i class="fas fa-temperature-half"></i>
+                        </div>
+                        <div class="vital-info">
+                            <span class="vital-label">Temperature</span>
+                            <h3 class="vital-value"><span class="counter" data-target="98">0</span>°F</h3>
+                            <span class="vital-status normal">Normal</span>
+                        </div>
+                        <div class="vital-trend">
+                            <i class="fas fa-check"></i> Good
+                        </div>
+                    </div>
+
+                    <div class="vital-card glass-card fade-in-up delay-4" style="--delay: 0.4s">
+                        <div class="vital-icon oxygen">
+                            <i class="fas fa-lungs"></i>
+                        </div>
+                        <div class="vital-info">
+                            <span class="vital-label">Oxygen Level</span>
+                            <h3 class="vital-value"><span class="counter" data-target="98">0</span>%</h3>
+                            <span class="vital-status normal">Excellent</span>
+                        </div>
+                        <div class="vital-trend">
+                            <i class="fas fa-check"></i> Good
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="dashboard-row">
+                    <div class="quick-actions-card glass-card fade-in-up">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions-grid">
+                            <button class="quick-action-btn ripple-effect">
+                                <i class="fas fa-upload"></i>
+                                <span>Upload Record</span>
+                            </button>
+                            <button class="quick-action-btn ripple-effect">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Book Appointment</span>
+                            </button>
+                            <button class="quick-action-btn ripple-effect">
+                                <i class="fas fa-message"></i>
+                                <span>Message Doctor</span>
+                            </button>
+                            <button class="quick-action-btn ripple-effect">
+                                <i class="fas fa-qrcode"></i>
+                                <span>Emergency QR</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="health-trend-card glass-card fade-in-up delay-1">
+                        <h3>Heart Rate Trend (Last 7 Days)</h3>
+                        <canvas id="heartRateChart"></canvas>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="recent-activity-card glass-card fade-in-up">
+                        <div class="card-header-flex">
+                            <h3>Recent Activity</h3>
+                            <button class="btn-link">View All</button>
+                        </div>
+                        <div class="activity-timeline">
+                            <div class="activity-item">
+                                <div class="activity-icon blue">
+                                    <i class="fas fa-flask"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Lab Results Uploaded</h4>
+                                    <p>Complete Blood Count (CBC) results available</p>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon green">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Appointment Completed</h4>
+                                    <p>Consultation with Dr. Sarah Johnson</p>
+                                    <span class="activity-time">Yesterday</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon purple">
+                                    <i class="fas fa-pills"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Medication Reminder</h4>
+                                    <p>Aspirin 75mg - Taken on time</p>
+                                    <span class="activity-time">2 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="appointments-card glass-card fade-in-up delay-1">
+                        <div class="card-header-flex">
+                            <h3>Upcoming Appointments</h3>
+                            <button class="btn-link">Schedule New</button>
+                        </div>
+                        <div class="appointments-list">
+                            <div class="appointment-item">
+                                <div class="appointment-date">
+                                    <span class="date-day">15</span>
+                                    <span class="date-month">Oct</span>
+                                </div>
+                                <div class="appointment-details">
+                                    <h4>Dr. Michael Chen</h4>
+                                    <p>General Checkup</p>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i> 10:00 AM
+                                    </div>
+                                </div>
+                                <button class="btn-appointment-action">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                            </div>
+                            <div class="appointment-item">
+                                <div class="appointment-date">
+                                    <span class="date-day">22</span>
+                                    <span class="date-month">Oct</span>
+                                </div>
+                                <div class="appointment-details">
+                                    <h4>Dr. Emily Rodriguez</h4>
+                                    <p>Follow-up Consultation</p>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i> 2:30 PM
+                                    </div>
+                                </div>
+                                <button class="btn-appointment-action">
+                                    <i class="fas fa-hospital"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section id="section-records" class="content-section">
+                <div class="section-header-flex">
+                    <div>
+                        <h2 class="section-title-main">Health Records</h2>
+                        <p class="section-subtitle">Manage all your medical documents in one place</p>
+                    </div>
+                    <button class="btn btn-primary ripple-effect">
+                        <i class="fas fa-upload"></i> Upload New Record
+                    </button>
+                </div>
+
+                <div class="records-filter glass-card">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active">All Records</button>
+                        <button class="filter-tab">Lab Results</button>
+                        <button class="filter-tab">Prescriptions</button>
+                        <button class="filter-tab">Imaging</button>
+                        <button class="filter-tab">Reports</button>
+                    </div>
+                    <div class="filter-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search records...">
+                    </div>
+                </div>
+
+                <div class="records-grid">
+                    <div class="record-card glass-card">
+                        <div class="record-icon lab-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div class="record-content">
+                            <h4>Complete Blood Count (CBC)</h4>
+                            <p>Dr. Sarah Johnson • City Hospital</p>
+                            <span class="record-date">October 1, 2025</span>
+                        </div>
+                        <div class="record-actions">
+                            <button class="btn-icon" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="btn-icon" title="Share">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="record-card glass-card">
+                        <div class="record-icon prescription-icon">
+                            <i class="fas fa-file-prescription"></i>
+                        </div>
+                        <div class="record-content">
+                            <h4>Prescription - Antibiotics</h4>
+                            <p>Dr. Michael Chen • General Clinic</p>
+                            <span class="record-date">September 28, 2025</span>
+                        </div>
+                        <div class="record-actions">
+                            <button class="btn-icon" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="btn-icon" title="Share">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="record-card glass-card">
+                        <div class="record-icon imaging-icon">
+                            <i class="fas fa-x-ray"></i>
+                        </div>
+                        <div class="record-content">
+                            <h4>Chest X-Ray Report</h4>
+                            <p>Dr. Emily Rodriguez • Medical Center</p>
+                            <span class="record-date">September 20, 2025</span>
+                        </div>
+                        <div class="record-actions">
+                            <button class="btn-icon" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="btn-icon" title="Share">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="record-card glass-card">
+                        <div class="record-icon report-icon">
+                            <i class="fas fa-file-medical"></i>
+                        </div>
+                        <div class="record-content">
+                            <h4>Annual Health Checkup</h4>
+                            <p>Dr. Sarah Johnson • City Hospital</p>
+                            <span class="record-date">September 15, 2025</span>
+                        </div>
+                        <div class="record-actions">
+                            <button class="btn-icon" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="btn-icon" title="Share">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section id="section-medications" class="content-section">
+                <div class="section-header-flex">
+                    <div>
+                        <h2 class="section-title-main">Medications</h2>
+                        <p class="section-subtitle">Track your current and past medications</p>
+                    </div>
+                    <button class="btn btn-primary ripple-effect">
+                        <i class="fas fa-plus"></i> Add Medication
+                    </button>
+                </div>
+
+                <div class="medications-grid">
+                    <div class="medication-card glass-card">
+                        <div class="medication-header">
+                            <div class="medication-icon">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <span class="medication-status active">Active</span>
+                        </div>
+                        <h4>Aspirin 75mg</h4>
+                        <p class="medication-purpose">For cardiovascular health</p>
+                        <div class="medication-schedule">
+                            <div class="schedule-item">
+                                <span class="schedule-label">Dosage:</span>
+                                <span class="schedule-value">1 tablet daily</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-label">Time:</span>
+                                <span class="schedule-value">After breakfast</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-label">Duration:</span>
+                                <span class="schedule-value">Ongoing</span>
+                            </div>
+                        </div>
+                        <button class="btn-medication-reminder">
+                            <i class="fas fa-bell"></i> Set Reminder
+                        </button>
+                    </div>
+
+                    <div class="medication-card glass-card">
+                        <div class="medication-header">
+                            <div class="medication-icon">
+                                <i class="fas fa-capsules"></i>
+                            </div>
+                            <span class="medication-status active">Active</span>
+                        </div>
+                        <h4>Vitamin D3 1000 IU</h4>
+                        <p class="medication-purpose">Vitamin supplement</p>
+                        <div class="medication-schedule">
+                            <div class="schedule-item">
+                                <span class="schedule-label">Dosage:</span>
+                                <span class="schedule-value">1 capsule daily</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-label">Time:</span>
+                                <span class="schedule-value">Morning</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-label">Duration:</span>
+                                <span class="schedule-value">3 months</span>
+                            </div>
+                        </div>
+                        <button class="btn-medication-reminder">
+                            <i class="fas fa-bell"></i> Set Reminder
+                        </button>
+                    </div>
+
+                    <div class="medication-card glass-card">
+                        <div class="medication-header">
+                            <div class="medication-icon">
+                                <i class="fas fa-tablets"></i>
+                            </div>
+                            <span class="medication-status completed">Completed</span>
+                        </div>
+                        <h4>Amoxicillin 500mg</h4>
+                        <p class="medication-purpose">Antibiotic for infection</p>
+                        <div class="medication-schedule">
+                            <div class="schedule-item">
+                                <span class="schedule-label">Dosage:</span>
+                                <span class="schedule-value">3 times daily</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-label">Duration:</span>
+                                <span class="schedule-value">7 days</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-label">Completed:</span>
+                                <span class="schedule-value">Sept 28, 2025</span>
+                            </div>
+                        </div>
+                        <button class="btn-medication-view">
+                            <i class="fas fa-history"></i> View History
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section id="section-ai-assistant" class="content-section">
+                <div class="ai-assistant-container">
+                    <div class="ai-header glass-card">
+                        <div class="ai-avatar pulse-animation">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="ai-intro">
+                            <h2>AI Health Assistant</h2>
+                            <p>Get personalized health insights and recommendations</p>
+                        </div>
+                    </div>
+
+                    <div class="ai-chat-container glass-card">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="chat-message ai-message fade-in">
+                                <div class="message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="message-content">
+                                    <p>Hello! I'm your AI Health Assistant. I can help you with:</p>
+                                    <ul>
+                                        <li>Analyzing your health trends</li>
+                                        <li>Medication interaction checks</li>
+                                        <li>Symptom assessment</li>
+                                        <li>Personalized health recommendations</li>
+                                    </ul>
+                                    <p>How can I assist you today?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-suggestions">
+                            <button class="suggestion-chip ripple-effect">
+                                Check medication interactions
+                            </button>
+                            <button class="suggestion-chip ripple-effect">
+                                Analyze my health trends
+                            </button>
+                            <button class="suggestion-chip ripple-effect">
+                                What should I know about my condition?
+                            </button>
+                        </div>
+
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input" placeholder="Type your question here..." id="chatInput">
+                            <button class="btn-send ripple-effect" id="sendMessage">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section id="section-emergency" class="content-section">
+                <div class="emergency-container">
+                    <div class="emergency-header">
+                        <div class="emergency-icon-large">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h2>Emergency Profile</h2>
+                        <p>Quick access to critical health information</p>
+                    </div>
+
+                    <div class="emergency-grid">
+                        <div class="emergency-card glass-card">
+                            <h3>Critical Information</h3>
+                            <div class="emergency-info-grid">
+                                <div class="emergency-info-item">
+                                    <span class="info-label">Blood Type:</span>
+                                    <span class="info-value">O+</span>
+                                </div>
+                                <div class="emergency-info-item">
+                                    <span class="info-label">Allergies:</span>
+                                    <span class="info-value alert">Penicillin, Peanuts</span>
+                                </div>
+                                <div class="emergency-info-item">
+                                    <span class="info-label">Chronic Conditions:</span>
+                                    <span class="info-value">Hypertension</span>
+                                </div>
+                                <div class="emergency-info-item">
+                                    <span class="info-label">Current Medications:</span>
+                                    <span class="info-value">Aspirin 75mg, Vitamin D3</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="emergency-qr-card glass-card">
+                            <h3>Emergency QR Code</h3>
+                            <div class="qr-code-container">
+                                <div class="qr-code-placeholder">
+                                    <i class="fas fa-qrcode"></i>
+                                    <p>Scan for instant access to emergency health data</p>
+                                </div>
+                            </div>
+                            <div class="qr-actions">
+                                <button class="btn btn-primary ripple-effect">
+                                    <i class="fas fa-download"></i> Download QR
+                                </button>
+                                <button class="btn btn-secondary ripple-effect">
+                                    <i class="fas fa-print"></i> Print Card
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="emergency-contacts glass-card">
+                        <h3>Emergency Contacts</h3>
+                        <div class="contacts-list">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h4>John Doe (Spouse)</h4>
+                                    <p>+91 9876543210</p>
+                                </div>
+                                <button class="btn-call">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h4>Dr. Sarah Johnson (Primary Care)</h4>
+                                    <p>+91 9876543211</p>
+                                </div>
+                                <button class="btn-call">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+       
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            initDashboard();
+            initChart();
+        });
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userType = localStorage.getItem('userType');
+
+            if (!isLoggedIn || userType !== 'patient') {
+                window.location.href = 'patient-login.html';
+            }
+
+            const userName = localStorage.getItem('userName') || 'Patient';
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('dashboardUserName').textContent = userName;
+        }
+
+        function initDashboard() {
+            
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+
+            
+            animateCounters();
+
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    switchSection(section);
+                });
+            });
+
+           
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+            });
+        }
+
+        function switchSection(section) {
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === section) {
+                    item.classList.add('active');
+                }
+            });
+
+           
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById('section-' + section).classList.add('active');
+
+            
+            const titles = {
+                'dashboard': 'Dashboard Overview',
+                'records': 'Health Records',
+                'medications': 'Medications',
+                'appointments': 'Appointments',
+                'lab-results': 'Lab Results',
+                'analytics': 'Health Analytics',
+                'ai-assistant': 'AI Health Assistant',
+                'messages': 'Messages',
+                'emergency': 'Emergency Profile',
+                'settings': 'Settings'
+            };
+            document.getElementById('pageTitle').textContent = titles[section];
+        }
+
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.dataset.target);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('heartRateChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Heart Rate (BPM)',
+                        data: [68, 72, 70, 75, 71, 69, 72],
+                        borderColor: '#0078D4',
+                        backgroundColor: 'rgba(0, 120, 212, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 60,
+                            max: 80
+                        }
+                    }
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.clear();
+            showToast('Logged out successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayurveda Dashboard | HealthUnify by LuminaTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body ayurveda-theme">
+    
+    <aside class="sidebar glass-effect ayurveda-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
+            <div class="logo-text">
+                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar ayurveda-avatar">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="user-info">
+                <h4 id="userName">Demo Patient</h4>
+                <span class="user-system ayurveda-system">Ayurveda System</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#dosha" class="nav-item" data-section="dosha">
+                <i class="fas fa-yin-yang"></i>
+                <span>Dosha Analysis</span>
+            </a>
+            <a href="#herbs" class="nav-item" data-section="herbs">
+                <i class="fas fa-seedling"></i>
+                <span>Herbal Medicines</span>
+            </a>
+            <a href="#diet" class="nav-item" data-section="diet">
+                <i class="fas fa-apple-alt"></i>
+                <span>Diet & Lifestyle</span>
+            </a>
+            <a href="#panchakarma" class="nav-item" data-section="panchakarma">
+                <i class="fas fa-spa"></i>
+                <span>Panchakarma</span>
+            </a>
+            <a href="#consultations" class="nav-item" data-section="consultations">
+                <i class="fas fa-user-doctor"></i>
+                <span>Consultations</span>
+            </a>
+            <a href="#seasonal" class="nav-item" data-section="seasonal">
+                <i class="fas fa-calendar-days"></i>
+                <span>Seasonal Guide</span>
+            </a>
+            <a href="#yoga" class="nav-item" data-section="yoga">
+                <i class="fas fa-person-praying"></i>
+                <span>Yoga & Meditation</span>
+            </a>
+            <a href="#settings" class="nav-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="choose-system.html" class="btn-switch-system ripple-effect ayurveda-btn">
+                <i class="fas fa-repeat"></i> Switch System
+            </a>
+            <button class="btn-logout-sidebar ripple-effect" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+   
+    <main class="main-content">
+        
+        <header class="content-header glass-effect">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title-header" id="pageTitle">Ayurveda Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search records...">
+                </div>
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="user-menu">
+                    <img src="https://ui-avatars.com/api/?name=Demo+Patient&background=2D7A2E&color=fff" alt="User" class="user-avatar-small">
+                </div>
+            </div>
+        </header>
+
+        
+        <div class="content-body">
+            
+            <section id="section-dashboard" class="content-section active">
+                <div class="dashboard-grid">
+                    
+                    <div class="welcome-card glass-card ayurveda-card fade-in-up">
+                        <div class="welcome-content">
+                            <div class="ayurveda-icon-lg">
+                                <i class="fas fa-om"></i>
+                            </div>
+                            <h2>Namaste, <span id="dashboardUserName">Demo Patient</span></h2>
+                            <p>Balance your mind, body, and spirit with Ayurveda</p>
+                            <div class="welcome-date">
+                                <i class="fas fa-calendar"></i>
+                                <span id="currentDate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="dosha-card glass-card fade-in-up delay-1 vata-card">
+                        <div class="dosha-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="dosha-info">
+                            <h3>Vata</h3>
+                            <p>Air & Space</p>
+                        </div>
+                        <div class="dosha-meter">
+                            <div class="dosha-progress">
+                                <div class="dosha-bar vata-bar" style="width: 35%"></div>
+                            </div>
+                            <span class="dosha-percentage">35%</span>
+                        </div>
+                    </div>
+
+                    <div class="dosha-card glass-card fade-in-up delay-2 pitta-card">
+                        <div class="dosha-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="dosha-info">
+                            <h3>Pitta</h3>
+                            <p>Fire & Water</p>
+                        </div>
+                        <div class="dosha-meter">
+                            <div class="dosha-progress">
+                                <div class="dosha-bar pitta-bar" style="width: 40%"></div>
+                            </div>
+                            <span class="dosha-percentage">40%</span>
+                        </div>
+                    </div>
+
+                    <div class="dosha-card glass-card fade-in-up delay-3 kapha-card">
+                        <div class="dosha-icon">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <div class="dosha-info">
+                            <h3>Kapha</h3>
+                            <p>Water & Earth</p>
+                        </div>
+                        <div class="dosha-meter">
+                            <div class="dosha-progress">
+                                <div class="dosha-bar kapha-bar" style="width: 25%"></div>
+                            </div>
+                            <span class="dosha-percentage">25%</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="prakriti-card glass-card fade-in-up">
+                        <h3><i class="fas fa-user-check"></i> Your Prakriti (Constitution)</h3>
+                        <div class="prakriti-result">
+                            <div class="prakriti-type">
+                                <div class="type-badge pitta-dominant">Pitta-Vata</div>
+                                <p>You have a predominant Pitta constitution with Vata tendencies</p>
+                            </div>
+                            <div class="prakriti-characteristics">
+                                <h4>Key Characteristics:</h4>
+                                <ul>
+                                    <li><i class="fas fa-check-circle"></i> Strong digestion and metabolism</li>
+                                    <li><i class="fas fa-check-circle"></i> Sharp intellect and focus</li>
+                                    <li><i class="fas fa-check-circle"></i> Creative and energetic</li>
+                                    <li><i class="fas fa-check-circle"></i> Tendency towards heat sensitivity</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendations-card glass-card fade-in-up delay-1">
+                        <h3><i class="fas fa-lightbulb"></i> Today's Recommendations</h3>
+                        <div class="recommendations-list">
+                            <div class="recommendation-item">
+                                <div class="rec-icon diet-icon">
+                                    <i class="fas fa-apple-alt"></i>
+                                </div>
+                                <div class="rec-content">
+                                    <h4>Diet Advice</h4>
+                                    <p>Include cooling foods like cucumber, coconut water, and mint</p>
+                                </div>
+                            </div>
+                            <div class="recommendation-item">
+                                <div class="rec-icon yoga-icon">
+                                    <i class="fas fa-spa"></i>
+                                </div>
+                                <div class="rec-content">
+                                    <h4>Yoga Practice</h4>
+                                    <p>Practice cooling pranayama like Shitali for 10 minutes</p>
+                                </div>
+                            </div>
+                            <div class="recommendation-item">
+                                <div class="rec-icon lifestyle-icon">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                                <div class="rec-content">
+                                    <h4>Lifestyle Tip</h4>
+                                    <p>Avoid excessive heat and spicy foods during midday</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="herbs-summary-card glass-card fade-in-up">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-seedling"></i> Current Herbal Medicines</h3>
+                            <button class="btn-link">View All</button>
+                        </div>
+                        <div class="herbs-list">
+                            <div class="herb-item">
+                                <div class="herb-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div class="herb-details">
+                                    <h4>Ashwagandha Churna</h4>
+                                    <p>1 tsp with warm milk before bed</p>
+                                    <span class="herb-purpose">For stress relief & vitality</span>
+                                </div>
+                            </div>
+                            <div class="herb-item">
+                                <div class="herb-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div class="herb-details">
+                                    <h4>Triphala</h4>
+                                    <p>2 tablets after dinner</p>
+                                    <span class="herb-purpose">For digestive health</span>
+                                </div>
+                            </div>
+                            <div class="herb-item">
+                                <div class="herb-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div class="herb-details">
+                                    <h4>Brahmi Tea</h4>
+                                    <p>1 cup in the morning</p>
+                                    <span class="herb-purpose">For mental clarity</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="diet-plan-card glass-card fade-in-up delay-1">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-utensils"></i> Daily Diet Plan</h3>
+                            <button class="btn-link">Customize</button>
+                        </div>
+                        <div class="meal-timeline">
+                            <div class="meal-item">
+                                <div class="meal-time">
+                                    <span class="time-icon">🌅</span>
+                                    <span class="time-text">6:00 AM</span>
+                                </div>
+                                <div class="meal-content">
+                                    <h4>Morning Routine</h4>
+                                    <p>Warm water with lemon, tongue scraping, oil pulling</p>
+                                </div>
+                            </div>
+                            <div class="meal-item">
+                                <div class="meal-time">
+                                    <span class="time-icon">☀️</span>
+                                    <span class="time-text">8:00 AM</span>
+                                </div>
+                                <div class="meal-content">
+                                    <h4>Breakfast</h4>
+                                    <p>Oats porridge with dates and almonds</p>
+                                </div>
+                            </div>
+                            <div class="meal-item">
+                                <div class="meal-time">
+                                    <span class="time-icon">🌤️</span>
+                                    <span class="time-text">12:30 PM</span>
+                                </div>
+                                <div class="meal-content">
+                                    <h4>Lunch</h4>
+                                    <p>Rice, dal, vegetables, and buttermilk</p>
+                                </div>
+                            </div>
+                            <div class="meal-item">
+                                <div class="meal-time">
+                                    <span class="time-icon">🌙</span>
+                                    <span class="time-text">7:00 PM</span>
+                                </div>
+                                <div class="meal-content">
+                                    <h4>Dinner</h4>
+                                    <p>Light khichdi with ghee and vegetables</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dashboard-row">
+                    <div class="seasonal-card glass-card fade-in-up">
+                        <h3><i class="fas fa-calendar-alt"></i> Current Season: Sharad (Autumn)</h3>
+                        <div class="seasonal-content">
+                            <p class="seasonal-desc">Autumn is a transitional season where Pitta accumulated during summer may get aggravated.</p>
+                            <div class="seasonal-tips">
+                                <h4>Ritucharya (Seasonal Regimen):</h4>
+                                <ul>
+                                    <li>Prefer cooling and sweet foods</li>
+                                    <li>Avoid excessive exposure to sun</li>
+                                    <li>Practice calming yoga and meditation</li>
+                                    <li>Take evening walks in pleasant weather</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yoga-tracker-card glass-card fade-in-up delay-1">
+                        <h3><i class="fas fa-person-praying"></i> Yoga & Meditation Tracker</h3>
+                        <div class="practice-stats">
+                            <div class="stat-circle">
+                                <svg class="progress-circle" width="100" height="100">
+                                    <circle cx="50" cy="50" r="45" stroke="#e0e0e0" stroke-width="6" fill="none"/>
+                                    <circle cx="50" cy="50" r="45" stroke="#2D7A2E" stroke-width="6" fill="none" 
+                                            stroke-dasharray="283" stroke-dashoffset="70" transform="rotate(-90 50 50)"/>
+                                </svg>
+                                <div class="stat-text">
+                                    <span class="stat-number">75%</span>
+                                    <span class="stat-label">Weekly Goal</span>
+                                </div>
+                            </div>
+                            <div class="practice-details">
+                                <div class="practice-item">
+                                    <span class="practice-label">This Week:</span>
+                                    <span class="practice-value">5 sessions</span>
+                                </div>
+                                <div class="practice-item">
+                                    <span class="practice-label">Total Time:</span>
+                                    <span class="practice-value">3.5 hours</span>
+                                </div>
+                                <div class="practice-item">
+                                    <span class="practice-label">Streak:</span>
+                                    <span class="practice-value">12 days 🔥</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section id="section-dosha" class="content-section">
+                <div class="dosha-analysis-container">
+                    <h2 class="section-title-main">Dosha Analysis</h2>
+                    <p class="section-subtitle">Understanding your unique mind-body constitution</p>
+
+                    <div class="dosha-chart-card glass-card">
+                        <h3>Your Dosha Distribution</h3>
+                        <canvas id="doshaChart"></canvas>
+                    </div>
+
+                    <div class="dosha-details-grid">
+                        <div class="dosha-detail-card glass-card vata-detail">
+                            <div class="detail-header">
+                                <i class="fas fa-wind"></i>
+                                <h3>Vata (Air & Space)</h3>
+                            </div>
+                            <p><strong>Balance State:</strong> Moderate</p>
+                            <h4>Characteristics:</h4>
+                            <ul>
+                                <li>Creative and enthusiastic</li>
+                                <li>Quick thinking and adaptable</li>
+                                <li>Light sleeper</li>
+                            </ul>
+                            <h4>When Imbalanced:</h4>
+                            <ul>
+                                <li>Anxiety and restlessness</li>
+                                <li>Irregular digestion</li>
+                                <li>Insomnia</li>
+                            </ul>
+                        </div>
+
+                        <div class="dosha-detail-card glass-card pitta-detail">
+                            <div class="detail-header">
+                                <i class="fas fa-fire"></i>
+                                <h3>Pitta (Fire & Water)</h3>
+                            </div>
+                            <p><strong>Balance State:</strong> Good</p>
+                            <h4>Characteristics:</h4>
+                            <ul>
+                                <li>Strong digestion</li>
+                                <li>Sharp intellect</li>
+                                <li>Natural leadership</li>
+                            </ul>
+                            <h4>When Imbalanced:</h4>
+                            <ul>
+                                <li>Irritability and anger</li>
+                                <li>Inflammation</li>
+                                <li>Excessive heat</li>
+                            </ul>
+                        </div>
+
+                        <div class="dosha-detail-card glass-card kapha-detail">
+                            <div class="detail-header">
+                                <i class="fas fa-water"></i>
+                                <h3>Kapha (Water & Earth)</h3>
+                            </div>
+                            <p><strong>Balance State:</strong> Low</p>
+                            <h4>Characteristics:</h4>
+                            <ul>
+                                <li>Calm and stable</li>
+                                <li>Strong endurance</li>
+                                <li>Compassionate</li>
+                            </ul>
+                            <h4>When Imbalanced:</h4>
+                            <ul>
+                                <li>Lethargy and sluggishness</li>
+                                <li>Weight gain</li>
+                                <li>Congestion</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            initDashboard();
+            initDoshaChart();
+        });
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userType = localStorage.getItem('userType');
+
+            if (!isLoggedIn || userType !== 'patient') {
+                window.location.href = 'patient-login.html';
+            }
+
+            const userName = localStorage.getItem('userName') || 'Patient';
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('dashboardUserName').textContent = userName;
+        }
+
+        function initDashboard() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    switchSection(section);
+                });
+            });
+
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+            });
+        }
+
+        function switchSection(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === section) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById('section-' + section).classList.add('active');
+
+            const titles = {
+                'dashboard': 'Ayurveda Dashboard',
+                'dosha': 'Dosha Analysis',
+                'herbs': 'Herbal Medicines',
+                'diet': 'Diet & Lifestyle',
+                'panchakarma': 'Panchakarma',
+                'consultations': 'Consultations',
+                'seasonal': 'Seasonal Guide',
+                'yoga': 'Yoga & Meditation',
+                'settings': 'Settings'
+            };
+            document.getElementById('pageTitle').textContent = titles[section];
+        }
+
+        function initDoshaChart() {
+            const ctx = document.getElementById('doshaChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Vata', 'Pitta', 'Kapha'],
+                    datasets: [{
+                        data: [35, 40, 25],
+                        backgroundColor: ['#87CEEB', '#FF6347', '#90EE90'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.clear();
+            showToast('Logged out successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
