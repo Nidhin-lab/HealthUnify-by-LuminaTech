@@ -3,776 +3,978 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Allopathy Dashboard | HealthUnify by LuminaTech</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>AI-Powered Health Dashboard</title>
+    <!-- Importing Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Importing Poppins and Inter fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Importing Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="dashboard-body">
     
+    <style>
+        :root {
+            --primary-color: #0078D4; /* Microsoft Blue */
+            --secondary-color: #00B7C3; /* Teal */
+            --background-dark: #1e1e1e;
+            --surface-dark: #2d2d30;
+            --text-light: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --success-color: #38C172;
+            --alert-color: #E3342F;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1e1e, #0c0c0c);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Helper Styles */
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px var(--shadow-color);
+        }
+
+        .glass-card {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px var(--shadow-color);
+        }
+
+        .health-gradient {
+            background: linear-gradient(90deg, #0078D4, #00B7C3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: none;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s;
+        }
+        
+        .sidebar.collapsed .logo-text,
+        .sidebar.collapsed .sidebar-logo {
+            display: none;
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(0, 120, 212, 0.4);
+            color: var(--text-light);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 15px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .content-section {
+            display: none;
+            padding-top: 20px;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Chart Card */
+        .chart-card {
+            min-height: 350px;
+        }
+
+        .chart-card canvas {
+            max-height: 280px;
+        }
+
+        /* Overview Card */
+        .overview-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .overview-card .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-top: 10px;
+            line-height: 1;
+            background: var(--primary-color);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse-color 5s infinite alternate;
+        }
+
+        @keyframes pulse-color {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(30deg); }
+        }
+
+        /* Medications & Records List */
+        .list-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .medication-card, .record-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .medication-info, .record-info {
+            flex-grow: 1;
+        }
+
+        .medication-name, .record-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .medication-details, .record-details {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .medication-actions, .record-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary-color);
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+        }
+        
+        /* AI Health Assistant Section */
+        #section-ai-assistant {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        .ai-chat-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .message-container {
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 350px;
+        }
+        
+        .ai-message, .user-message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .ai-message .message-content,
+        .user-message .message-content {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+        }
+        
+        /* AI message specific styles */
+        .ai-message {
+            justify-content: flex-start;
+        }
+        .ai-message .message-icon {
+            align-self: flex-start;
+            margin-right: 10px; /* Space between icon and bubble */
+            color: var(--primary-color);
+        }
+        .ai-message .message-content {
+            background: var(--surface-dark);
+            border-bottom-left-radius: 2px;
+        }
+        .ai-message .message-content.loading-pulse {
+             font-size: 1.5rem;
+             animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* User message specific styles */
+        .user-message {
+            justify-content: flex-end;
+        }
+        .user-message .message-icon {
+             align-self: flex-start;
+             margin-left: 10px; /* Space between icon and bubble */
+             color: var(--text-light);
+        }
+        .user-message .message-content {
+            background: var(--primary-color);
+            border-bottom-right-radius: 2px;
+        }
+
+
+        .message-icon {
+            font-size: 1.2rem;
+            align-self: flex-start;
+        }
+
+        
+        .chat-input-area {
+            display: flex;
+            padding: 15px 20px 0 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px 0 0 8px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            outline: none;
+        }
+
+        .chat-input-area button {
+            background: var(--primary-color);
+            border: none;
+            color: var(--text-light);
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background: var(--secondary-color);
+        }
+
+        /* AI Analysis Output Styling */
+        .ai-analysis-output {
+            grid-column: 1 / -1; /* Full width */
+            padding: 25px;
+            border-left: 5px solid var(--secondary-color);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-analysis-output h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .analysis-date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .analysis-segment {
+            margin-bottom: 20px;
+        }
+
+        .analysis-segment h4 {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .suggestion {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .suggestion.alert {
+            color: var(--alert-color);
+            background: rgba(227, 52, 47, 0.1);
+        }
+        
+        .med-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--glass-border);
+        }
+
+        .med-item i {
+            margin-right: 10px;
+            color: var(--success-color);
+        }
+
+        .btn-add-med {
+            background: var(--success-color);
+            color: var(--background-dark);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Custom Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 15px 10px;
+            }
+            .sidebar:not(.collapsed) {
+                width: 200px; /* Force small width if not collapsed */
+            }
+            .sidebar.collapsed {
+                /* When the toggle button is clicked on mobile, show full menu */
+                width: 250px; 
+                position: absolute;
+                left: -250px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-toggle {
+                display: block; /* Show the toggle button */
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-info {
+                margin-top: 15px;
+            }
+            .sidebar {
+                left: -250px;
+                transition: left 0.3s ease-in-out;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar.open + .main-content {
+                /* Add margin when sidebar is open to avoid overlap */
+                margin-left: 250px; 
+            }
+            .medication-card, .record-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .medication-actions, .record-actions {
+                margin-top: 10px;
+            }
+            .chat-input-area {
+                padding: 10px;
+            }
+            .chat-input-area input {
+                border-radius: 8px 0 0 8px;
+            }
+            .chat-input-area button {
+                border-radius: 0 8px 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Sidebar -->
     <aside class="sidebar glass-effect" id="sidebar">
         <div class="sidebar-header">
-            <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
+            <!-- No image URL provided, using text logo -->
             <div class="logo-text">
-                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+                <span class="health-gradient">Health</span><span style="color:#fff;">AI</span>
             </div>
             <button class="sidebar-toggle" id="sidebarToggle">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar">
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <div class="user-info">
-                <h4 id="userName">Demo Patient</h4>
-                <span class="user-system">Allopathy System</span>
-            </div>
-        </div>
-
         <nav class="sidebar-nav">
-            <a href="#dashboard" class="nav-item active" data-section="dashboard">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
+            <a href="#" class="nav-link active" data-section="section-dashboard">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
             </a>
-            <a href="#records" class="nav-item" data-section="records">
-                <i class="fas fa-folder-open"></i>
-                <span>Health Records</span>
+            <a href="#" class="nav-link" data-section="section-medications">
+                <i class="fas fa-pills"></i> <span>Medications</span>
             </a>
-            <a href="#medications" class="nav-item" data-section="medications">
-                <i class="fas fa-pills"></i>
-                <span>Medications</span>
+            <a href="#" class="nav-link" data-section="section-records">
+                <i class="fas fa-notes-medical"></i> <span>Health Records</span>
             </a>
-            <a href="#appointments" class="nav-item" data-section="appointments">
-                <i class="fas fa-calendar-check"></i>
-                <span>Appointments</span>
+            <a href="#" class="nav-link" data-section="section-ai-assistant">
+                <i class="fas fa-robot"></i> <span>AI Assistant</span>
             </a>
-            <a href="#lab-results" class="nav-item" data-section="lab-results">
-                <i class="fas fa-flask"></i>
-                <span>Lab Results</span>
-            </a>
-            <a href="#analytics" class="nav-item" data-section="analytics">
-                <i class="fas fa-chart-line"></i>
-                <span>Health Analytics</span>
-            </a>
-            <a href="#ai-assistant" class="nav-item" data-section="ai-assistant">
-                <i class="fas fa-robot"></i>
-                <span>AI Assistant</span>
-            </a>
-            <a href="#messages" class="nav-item" data-section="messages">
-                <i class="fas fa-comments"></i>
-                <span>Messages</span>
-                <span class="notification-badge">3</span>
-            </a>
-            <a href="#emergency" class="nav-item" data-section="emergency">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>Emergency Profile</span>
-            </a>
-            <a href="#settings" class="nav-item" data-section="settings">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
+            <a href="#" class="nav-link" data-section="section-settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
             </a>
         </nav>
-
-        <div class="sidebar-footer">
-            <a href="choose-system.html" class="btn-switch-system ripple-effect">
-                <i class="fas fa-repeat"></i> Switch System
+        
+        <div style="margin-top: auto;">
+            <a href="#" class="nav-link" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </a>
-            <button class="btn-logout-sidebar ripple-effect" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <!-- Placeholder for User ID display -->
+            <p id="userIdDisplay" style="font-size:0.75rem; opacity:0.6; padding: 10px; word-break: break-all;">User ID: Loading...</p>
         </div>
     </aside>
 
-    
-    <main class="main-content">
-        
-        <header class="content-header glass-effect">
-            <div class="header-left">
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title-header" id="pageTitle">Dashboard Overview</h1>
-            </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search health records...">
-                </div>
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-dot"></span>
-                </button>
-                <div class="user-menu">
-                    <img src="https://ui-avatars.com/api/?name=Demo+Patient&background=0078D4&color=fff" alt="User" class="user-avatar-small">
-                </div>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <header class="header">
+            <h1 id="pageTitle">Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, User!</span>
+                <img src="https://placehold.co/40x40/0078D4/ffffff?text=U" alt="User Avatar">
             </div>
         </header>
 
-       
-        <div class="content-body">
-            
-            <section id="section-dashboard" class="content-section active">
-                <div class="dashboard-grid">
-                    
-                    <div class="welcome-card glass-card fade-in-up">
-                        <div class="welcome-content">
-                            <h2>Welcome back, <span id="dashboardUserName">Demo Patient</span>!</h2>
-                            <p>Here's your health overview for today</p>
-                            <div class="welcome-date">
-                                <i class="fas fa-calendar"></i>
-                                <span id="currentDate"></span>
-                            </div>
-                        </div>
-                        <div class="welcome-visual">
-                            <div class="health-score-circle">
-                                <svg class="progress-ring" width="120" height="120">
-                                    <circle class="progress-ring-circle" stroke="#0078D4" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                                </svg>
-                                <div class="score-text">
-                                    <span class="score-number">87</span>
-                                    <span class="score-label">Health Score</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                   
-                    <div class="vital-card glass-card fade-in-up delay-1" style="--delay: 0.1s">
-                        <div class="vital-icon heart-rate">
-                            <i class="fas fa-heartbeat"></i>
-                        </div>
-                        <div class="vital-info">
-                            <span class="vital-label">Heart Rate</span>
-                            <h3 class="vital-value"><span class="counter" data-target="72">0</span> BPM</h3>
-                            <span class="vital-status normal">Normal</span>
-                        </div>
-                        <div class="vital-trend">
-                            <i class="fas fa-arrow-up"></i> 2%
-                        </div>
-                    </div>
-
-                    <div class="vital-card glass-card fade-in-up delay-2" style="--delay: 0.2s">
-                        <div class="vital-icon blood-pressure">
-                            <i class="fas fa-droplet"></i>
-                        </div>
-                        <div class="vital-info">
-                            <span class="vital-label">Blood Pressure</span>
-                            <h3 class="vital-value">120/80</h3>
-                            <span class="vital-status normal">Normal</span>
-                        </div>
-                        <div class="vital-trend">
-                            <i class="fas fa-minus"></i> Stable
-                        </div>
-                    </div>
-
-                    <div class="vital-card glass-card fade-in-up delay-3" style="--delay: 0.3s">
-                        <div class="vital-icon temperature">
-                            <i class="fas fa-temperature-half"></i>
-                        </div>
-                        <div class="vital-info">
-                            <span class="vital-label">Temperature</span>
-                            <h3 class="vital-value"><span class="counter" data-target="98">0</span>°F</h3>
-                            <span class="vital-status normal">Normal</span>
-                        </div>
-                        <div class="vital-trend">
-                            <i class="fas fa-check"></i> Good
-                        </div>
-                    </div>
-
-                    <div class="vital-card glass-card fade-in-up delay-4" style="--delay: 0.4s">
-                        <div class="vital-icon oxygen">
-                            <i class="fas fa-lungs"></i>
-                        </div>
-                        <div class="vital-info">
-                            <span class="vital-label">Oxygen Level</span>
-                            <h3 class="vital-value"><span class="counter" data-target="98">0</span>%</h3>
-                            <span class="vital-status normal">Excellent</span>
-                        </div>
-                        <div class="vital-trend">
-                            <i class="fas fa-check"></i> Good
-                        </div>
-                    </div>
-                </div>
-
-               
-                <div class="dashboard-row">
-                    <div class="quick-actions-card glass-card fade-in-up">
-                        <h3>Quick Actions</h3>
-                        <div class="quick-actions-grid">
-                            <button class="quick-action-btn ripple-effect">
-                                <i class="fas fa-upload"></i>
-                                <span>Upload Record</span>
-                            </button>
-                            <button class="quick-action-btn ripple-effect">
-                                <i class="fas fa-calendar-plus"></i>
-                                <span>Book Appointment</span>
-                            </button>
-                            <button class="quick-action-btn ripple-effect">
-                                <i class="fas fa-message"></i>
-                                <span>Message Doctor</span>
-                            </button>
-                            <button class="quick-action-btn ripple-effect">
-                                <i class="fas fa-qrcode"></i>
-                                <span>Emergency QR</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="health-trend-card glass-card fade-in-up delay-1">
-                        <h3>Heart Rate Trend (Last 7 Days)</h3>
-                        <canvas id="heartRateChart"></canvas>
-                    </div>
-                </div>
-
+        <!-- DASHBOARD SECTION -->
+        <section id="section-dashboard" class="content-section active">
+            <div class="dashboard-grid">
                 
-                <div class="dashboard-row">
-                    <div class="recent-activity-card glass-card fade-in-up">
-                        <div class="card-header-flex">
-                            <h3>Recent Activity</h3>
-                            <button class="btn-link">View All</button>
-                        </div>
-                        <div class="activity-timeline">
-                            <div class="activity-item">
-                                <div class="activity-icon blue">
-                                    <i class="fas fa-flask"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <h4>Lab Results Uploaded</h4>
-                                    <p>Complete Blood Count (CBC) results available</p>
-                                    <span class="activity-time">2 hours ago</span>
-                                </div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon green">
-                                    <i class="fas fa-user-md"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <h4>Appointment Completed</h4>
-                                    <p>Consultation with Dr. Sarah Johnson</p>
-                                    <span class="activity-time">Yesterday</span>
-                                </div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon purple">
-                                    <i class="fas fa-pills"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <h4>Medication Reminder</h4>
-                                    <p>Aspirin 75mg - Taken on time</p>
-                                    <span class="activity-time">2 days ago</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="appointments-card glass-card fade-in-up delay-1">
-                        <div class="card-header-flex">
-                            <h3>Upcoming Appointments</h3>
-                            <button class="btn-link">Schedule New</button>
-                        </div>
-                        <div class="appointments-list">
-                            <div class="appointment-item">
-                                <div class="appointment-date">
-                                    <span class="date-day">15</span>
-                                    <span class="date-month">Oct</span>
-                                </div>
-                                <div class="appointment-details">
-                                    <h4>Dr. Michael Chen</h4>
-                                    <p>General Checkup</p>
-                                    <div class="appointment-time">
-                                        <i class="fas fa-clock"></i> 10:00 AM
-                                    </div>
-                                </div>
-                                <button class="btn-appointment-action">
-                                    <i class="fas fa-video"></i>
-                                </button>
-                            </div>
-                            <div class="appointment-item">
-                                <div class="appointment-date">
-                                    <span class="date-day">22</span>
-                                    <span class="date-month">Oct</span>
-                                </div>
-                                <div class="appointment-details">
-                                    <h4>Dr. Emily Rodriguez</h4>
-                                    <p>Follow-up Consultation</p>
-                                    <div class="appointment-time">
-                                        <i class="fas fa-clock"></i> 2:30 PM
-                                    </div>
-                                </div>
-                                <button class="btn-appointment-action">
-                                    <i class="fas fa-hospital"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            
-            <section id="section-records" class="content-section">
-                <div class="section-header-flex">
-                    <div>
-                        <h2 class="section-title-main">Health Records</h2>
-                        <p class="section-subtitle">Manage all your medical documents in one place</p>
-                    </div>
-                    <button class="btn btn-primary ripple-effect">
-                        <i class="fas fa-upload"></i> Upload New Record
-                    </button>
+                <!-- Overview Card 1: Heart Rate -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-heartbeat fa-2x" style="color:var(--alert-color);"></i>
+                    <h3>Resting Heart Rate</h3>
+                    <div class="stat-value" style="color: var(--alert-color);">71</div>
+                    <p style="opacity:0.8;">BPM (Average)</p>
                 </div>
 
-                <div class="records-filter glass-card">
-                    <div class="filter-tabs">
-                        <button class="filter-tab active">All Records</button>
-                        <button class="filter-tab">Lab Results</button>
-                        <button class="filter-tab">Prescriptions</button>
-                        <button class="filter-tab">Imaging</button>
-                        <button class="filter-tab">Reports</button>
-                    </div>
-                    <div class="filter-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search records...">
-                    </div>
+                <!-- Overview Card 2: Blood Pressure -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-tint fa-2x" style="color:var(--primary-color);"></i>
+                    <h3>Blood Pressure</h3>
+                    <div class="stat-value" style="color: var(--primary-color);">120/80</div>
+                    <p style="opacity:0.8;">mmHg (Normal)</p>
                 </div>
 
-                <div class="records-grid">
-                    <div class="record-card glass-card">
-                        <div class="record-icon lab-icon">
-                            <i class="fas fa-flask"></i>
-                        </div>
-                        <div class="record-content">
-                            <h4>Complete Blood Count (CBC)</h4>
-                            <p>Dr. Sarah Johnson • City Hospital</p>
-                            <span class="record-date">October 1, 2025</span>
-                        </div>
-                        <div class="record-actions">
-                            <button class="btn-icon" title="View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" title="Download">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button class="btn-icon" title="Share">
-                                <i class="fas fa-share"></i>
-                            </button>
-                        </div>
-                    </div>
+                <!-- Overview Card 3: Next Appointment -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-calendar-check fa-2x" style="color:var(--success-color);"></i>
+                    <h3>Next Appointment</h3>
+                    <div class="stat-value" style="color: var(--success-color); font-size: 2rem;">Dr. Sharma</div>
+                    <p style="opacity:0.8;">Oct 20, 2025</p>
+                </div>
+                
+                <!-- Chart Card -->
+                <div class="chart-card glass-card" style="grid-column: 1 / -1;">
+                    <h3>Health Trend: Weekly Heart Rate</h3>
+                    <canvas id="heartRateChart"></canvas>
+                </div>
+                
+            </div>
+        </section>
 
-                    <div class="record-card glass-card">
-                        <div class="record-icon prescription-icon">
-                            <i class="fas fa-file-prescription"></i>
-                        </div>
-                        <div class="record-content">
-                            <h4>Prescription - Antibiotics</h4>
-                            <p>Dr. Michael Chen • General Clinic</p>
-                            <span class="record-date">September 28, 2025</span>
-                        </div>
-                        <div class="record-actions">
-                            <button class="btn-icon" title="View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" title="Download">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button class="btn-icon" title="Share">
-                                <i class="fas fa-share"></i>
-                            </button>
-                        </div>
+        <!-- MEDICATIONS SECTION -->
+        <section id="section-medications" class="content-section">
+            <div class="list-header" style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+                <h2>Active Medications</h2>
+                <button class="btn-primary"><i class="fas fa-plus"></i> Add Medication</button>
+            </div>
+            <div class="list-container">
+                <!-- Sample Medication 1 -->
+                <div class="medication-card glass-card">
+                    <div class="medication-info">
+                        <div class="medication-name">Lisinopril 10mg</div>
+                        <div class="medication-details">Daily, 8:00 AM • For High Blood Pressure</div>
                     </div>
-
-                    <div class="record-card glass-card">
-                        <div class="record-icon imaging-icon">
-                            <i class="fas fa-x-ray"></i>
-                        </div>
-                        <div class="record-content">
-                            <h4>Chest X-Ray Report</h4>
-                            <p>Dr. Emily Rodriguez • Medical Center</p>
-                            <span class="record-date">September 20, 2025</span>
-                        </div>
-                        <div class="record-actions">
-                            <button class="btn-icon" title="View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" title="Download">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button class="btn-icon" title="Share">
-                                <i class="fas fa-share"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="record-card glass-card">
-                        <div class="record-icon report-icon">
-                            <i class="fas fa-file-medical"></i>
-                        </div>
-                        <div class="record-content">
-                            <h4>Annual Health Checkup</h4>
-                            <p>Dr. Sarah Johnson • City Hospital</p>
-                            <span class="record-date">September 15, 2025</span>
-                        </div>
-                        <div class="record-actions">
-                            <button class="btn-icon" title="View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" title="Download">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button class="btn-icon" title="Share">
-                                <i class="fas fa-share"></i>
-                            </button>
-                        </div>
+                    <div class="medication-actions">
+                        <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
+                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
                     </div>
                 </div>
-            </section>
-
-            
-            <section id="section-medications" class="content-section">
-                <div class="section-header-flex">
-                    <div>
-                        <h2 class="section-title-main">Medications</h2>
-                        <p class="section-subtitle">Track your current and past medications</p>
+                <!-- Sample Medication 2 -->
+                <div class="medication-card glass-card">
+                    <div class="medication-info">
+                        <div class="medication-name">Vitamin D Supplement</div>
+                        <div class="medication-details">Weekly, Sunday 9:00 AM • Deficiency Support</div>
                     </div>
-                    <button class="btn btn-primary ripple-effect">
-                        <i class="fas fa-plus"></i> Add Medication
-                    </button>
+                    <div class="medication-actions">
+                        <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
+                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                    </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="medications-grid">
-                    <div class="medication-card glass-card">
-                        <div class="medication-header">
-                            <div class="medication-icon">
-                                <i class="fas fa-pills"></i>
-                            </div>
-                            <span class="medication-status active">Active</span>
-                        </div>
-                        <h4>Aspirin 75mg</h4>
-                        <p class="medication-purpose">For cardiovascular health</p>
-                        <div class="medication-schedule">
-                            <div class="schedule-item">
-                                <span class="schedule-label">Dosage:</span>
-                                <span class="schedule-value">1 tablet daily</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="schedule-label">Time:</span>
-                                <span class="schedule-value">After breakfast</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="schedule-label">Duration:</span>
-                                <span class="schedule-value">Ongoing</span>
-                            </div>
-                        </div>
-                        <button class="btn-medication-reminder">
-                            <i class="fas fa-bell"></i> Set Reminder
-                        </button>
+        <!-- HEALTH RECORDS SECTION -->
+        <section id="section-records" class="content-section">
+            <div class="list-header" style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Uploaded Health Records</h2>
+                <!-- File Input for Report Analysis - UPDATED TO INCLUDE PDF/JPG/PNG -->
+                <input type="file" id="reportFileInput" accept=".txt,.md,application/pdf,image/jpeg,image/png" style="display: none;" onchange="analyzeUploadedReport(this.files[0])">
+                <button class="btn-primary" onclick="document.getElementById('reportFileInput').click()">
+                    <i class="fas fa-upload"></i> Upload Report (Image/PDF/TXT)
+                </button>
+            </div>
+            <div class="list-container" id="recordsListContainer">
+                <!-- Sample Record 1: Static Placeholder -->
+                <div id="record-cbc" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">Complete Blood Count (CBC)</div>
+                        <div class="record-details">LabCorp • Oct 1, 2025 • **Sample Data**</div>
                     </div>
-
-                    <div class="medication-card glass-card">
-                        <div class="medication-header">
-                            <div class="medication-icon">
-                                <i class="fas fa-capsules"></i>
-                            </div>
-                            <span class="medication-status active">Active</span>
-                        </div>
-                        <h4>Vitamin D3 1000 IU</h4>
-                        <p class="medication-purpose">Vitamin supplement</p>
-                        <div class="medication-schedule">
-                            <div class="schedule-item">
-                                <span class="schedule-label">Dosage:</span>
-                                <span class="schedule-value">1 capsule daily</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="schedule-label">Time:</span>
-                                <span class="schedule-value">Morning</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="schedule-label">Duration:</span>
-                                <span class="schedule-value">3 months</span>
-                            </div>
-                        </div>
-                        <button class="btn-medication-reminder">
-                            <i class="fas fa-bell"></i> Set Reminder
-                        </button>
-                    </div>
-
-                    <div class="medication-card glass-card">
-                        <div class="medication-header">
-                            <div class="medication-icon">
-                                <i class="fas fa-tablets"></i>
-                            </div>
-                            <span class="medication-status completed">Completed</span>
-                        </div>
-                        <h4>Amoxicillin 500mg</h4>
-                        <p class="medication-purpose">Antibiotic for infection</p>
-                        <div class="medication-schedule">
-                            <div class="schedule-item">
-                                <span class="schedule-label">Dosage:</span>
-                                <span class="schedule-value">3 times daily</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="schedule-label">Duration:</span>
-                                <span class="schedule-value">7 days</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="schedule-label">Completed:</span>
-                                <span class="schedule-value">Sept 28, 2025</span>
-                            </div>
-                        </div>
-                        <button class="btn-medication-view">
-                            <i class="fas fa-history"></i> View History
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <!-- Button to re-render default analysis -->
+                        <button class="btn-icon btn-ai-analyze" title="Show Default Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
                         </button>
                     </div>
                 </div>
-            </section>
-
-            
-            <section id="section-ai-assistant" class="content-section">
-                <div class="ai-assistant-container">
-                    <div class="ai-header glass-card">
-                        <div class="ai-avatar pulse-animation">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="ai-intro">
-                            <h2>AI Health Assistant</h2>
-                            <p>Get personalized health insights and recommendations</p>
-                        </div>
+                <!-- Sample Record 2 -->
+                <div id="record-ecg" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">ECG Report</div>
+                        <div class="record-details">Cardio Clinic • Sep 15, 2025</div>
                     </div>
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <button class="btn-icon btn-ai-analyze" title="Show Default Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    <div class="ai-chat-container glass-card">
-                        <div class="chat-messages" id="chatMessages">
-                            <div class="chat-message ai-message fade-in">
-                                <div class="message-avatar">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <div class="message-content">
-                                    <p>Hello! I'm your AI Health Assistant. I can help you with:</p>
-                                    <ul>
-                                        <li>Analyzing your health trends</li>
-                                        <li>Medication interaction checks</li>
-                                        <li>Symptom assessment</li>
-                                        <li>Personalized health recommendations</li>
-                                    </ul>
-                                    <p>How can I assist you today?</p>
-                                </div>
-                            </div>
-                        </div>
+        <!-- AI HEALTH ASSISTANT SECTION (Analysis Card & Chat) -->
+        <section id="section-ai-assistant" class="content-section">
+            
+            <!-- AI Analysis Results Card (Initial state or last analyzed) -->
+            <div id="analysisOutputCard" class="ai-analysis-output glass-card fade-in-up">
+                <h3>AI Report Analysis Summary</h3>
+                <p class="analysis-date">Last Analyzed: N/A - Upload a report to begin</p>
+                
+                <div class="analysis-segment problems-suggested">
+                    <h4>Suggested Problems/Conditions:</h4>
+                    <div class="suggestion"><i class="fas fa-robot"></i> Upload a text or image report (e.g., CBC, Labs) to get an automated analysis of potential issues.</div>
+                </div>
 
-                        <div class="chat-suggestions">
-                            <button class="suggestion-chip ripple-effect">
-                                Check medication interactions
-                            </button>
-                            <button class="suggestion-chip ripple-effect">
-                                Analyze my health trends
-                            </button>
-                            <button class="suggestion-chip ripple-effect">
-                                What should I know about my condition?
-                            </button>
-                        </div>
+                <div class="analysis-segment medications-suggested">
+                    <h4>AI Medication & Wellness Recommendations:</h4>
+                    <div class="med-item" style="border-bottom: none;">
+                        <div><i class="fas fa-pills"></i> Recommendations will appear here after analysis.</div>
+                        <div>&nbsp;</div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="chat-input-container">
-                            <input type="text" class="chat-input" placeholder="Type your question here..." id="chatInput">
-                            <button class="btn-send ripple-effect" id="sendMessage">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
+            <!-- AI Chat Interface -->
+            <div class="ai-chat-container glass-card">
+                <div class="message-container">
+                    <!-- AI Welcome Message -->
+                    <div class="ai-message">
+                        <div class="message-icon"><i class="fas fa-robot"></i></div>
+                        <div class="message-content">
+                            <p>Hello! I'm your AI Health Assistant. I can help you with:</p>
+                            <ul>
+                                <li>Analyzing medical reports for problems and medication suggestions</li>
+                                <li>Medication interaction checks</li>
+                                <li>Symptom assessment</li>
+                            </ul>
+                            <p>How can I assist you today?</p>
                         </div>
                     </div>
                 </div>
-            </section>
-
-            
-            <section id="section-emergency" class="content-section">
-                <div class="emergency-container">
-                    <div class="emergency-header">
-                        <div class="emergency-icon-large">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <h2>Emergency Profile</h2>
-                        <p>Quick access to critical health information</p>
-                    </div>
-
-                    <div class="emergency-grid">
-                        <div class="emergency-card glass-card">
-                            <h3>Critical Information</h3>
-                            <div class="emergency-info-grid">
-                                <div class="emergency-info-item">
-                                    <span class="info-label">Blood Type:</span>
-                                    <span class="info-value">O+</span>
-                                </div>
-                                <div class="emergency-info-item">
-                                    <span class="info-label">Allergies:</span>
-                                    <span class="info-value alert">Penicillin, Peanuts</span>
-                                </div>
-                                <div class="emergency-info-item">
-                                    <span class="info-label">Chronic Conditions:</span>
-                                    <span class="info-value">Hypertension</span>
-                                </div>
-                                <div class="emergency-info-item">
-                                    <span class="info-label">Current Medications:</span>
-                                    <span class="info-value">Aspirin 75mg, Vitamin D3</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="emergency-qr-card glass-card">
-                            <h3>Emergency QR Code</h3>
-                            <div class="qr-code-container">
-                                <div class="qr-code-placeholder">
-                                    <i class="fas fa-qrcode"></i>
-                                    <p>Scan for instant access to emergency health data</p>
-                                </div>
-                            </div>
-                            <div class="qr-actions">
-                                <button class="btn btn-primary ripple-effect">
-                                    <i class="fas fa-download"></i> Download QR
-                                </button>
-                                <button class="btn btn-secondary ripple-effect">
-                                    <i class="fas fa-print"></i> Print Card
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="emergency-contacts glass-card">
-                        <h3>Emergency Contacts</h3>
-                        <div class="contacts-list">
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div class="contact-info">
-                                    <h4>John Doe (Spouse)</h4>
-                                    <p>+91 9876543210</p>
-                                </div>
-                                <button class="btn-call">
-                                    <i class="fas fa-phone"></i>
-                                </button>
-                            </div>
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-user-md"></i>
-                                </div>
-                                <div class="contact-info">
-                                    <h4>Dr. Sarah Johnson (Primary Care)</h4>
-                                    <p>+91 9876543211</p>
-                                </div>
-                                <button class="btn-call">
-                                    <i class="fas fa-phone"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Ask me anything about your health or reports...">
+                    <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
                 </div>
-            </section>
-        </div>
-    </main>
+            </div>
+        </section>
 
-    
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Action completed!</span>
+        <!-- SETTINGS SECTION (Placeholder) -->
+        <section id="section-settings" class="content-section">
+            <h2 style="color: var(--secondary-color);">Settings</h2>
+            <div class="glass-card">
+                <p>Configure your account and privacy settings here.</p>
+                <p style="opacity:0.6;">(Feature under development)</p>
+            </div>
+        </section>
     </div>
 
-    <script src="js/main.js"></script>
-    <script>
-       
-        window.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-            initDashboard();
+    <!-- Firebase and Application Logic -->
+    <script type="module">
+        // Mandatory Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        let currentUserId = 'Loading...';
+        let chatHistory = []; // Conversation history for the chat assistant
+
+        // --- GEMINI API Configuration ---
+        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=";
+        const API_KEY = ""; // Provided by the Canvas environment
+        const GEMINI_CHAT_MODEL = "gemini-2.5-flash-preview-05-20"; // Standard conversational model
+
+        // --- GEMINI SYSTEM INSTRUCTIONS ---
+        const ANALYSIS_SYSTEM_INSTRUCTION = "You are an expert AI medical analyst. Your task is to analyze the provided raw health report text or image/PDF content and generate a concise, structured JSON summary of key findings and actionable recommendations (problems/conditions and suggested medications/wellness advice). If the report is an ECG, focus on heart rhythm and rate. If the report is bloodwork, focus on out-of-range parameters. Do not include any text outside the JSON object.";
+        
+        const CHAT_SYSTEM_INSTRUCTION = "You are a friendly, concise, and helpful AI Health Assistant. You specialize in analyzing health data and reports, providing general health information, checking medication interactions, and offering wellness tips. Keep your responses short and encouraging. Do not diagnose conditions or give explicit medical advice without advising the user to consult a healthcare professional.";
+
+        // --- STRUCTURED RESPONSE SCHEMA FOR ANALYSIS ---
+        const ANALYSIS_RESPONSE_SCHEMA = {
+            type: "OBJECT",
+            properties: {
+                "reportTitle": { "type": "STRING", "description": "A concise title for the analyzed report (e.g., 'CBC Report Analysis')." },
+                "analysisDate": { "type": "STRING", "description": "The current date or date derived from the report, in YYYY-MM-DD format." },
+                "suggestedProblems": {
+                    "type": "ARRAY",
+                    "description": "A list of identified problems or conditions.",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "type": { "type": "STRING", "description": "ALERT (needs attention) or NORMAL (within range). Use ALERT for critical or out-of-range values." },
+                            "description": { "type": "STRING", "description": "The clinical finding and a brief reason or reference (e.g., 'Possible Iron-Deficiency Anemia based on low hemoglobin')." }
+                        }
+                    }
+                },
+                "medicationRecommendations": {
+                    "type": "ARRAY",
+                    "description": "A list of medication or wellness recommendations.",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "name": { "type": "STRING", "description": "Name of medication or recommendation (e.g., 'Ferrous Sulfate 325mg', 'Dietary Changes')." },
+                            "details": { "type": "STRING", "description": "Dosage/instruction details or a short description of the wellness change needed." },
+                            "actionRequired": { "type": "BOOLEAN", "description": "True if this is a new medication/action the user should add to their schedule, false otherwise." }
+                        }
+                    }
+                }
+            },
+            "propertyOrdering": ["reportTitle", "analysisDate", "suggestedProblems", "medicationRecommendations"]
+        };
+
+        // Initialize Firebase and Auth
+        if (firebaseConfig) {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                setLogLevel('debug'); // Enable Firestore logging
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        document.getElementById('userIdDisplay').textContent = `User ID: ${currentUserId}`;
+                        console.log("Authenticated with user ID:", currentUserId);
+                    } else {
+                        // Attempt to sign in using custom token or anonymously
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                document.getElementById('userIdDisplay').textContent = `User ID: Auth Error`;
+            }
+        } else {
+            document.getElementById('userIdDisplay').textContent = `User ID: Config Missing`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupNavigation();
             initChart();
+            setupSidebarToggle();
+            showDefaultAnalysis(); // Load the default analysis on startup
+            setupChatListeners(); // NEW: Initialize chat listeners
         });
 
-        function checkAuth() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const userType = localStorage.getItem('userType');
+        // --- UI UTILITIES ---
 
-            if (!isLoggedIn || userType !== 'patient') {
-                window.location.href = 'patient-login.html';
-            }
+        function setupSidebarToggle() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
 
-            const userName = localStorage.getItem('userName') || 'Patient';
-            document.getElementById('userName').textContent = userName;
-            document.getElementById('dashboardUserName').textContent = userName;
-        }
-
-        function initDashboard() {
-            
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
-
-            
-            animateCounters();
-
-            
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const section = this.dataset.section;
-                    switchSection(section);
-                });
-            });
-
-           
-            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('active');
-            });
-
-            document.getElementById('sidebarToggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('collapsed');
-            });
-        }
-
-        function switchSection(section) {
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.section === section) {
-                    item.classList.add('active');
+            toggle.addEventListener('click', () => {
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                if (window.innerWidth <= 600) {
+                    sidebar.classList.toggle('open');
+                    if (sidebar.classList.contains('open')) {
+                        mainContent.style.marginLeft = '250px';
+                    } else {
+                        mainContent.style.marginLeft = '0';
+                    }
+                } else {
+                    mainContent.style.marginLeft = isCollapsed ? '80px' : '250px';
                 }
             });
-
-           
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            document.getElementById('section-' + section).classList.add('active');
-
             
-            const titles = {
-                'dashboard': 'Dashboard Overview',
-                'records': 'Health Records',
-                'medications': 'Medications',
-                'appointments': 'Appointments',
-                'lab-results': 'Lab Results',
-                'analytics': 'Health Analytics',
-                'ai-assistant': 'AI Health Assistant',
-                'messages': 'Messages',
-                'emergency': 'Emergency Profile',
-                'settings': 'Settings'
-            };
-            document.getElementById('pageTitle').textContent = titles[section];
+            if (window.innerWidth <= 600) {
+                sidebar.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
         }
 
-        function animateCounters() {
-            const counters = document.querySelectorAll('.counter');
-            counters.forEach(counter => {
-                const target = parseInt(counter.dataset.target);
-                const duration = 2000;
-                const step = target / (duration / 16);
-                let current = 0;
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+            const pageTitle = document.getElementById('pageTitle');
 
-                const timer = setInterval(() => {
-                    current += step;
-                    if (current >= target) {
-                        counter.textContent = target;
-                        clearInterval(timer);
-                    } else {
-                        counter.textContent = Math.floor(current);
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const targetSectionId = link.getAttribute('data-section');
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById(targetSectionId).classList.add('active');
+                    
+                    pageTitle.textContent = link.querySelector('span') ? link.querySelector('span').textContent : 'Dashboard';
+
+                    if (window.innerWidth <= 600) {
+                        const sidebar = document.getElementById('sidebar');
+                        sidebar.classList.remove('open');
+                        document.getElementById('mainContent').style.marginLeft = '0';
                     }
-                }, 16);
+                });
             });
         }
 
@@ -787,7 +989,7 @@
                     datasets: [{
                         label: 'Heart Rate (BPM)',
                         data: [68, 72, 70, 75, 71, 69, 72],
-                        borderColor: '#0078D4',
+                        borderColor: 'var(--primary-color)',
                         backgroundColor: 'rgba(0, 120, 212, 0.1)',
                         tension: 0.4,
                         fill: true
@@ -805,20 +1007,452 @@
                         y: {
                             beginAtZero: false,
                             min: 60,
-                            max: 80
+                            max: 80,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'var(--text-light)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'var(--text-light)' }
                         }
                     }
                 }
             });
         }
+        
+        // Custom Modal implementation (instead of alert/confirm)
+        function showModal(title, message, isLoading = false) {
+            let modal = document.getElementById('customModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'customModal';
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content glass-card">
+                        <h4 id="modalTitle"></h4>
+                        <div id="modalSpinner" class="loading-spinner" style="display:none;"></div>
+                        <p id="modalMessage"></p>
+                        <button id="modalCloseBtn" class="btn-primary" style="margin-top: 20px;">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            
+            const spinner = document.getElementById('modalSpinner');
+            const closeBtn = document.getElementById('modalCloseBtn');
+            
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            if (isLoading) {
+                spinner.style.display = 'block';
+                closeBtn.style.display = 'none';
+            } else {
+                spinner.style.display = 'none';
+                closeBtn.style.display = 'block';
+                closeBtn.onclick = () => modal.style.display = 'none';
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+
+        // --- FIREBASE LOGIC ---
 
         function logout() {
-            localStorage.clear();
-            showToast('Logged out successfully!', 'success');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
+            if (auth) {
+                signOut(auth).then(() => {
+                    showModal('Logged Out', 'You have been successfully logged out. Reloading...');
+                    setTimeout(() => {
+                        window.location.reload(); 
+                    }, 1500);
+                }).catch(error => {
+                    console.error("Logout Error:", error);
+                    showModal('Logout Failed', `Could not sign out: ${error.message}`);
+                });
+            } else {
+                showModal('Error', 'Authentication service is not initialized.');
+            }
         }
+        
+        // --- GEMINI API FUNCTIONALITY (STRUCTURED DATA) ---
+
+        /**
+         * Generic function to call the Gemini API with structured output.
+         * @param {Array<Object>} contents - The contents array for the API payload.
+         */
+        async function geminiApiCall(contents, schema, systemInstruction, maxRetries = 3) {
+            const url = `${GEMINI_API_URL}${API_KEY}`;
+            const payload = {
+                contents: contents,
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema
+                }
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && attempt < maxRetries - 1) {
+                            const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue; // Retry
+                        }
+                        throw new Error(`API call failed with status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (jsonText) {
+                        return JSON.parse(jsonText);
+                    }
+                    throw new Error("API response was missing expected JSON content.");
+
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) throw error;
+                }
+            }
+            throw new Error("Gemini API call failed after multiple retries.");
+        }
+
+
+        /**
+         * Handles analyzing the uploaded file content using the Gemini API.
+         * Supports Text, PDF, and Image files.
+         * @param {File} file - The file object from the input.
+         */
+        window.analyzeUploadedReport = async function(file) { // FIX: Expose function globally
+            if (!file) {
+                showModal('Upload Error', 'No file selected.');
+                return;
+            }
+
+            const isTextFile = file.type.startsWith('text/') || file.name.endsWith('.md');
+            const isImageOrPDF = file.type.startsWith('image/') || file.type === 'application/pdf';
+            const reader = new FileReader();
+
+            showModal('AI Analysis Initiated', `Processing report: "${file.name}". This may take a moment...`, true); 
+
+            try {
+                const reportContent = await new Promise((resolve, reject) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = reject;
+
+                    if (isTextFile) {
+                        // For text files, read content directly
+                        reader.readAsText(file);
+                    } else if (isImageOrPDF) {
+                        // For images/PDFs, read as Base64 data URL
+                        if (file.size > 10 * 1024 * 1024) { // 10MB limit check
+                            throw new Error("File is too large. Max size is 10MB for image/PDF reports.");
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        reject(new Error("Unsupported file type. Please upload a text, image (JPG/PNG), or PDF file."));
+                    }
+                });
+
+                let contents;
+                const userPrompt = "Analyze this health report. Identify any medical problems or conditions and provide suggested medication or wellness recommendations based on the data. Provide the results in the required JSON structure only.";
+
+                if (isTextFile) {
+                    // For text, contents is simple text part
+                    contents = [{ parts: [{ text: `${userPrompt}\n\n--- REPORT TEXT ---\n${reportContent}` }] }];
+                } else if (isImageOrPDF) {
+                    // For image/PDF, contents includes inlineData part
+                    const [mimeType, base64Data] = reportContent.split(';base64,');
+
+                    if (!base64Data) {
+                        throw new Error("Failed to extract Base64 data from file.");
+                    }
+
+                    contents = [{ 
+                        parts: [
+                            { text: userPrompt },
+                            {
+                                inlineData: {
+                                    mimeType: file.type,
+                                    data: base64Data
+                                }
+                            }
+                        ]
+                    }];
+                } else {
+                    throw new Error("File type not supported for analysis.");
+                }
+
+
+                const analysisData = await geminiApiCall(
+                    contents, 
+                    ANALYSIS_RESPONSE_SCHEMA, 
+                    ANALYSIS_SYSTEM_INSTRUCTION
+                );
+
+                // Add the analyzed report to the static list (simulated persistence)
+                addAnalyzedRecordToUI(file.name, analysisData.reportTitle);
+
+                // Render the results in the dedicated section
+                renderAnalysisResults(analysisData);
+
+                showModal('Analysis Complete', `Successfully analyzed "${analysisData.reportTitle}". Results displayed in the AI Assistant tab.`, false);
+                
+                // Switch to AI Assistant tab
+                document.querySelector('[data-section="section-ai-assistant"]').click();
+
+            } catch (error) {
+                console.error("Full analysis error:", error);
+                showModal('Analysis Failed', `Could not complete analysis. Error: ${error.message || 'Check console for details.'}`, false);
+            } finally {
+                document.getElementById('reportFileInput').value = ''; // Clear file input
+            }
+        }
+        
+        /**
+         * Renders the simulated analysis results based on the Gemini API output structure.
+         * @param {object} analysisData - The structured JSON object from the Gemini API.
+         */
+        function renderAnalysisResults(analysisData) {
+            const card = document.getElementById('analysisOutputCard');
+            const problemsSegment = card.querySelector('.problems-suggested');
+            const medsSegment = card.querySelector('.medications-suggested');
+
+            if (!analysisData || !analysisData.reportTitle) {
+                showDefaultAnalysis();
+                return;
+            }
+            
+            // Animate transition
+            card.style.opacity = 0;
+            setTimeout(() => {
+                card.querySelector('h3').textContent = analysisData.reportTitle;
+                card.querySelector('.analysis-date').textContent = `Last Analyzed: ${analysisData.analysisDate || new Date().toLocaleDateString()}`;
+
+                // 1. Problems/Conditions
+                let problemsHtml = '<h4>Suggested Problems/Conditions:</h4>';
+                if (analysisData.suggestedProblems && analysisData.suggestedProblems.length > 0) {
+                    analysisData.suggestedProblems.forEach(p => {
+                        const isAlert = p.type && p.type.toUpperCase() === 'ALERT';
+                        problemsHtml += `
+                            <div class="suggestion ${isAlert ? 'alert' : ''}">
+                                <i class="fas ${isAlert ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> 
+                                ${p.description}
+                            </div>
+                        `;
+                    });
+                } else {
+                    problemsHtml += '<div class="suggestion"><i class="fas fa-check-circle"></i> No significant findings reported.</div>';
+                }
+                problemsSegment.innerHTML = problemsHtml;
+
+                // 2. Medication/Wellness Recommendations
+                let medsHtml = '<h4>AI Medication & Wellness Recommendations:</h4>';
+                if (analysisData.medicationRecommendations && analysisData.medicationRecommendations.length > 0) {
+                    analysisData.medicationRecommendations.forEach(m => {
+                        const icon = (m.name.toLowerCase().includes('dietary') || m.name.toLowerCase().includes('wellness') || m.name.toLowerCase().includes('exercise')) ? 'fa-apple-alt' : 'fa-capsules';
+                        const buttonHtml = m.actionRequired ? `<button class="btn-add-med">Add to Schedule</button>` : `<div>&nbsp;</div>`;
+                        medsHtml += `
+                            <div class="med-item">
+                                <div>
+                                    <i class="fas ${icon}"></i> **${m.name}:** ${m.details}
+                                </div>
+                                ${buttonHtml}
+                            </div>
+                        `;
+                    });
+                } else {
+                    medsHtml += '<div class="med-item" style="border-bottom: none;"><i class="fas fa-robot"></i> No specific recommendations at this time.</div>';
+                }
+                medsSegment.innerHTML = medsHtml;
+
+                card.style.opacity = 1;
+            }, 300);
+        }
+
+        /**
+         * Simulates adding the newly analyzed record to the records list.
+         */
+        function addAnalyzedRecordToUI(fileName, reportTitle) {
+            const listContainer = document.getElementById('recordsListContainer');
+            const newRecordId = `record-${Date.now()}`;
+            const date = new Date().toLocaleDateString();
+            const displayTitle = reportTitle || `New Report: ${fileName}`;
+
+            const newRecordHtml = `
+                <div id="${newRecordId}" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">${displayTitle}</div>
+                        <div class="record-details">Custom Upload • ${date} • **AI Analysis Complete**</div>
+                    </div>
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <button class="btn-icon btn-ai-analyze" title="Rerun AI Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            // Add the new record after the file input mechanism
+            listContainer.insertAdjacentHTML('afterbegin', newRecordHtml);
+        }
+        
+        /**
+         * Loads a default, simulated analysis result for the static records.
+         */
+        function showDefaultAnalysis() {
+            const defaultAnalysis = {
+                reportTitle: "Simulated CBC Report Analysis",
+                analysisDate: "Oct 1, 2025",
+                suggestedProblems: [
+                    { "type": "ALERT", "description": "Possible Iron-Deficiency Anemia (Based on low Hemoglobin and Ferritin levels)." },
+                    { "type": "NORMAL", "description": "Kidney Function: Normal (Creatinine within range)." }
+                ],
+                medicationRecommendations: [
+                    { "name": "Ferrous Sulfate 325mg", "details": "1 tablet daily for 90 days.", "actionRequired": true },
+                    { "name": "Dietary Changes", "details": "Increase intake of Vitamin C and iron-rich foods (spinach, lentils).", "actionRequired": true },
+                    { "name": "Lisinopril Adjustment", "details": "Current dosage seems optimal; no change needed.", "actionRequired": false }
+                ]
+            };
+            renderAnalysisResults(defaultAnalysis);
+        }
+
+        // --- CHAT FUNCTIONALITY ---
+
+        /**
+         * Renders a message to the chat interface.
+         * @param {string} sender - 'user' or 'ai'.
+         * @param {string} text - The message content.
+         * @param {boolean} isHtml - If true, treats text as raw HTML/markdown.
+         */
+        function appendMessage(sender, text, isHtml = false) {
+            const container = document.querySelector('.message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${sender}-message`;
+            
+            const iconClass = sender === 'ai' ? 'fa-robot' : 'fa-user-circle';
+            
+            // Only add actual messages (not loading dots) to history
+            if (text !== '...') {
+                chatHistory.push({ role: sender === 'ai' ? 'model' : 'user', parts: [{ text: text }] });
+            }
+
+            messageDiv.innerHTML = `
+                <div class="message-icon"><i class="fas ${iconClass}"></i></div>
+                <div class="message-content">
+                    ${isHtml ? text : `<p>${text}</p>`}
+                </div>
+            `;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            return messageDiv; // Return for potentially updating loading message
+        }
+
+        function setupChatListeners() {
+            const chatInput = document.getElementById('chatInput');
+            const sendButton = document.getElementById('sendButton');
+
+            sendButton.addEventListener('click', handleChatSubmit);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleChatSubmit();
+                }
+            });
+        }
+
+        async function handleChatSubmit() {
+            const chatInput = document.getElementById('chatInput');
+            const userQuery = chatInput.value.trim();
+
+            if (!userQuery) return;
+
+            // 1. Display user message
+            appendMessage('user', userQuery);
+            chatInput.value = ''; // Clear input
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+
+            // 2. Display loading indicator
+            const loadingMessageElement = appendMessage('ai', '...', true);
+            loadingMessageElement.querySelector('.message-content').classList.add('loading-pulse');
+
+            try {
+                // 3. Call Gemini Chat API
+                const aiResponseText = await callGeminiChat(userQuery);
+
+                // 4. Update display
+                loadingMessageElement.remove(); // Remove loading state
+                appendMessage('ai', aiResponseText);
+
+            } catch (error) {
+                console.error("AI Chat Error:", error);
+                // Ensure loading indicator is removed on error
+                loadingMessageElement.remove();
+                appendMessage('ai', "Sorry, I'm having trouble connecting to the AI Assistant right now. Please check your network or try refreshing.", true);
+            } finally {
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        /**
+         * Handles the actual API call for conversational chat.
+         * Uses chatHistory for context.
+         */
+        async function callGeminiChat(prompt, maxRetries = 3) {
+            const url = `${GEMINI_API_URL.replace('gemini-2.5-flash-preview-05-20', GEMINI_CHAT_MODEL)}${API_KEY}`;
+            
+            // The prompt is already added to chatHistory in appendMessage before this function is called
+            // We use the full chatHistory which already includes the latest user prompt
+            
+            const payload = {
+                // The history accumulates in appendMessage
+                contents: chatHistory, 
+                systemInstruction: { parts: [{ text: CHAT_SYSTEM_INSTRUCTION }] }
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && attempt < maxRetries - 1) {
+                            const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue; // Retry
+                        }
+                        throw new Error(`API call failed with status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    }
+                    throw new Error("API response was missing expected text content.");
+
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) throw error;
+                }
+            }
+            throw new Error("Gemini Chat API call failed after multiple retries.");
+        }
+
     </script>
 </body>
 </html>
