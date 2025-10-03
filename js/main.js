@@ -1,383 +1,362 @@
+document.addEventListener('DOMContentLoaded', () => {
+    initCommon();
 
-'use strict';
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    
-    initializeApp();
+    if (document.querySelector('.hero-section')) {
+        initLandingPage();
+    }
+    if (document.getElementById('patientLoginForm')) {
+        initLoginPage('patient');
+    }
+    if (document.getElementById('doctorLoginForm')) {
+        initLoginPage('doctor');
+    }
+    if (document.querySelector('.choose-system-page')) {
+        initChooseSystemPage();
+    }
+    if (document.body.classList.contains('dashboard-body')) {
+        initDashboardPage();
+    }
 });
 
-function initializeApp() {
-    
-    setupPageLoader();
-    setupNavigation();
-    setupScrollEffects();
+function initCommon() {
+    const rippleButtons = document.querySelectorAll('.ripple-effect');
+    rippleButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            const rect = this.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            const diameter = Math.max(this.clientWidth, this.clientHeight);
+            const radius = diameter / 2;
 
-    
-    setupCursorEffects();
-    initParticleBg();
-    setup3DTilt();
+            ripple.style.width = ripple.style.height = `${diameter}px`;
+            ripple.style.left = `${e.clientX - rect.left - radius}px`;
+            ripple.style.top = `${e.clientY - rect.top - radius}px`;
+            ripple.classList.add('ripple');
 
-    
-    if (document.body.classList.contains('dashboard-body')) {
-        setupDashboardFunctionality();
-    } else if (document.querySelector('.login-page')) {
-        setupLoginForms();
-    } else if (document.querySelector('.choose-system-page')) {
-        checkAuth('patient', 'patient-login.html');
-        const userNameEl = document.getElementById("patientName");
-        if (userNameEl) {
-            userNameEl.textContent = localStorage.getItem("userName") || "Patient";
-        }
-    }
-}
-
-
-
-function setupPageLoader() {
-    const loader = document.querySelector('.page-loader');
-    if (loader) {
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                loader.classList.add('hidden');
-                setTimeout(() => loader.remove(), 500);
-            }, 500);
-        });
-    }
-}
-
-function setupNavigation() {
-    const navbar = document.querySelector('.navbar');
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar?.classList.add('scrolled');
-        } else {
-            navbar?.classList.remove('scrolled');
-        }
-    });
-
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            navToggle.classList.toggle('active');
-        });
-    }
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (window.innerWidth < 992) {
-                navMenu.classList.remove('active');
-                navToggle.classList.remove('active');
+            const existingRipple = this.querySelector('.ripple');
+            if (existingRipple) {
+                existingRipple.remove();
             }
+            this.appendChild(ripple);
         });
     });
-}
 
-function setupScrollEffects() {
-    const scrollTopBtn = document.getElementById('scrollTop');
-
-    
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            scrollTopBtn?.classList.add('show');
-        } else {
-            scrollTopBtn?.classList.remove('show');
-        }
-    });
-    scrollTopBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    
-    const revealElements = document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .slide-in-up, .slide-in-left, .slide-in-right');
-    const revealObserver = new IntersectionObserver((entries, observer) => {
+    const animateOnScroll = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-                observer.unobserve(entry.target);
+                entry.target.classList.add('is-visible');
+                if (entry.target.classList.contains('counter')) {
+                    animateCounter(entry.target);
+                    animateOnScroll.unobserve(entry.target);
+                }
             }
         });
     }, { threshold: 0.1 });
-    revealElements.forEach(el => revealObserver.observe(el));
-}
 
-
-
-function setupCursorEffects() {
-    const dot = document.querySelector('.cursor-dot');
-    const outline = document.querySelector('.cursor-outline');
-    if(!dot || !outline) return;
-
-    window.addEventListener('mousemove', e => {
-        const posX = e.clientX;
-        const posY = e.clientY;
-        dot.style.left = `${posX}px`;
-        dot.style.top = `${posY}px`;
-        outline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
-    });
-
-    document.querySelectorAll('a, button, .medical-system-card, .logo-container').forEach(el => {
-        el.addEventListener('mouseenter', () => outline.classList.add('hover'));
-        el.addEventListener('mouseleave', () => outline.classList.remove('hover'));
+    document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .slide-in-left, .slide-in-right, .slide-in-up, .counter').forEach(el => {
+        animateOnScroll.observe(el);
     });
 }
 
-function initParticleBg() {
-    const container = document.querySelector('.particles-bg');
-    if (!container) return;
-    const starCount = 100;
-    for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'twinkle-star';
-        star.style.cssText = `
-            position: absolute;
-            width: ${Math.random() * 3 + 1}px;
-            height: ${star.style.width};
-            background: rgba(255, 255, 255, ${Math.random() * 0.8});
-            border-radius: 50%;
-            top: ${Math.random() * 100}%;
-            left: ${Math.random() * 100}%;
-            animation: twinkle ${Math.random() * 5 + 3}s infinite alternate;
-            animation-delay: ${Math.random() * 3}s;
-        `;
-        container.appendChild(star);
-    }
-}
-if (!document.querySelector('style#twinkle-animation')) {
-    const style = document.createElement('style');
-    style.id = 'twinkle-animation';
-    style.innerHTML = `@keyframes twinkle { to { opacity: 0.2; transform: scale(0.8); } }`;
-    document.head.appendChild(style);
-}
 
-function setup3DTilt() {
-    const tiltElements = document.querySelectorAll('.problem-card, .feature-item, .medical-system-card, .patient-card-detail');
-    tiltElements.forEach(el => {
-        el.addEventListener('mousemove', e => {
-            const rect = el.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const { width, height } = rect;
-            const rotateX = (y - height / 2) / 15;
-            const rotateY = (width / 2 - x) / 15;
-            el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+function initLandingPage() {
+    const nav = document.querySelector('.navbar');
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const scrollTopBtn = document.getElementById('scrollTop');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const contactForm = document.getElementById('contactForm');
+    const teamImage = document.getElementById('teamImage');
+    const teamSkeleton = document.getElementById('teamSkeleton');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav.classList.add('scrolled');
+            if(scrollTopBtn) scrollTopBtn.classList.add('visible');
+        } else {
+            nav.classList.remove('scrolled');
+            if(scrollTopBtn) scrollTopBtn.classList.remove('visible');
+        }
+
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 75) {
+                current = section.getAttribute('id');
+            }
         });
-        el.addEventListener('mouseleave', () => {
-            el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-        });
-    });
-}
 
-
-function setupLoginForms() {
-    const patientForm = document.getElementById('patientLoginForm');
-    const doctorForm = document.getElementById('doctorLoginForm');
-
-    patientForm?.addEventListener('submit', (e) => handleLogin(e, 'patient'));
-    doctorForm?.addEventListener('submit', (e) => handleLogin(e, 'doctor'));
-
-    document.querySelectorAll('.password-toggle').forEach(toggle => {
-        toggle.addEventListener('click', function() {
-            const input = this.previousElementSibling;
-            const icon = this.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
             }
         });
     });
-}
 
-function handleLogin(e, userType) {
-    e.preventDefault();
-    const email = e.target.querySelector('input[type="email"]').value;
-    const password = e.target.querySelector('input[type="password"]').value;
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+    navToggle.addEventListener('click', () => {
+        document.body.classList.toggle('nav-open');
+        navMenu.classList.toggle('active');
+    });
 
-   
-    const isPatientLogin = userType === 'patient' && email === 'patient@demo.com' && password === 'patient123';
-    const isDoctorLogin = userType === 'doctor' && email === 'doctor@demo.com' && password === 'doctor123';
+    if(scrollTopBtn) {
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Authenticating...`;
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showToast('Thank you for your message!', 'success');
+            contactForm.reset();
+        });
+    }
 
-    setTimeout(() => {
-        if (isPatientLogin || isDoctorLogin) {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userType', userType);
-            localStorage.setItem('userName', isPatientLogin ? 'Demo Patient' : 'Dr. Demo');
-            showToast('Login Successful! Redirecting...', 'success');
-            setTimeout(() => {
-                window.location.href = userType === 'patient' ? 'choose-system.html' : 'doctor-dashboard.html';
-            }, 1500);
-        } else {
-            showToast('Invalid credentials!', 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Login to Dashboard';
-        }
-    }, 1000);
-}
-
-function checkAuth(requiredType, redirectUrl) {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const userType = localStorage.getItem('userType');
-    if (!isLoggedIn || userType !== requiredType) {
-        window.location.href = redirectUrl;
+    if (teamImage && teamSkeleton) {
+        teamSkeleton.style.display = 'block';
+        teamImage.onload = () => {
+            teamSkeleton.style.display = 'none';
+        };
+        teamImage.onerror = () => {
+            teamSkeleton.style.display = 'none';
+        };
     }
 }
 
-function selectSystem(system) {
-    localStorage.setItem('selectedSystem', system);
-    showToast(`Loading ${system.charAt(0).toUpperCase() + system.slice(1)} Dashboard...`, 'success');
+function initLoginPage(type) {
+    const formId = `${type}LoginForm`;
+    const emailId = `${type}Email`;
+    const passwordId = `${type}Password`;
+    const toggleId = `toggle${type.charAt(0).toUpperCase() + type.slice(1)}Password`;
+
+    const form = document.getElementById(formId);
+    const passwordInput = document.getElementById(passwordId);
+    const passwordToggle = document.getElementById(toggleId);
+
+    const credentials = {
+        patient: { email: 'patient@demo.com', pass: 'patient123', name: 'Demo Patient', redirect: 'choose-system.html' },
+        doctor: { email: 'doctor@demo.com', pass: 'doctor123', name: 'Dr. Demo', redirect: 'doctor-dashboard.html' }
+    };
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById(emailId).value;
+        const password = passwordInput.value;
+        const btnText = form.querySelector('.btn-text');
+        const btnLoader = form.querySelector('.btn-loader');
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        btnText.style.display = 'none';
+        btnLoader.style.display = 'inline-block';
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+            if (email === credentials[type].email && password === credentials[type].pass) {
+                localStorage.setItem('userType', type);
+                localStorage.setItem('userName', credentials[type].name);
+                localStorage.setItem('isLoggedIn', 'true');
+                showToast('Login Successful! Redirecting...', 'success');
+                setTimeout(() => window.location.href = credentials[type].redirect, 1500);
+            } else {
+                showToast('Invalid credentials! Use demo account.', 'error');
+                btnText.style.display = 'inline-block';
+                btnLoader.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        }, 1000);
+    });
+
+    passwordToggle.addEventListener('click', function () {
+        const icon = this.querySelector('i');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+}
+
+function initChooseSystemPage() {
+    authGuard('patient', 'patient-login.html');
+    const patientName = localStorage.getItem('userName') || 'Patient';
+    document.getElementById('patientName').textContent = patientName;
+}
+
+function initDashboardPage() {
+    const userType = localStorage.getItem('userType');
+    if (userType === 'doctor') {
+        authGuard('doctor', 'doctor-login.html');
+    } else {
+        authGuard('patient', 'patient-login.html');
+    }
+
+    const userName = localStorage.getItem('userName') || 'User';
+    document.querySelectorAll('#userName, #dashboardUserName').forEach(el => {
+        if(el) el.textContent = userName;
+    });
+
+    if(document.getElementById('currentDate')) {
+        const today = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+    }
+
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+            switchSection(this.dataset.section, this);
+        });
+    });
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('active');
+    });
+
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+
+    if (document.getElementById('heartRateChart')) initChart('heartRateChart', 'line', ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 'Heart Rate (BPM)', [68, 72, 70, 75, 71, 69, 72], '#0078D4');
+    if (document.getElementById('doshaChart')) initChart('doshaChart', 'doughnut', ['Vata', 'Pitta', 'Kapha'], 'Dosha', [35, 40, 25], ['#87CEEB', '#FF6347', '#90EE90']);
+    if (document.getElementById('responseChart')) initChart('responseChart', 'line', ['Week 1', 'Week 2', 'Week 3', 'Week 4'], 'Symptom Intensity', [8, 6, 4, 3], '#9B59B6');
+
+    if (document.getElementById('sendMessage')) {
+        initAIChat();
+    }
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+
+    toastMessage.textContent = message;
+    toast.className = 'toast show';
+    toast.classList.add(type);
+
     setTimeout(() => {
-        window.location.href = `${system}-dashboard.html`;
-    }, 1000);
+        toast.className = 'toast';
+    }, 3000);
+}
+
+function authGuard(expectedType, redirectUrl) {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const userType = localStorage.getItem('userType');
+    if (isLoggedIn !== 'true' || userType !== expectedType) {
+        window.location.href = redirectUrl;
+    }
 }
 
 function logout() {
     localStorage.clear();
     showToast('Logged out successfully!', 'success');
-    setTimeout(() => {
-        window.location.href = 'index.html';
-    }, 1500);
+    setTimeout(() => window.location.href = 'index.html', 1500);
 }
 
-
-function setupDashboardFunctionality() {
-    const userType = localStorage.getItem('userType');
-    checkAuth(userType, `${userType}-login.html`);
-
-    
-    const userName = localStorage.getItem('userName') || 'User';
-    document.querySelectorAll('#userName, #dashboardUserName').forEach(el => el.textContent = userName);
-    const currentDateEl = document.getElementById('currentDate');
-    if (currentDateEl) {
-        currentDateEl.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-
-    
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-
-    sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('collapsed'));
-    mobileMenuBtn?.addEventListener('click', () => sidebar?.classList.toggle('active'));
-
-   
-    const navItems = document.querySelectorAll('.nav-item[data-section]');
-    const pageTitle = document.getElementById('pageTitle');
-
-    navItems.forEach(item => {
-        item.addEventListener('click', e => {
-            e.preventDefault();
-            const sectionId = item.getAttribute('data-section');
-
-            navItems.forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
-
-            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(`section-${sectionId}`)?.classList.add('active');
-
-            if (pageTitle) pageTitle.textContent = item.querySelector('span').textContent;
-
-            if (window.innerWidth < 992) sidebar?.classList.remove('active');
-        });
-    });
-
-    
-    animateCounters();
-    initCharts();
+function selectSystem(system) {
+    localStorage.setItem('selectedSystem', system);
+    showToast(`Loading ${system.charAt(0).toUpperCase() + system.slice(1)} Dashboard...`, 'success');
+    setTimeout(() => window.location.href = `${system}-dashboard.html`, 1000);
 }
 
+function animateCounter(counter) {
+    const target = +counter.dataset.target;
+    counter.innerText = '0';
+    const duration = 1500;
+    const increment = target / (duration / 16);
 
-function showToast(message, type = "success") {
-    let toast = document.getElementById("toast");
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'toast';
-        toast.innerHTML = `<i class="fas fa-check-circle"></i> <span id="toastMessage"></span>`;
-        document.body.appendChild(toast);
-        toast.classList.add('toast-styles'); 
-    }
-    const icon = toast.querySelector('i');
-    toast.querySelector('#toastMessage').textContent = message;
-
-    toast.className = 'toast'; 
-    toast.classList.add(type); 
-    icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-times-circle';
-
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3000);
-}
-
-function animateCounters() {
-    const counters = document.querySelectorAll('.counter');
-    const animate = (el, target) => {
-        let start = 0;
-        const duration = 2000;
-        const stepTime = Math.abs(Math.floor(duration / target));
-        const timer = setInterval(() => {
-            start += 1;
-            el.textContent = start;
-            if (start === target) clearInterval(timer);
-        }, stepTime);
+    const updateCount = () => {
+        const current = +counter.innerText;
+        if (current < target) {
+            counter.innerText = `${Math.ceil(current + increment)}`;
+            requestAnimationFrame(updateCount);
+        } else {
+            counter.innerText = target;
+        }
     };
-    counters.forEach(counter => {
-        const observer = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    animate(counter, parseInt(counter.dataset.target));
-                    obs.unobserve(counter);
-                }
-            });
-        }, { threshold: 0.7 });
-        observer.observe(counter);
+    requestAnimationFrame(updateCount);
+}
+
+function switchSection(sectionId, clickedItem) {
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => item.classList.remove('active'));
+    clickedItem.classList.add('active');
+
+    document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById('section-' + sectionId).classList.add('active');
+
+    const pageTitle = document.getElementById('pageTitle');
+    const newTitle = clickedItem.querySelector('span').textContent;
+    if(pageTitle && newTitle) pageTitle.textContent = newTitle;
+}
+
+function initChart(canvasId, type, labels, label, data, colors) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: type === 'doughnut', position: 'bottom' } },
+    };
+
+    if (type === 'line') {
+        chartOptions.scales = { y: { beginAtZero: false } };
+    }
+
+    new Chart(ctx, {
+        type: type,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: label,
+                data: data,
+                borderColor: type === 'line' ? colors : 'transparent',
+                backgroundColor: type === 'line' ? `${colors}20` : colors,
+                tension: 0.4,
+                fill: type === 'line'
+            }]
+        },
+        options: chartOptions
     });
 }
 
-function initCharts() {
-    if (typeof Chart === 'undefined') return;
-    Chart.defaults.color = '#a0a0a0';
-    Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+function initAIChat() {
+    const sendBtn = document.getElementById('sendMessage');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
 
-    const createLineChart = (ctx, labels, data, color) => new Chart(ctx, {
-        type: 'line',
-        data: { labels, datasets: [{ data, borderColor: color, backgroundColor: `${color}33`, tension: 0.4, fill: true, borderWidth: 3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+    const addMessage = (content, sender) => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${sender}-message fade-in`;
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-${sender === 'ai' ? 'robot' : 'user'}"></i>
+            </div>
+            <div class="message-content"><p>${content}</p></div>
+        `;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const handleSend = () => {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        addMessage(message, 'user');
+        chatInput.value = '';
+
+        setTimeout(() => {
+            addMessage("I am a demo AI assistant. I'm currently processing your request about: '" + message + "'. Full functionality is not yet implemented.", 'ai');
+        }, 1000);
+    };
+
+    sendBtn.addEventListener('click', handleSend);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSend();
     });
-
-    const heartRateCtx = document.getElementById('heartRateChart');
-    if (heartRateCtx) createLineChart(heartRateCtx, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], [68, 72, 70, 75, 71, 69, 72], '#007BFF');
-
-    const responseCtx = document.getElementById('responseChart');
-    if (responseCtx) createLineChart(responseCtx, ['W1', 'W2', 'W3', 'W4'], [8, 6, 4, 3], '#9B59B6');
-
-    const doshaCtx = document.getElementById('doshaChart');
-    if (doshaCtx) new Chart(doshaCtx, {
-        type: 'doughnut',
-        data: { labels: ['Vata', 'Pitta', 'Kapha'], datasets: [{ data: [35, 40, 25], backgroundColor: ['#87CEEB', '#FF6347', '#90EE90'], borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 20 } } } }
-    });
-}
-
-
-window.selectSystem = selectSystem;
-window.logout = logout;
-
-
-window.imageLoaded = function() {
-  const skeleton = document.getElementById('teamSkeleton');
-  const image = document.getElementById('teamImage');
-  if (skeleton && image) {
-    skeleton.style.display = 'none';
-    image.classList.add('loaded');
-  }
 }
