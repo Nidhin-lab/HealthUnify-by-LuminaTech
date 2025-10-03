@@ -3,617 +3,1002 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homeopathy Dashboard | HealthUnify by LuminaTech</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Homeopathy Dashboard | HealthAI</title>
+    <!-- Importing Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Importing Poppins and Inter fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Importing Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="dashboard-body homeopathy-theme">
     
-    <aside class="sidebar glass-effect homeopathy-sidebar" id="sidebar">
+    <style>
+        /* Homeopathy Theme Colors (Subtle Violet and Light Blue) */
+        :root {
+            --primary-color: #7D3C98; /* Deep Violet - Signature color of gentle healing */
+            --secondary-color: #85C1E9; /* Light Blue - Water/Dilution theme */
+            --background-dark: #212121;
+            --surface-dark: #303030;
+            --text-light: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --symptom-color: #F7DC6F; /* Pale Yellow for gentle response */
+            --potency-color: #5DADE2; /* Medium Blue */
+            --alert-color: #EC7063; /* Soft Red for warning signs */
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Gentle, deep background gradient */
+            background: linear-gradient(135deg, #1C1520, #0a0a0a);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Helper Styles */
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px var(--shadow-color);
+        }
+
+        .glass-card {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px var(--shadow-color);
+        }
+
+        .homeopathy-gradient {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: none;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s;
+        }
+        
+        .sidebar.collapsed .logo-text,
+        .sidebar.collapsed .sidebar-logo {
+            display: none;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(125, 60, 152, 0.4); /* Shadow from primary color */
+            color: var(--text-light);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 15px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .content-section {
+            display: none;
+            padding-top: 20px;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Chart Card */
+        .chart-card {
+            min-height: 350px;
+        }
+
+        .chart-card canvas {
+            max-height: 280px;
+        }
+
+        /* Overview Card */
+        .overview-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .overview-card .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-top: 10px;
+            line-height: 1;
+            /* Using Homeopathy Colors for Stats */
+            background: var(--primary-color);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse-color 5s infinite alternate;
+        }
+
+        @keyframes pulse-color {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(20deg); }
+        }
+
+        /* Homeopathic Remedies & Records List */
+        .list-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .remedy-card, .record-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .remedy-info, .record-info {
+            flex-grow: 1;
+        }
+
+        .remedy-name, .record-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .remedy-details, .record-details {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .remedy-actions, .record-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-icon:hover {
+            background: var(--secondary-color);
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+        }
+        
+        /* AI Health Assistant Section */
+        #section-ai-assistant {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        .ai-chat-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .message-container {
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 350px;
+        }
+        
+        .ai-message, .user-message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .ai-message .message-content,
+        .user-message .message-content {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+        }
+        
+        /* AI message specific styles */
+        .ai-message {
+            justify-content: flex-start;
+        }
+        .ai-message .message-icon {
+            align-self: flex-start;
+            margin-right: 10px; /* Space between icon and bubble */
+            color: var(--secondary-color);
+        }
+        .ai-message .message-content {
+            background: var(--surface-dark);
+            border-bottom-left-radius: 2px;
+        }
+        .ai-message .message-content.loading-pulse {
+             font-size: 1.5rem;
+             animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* User message specific styles */
+        .user-message {
+            justify-content: flex-end;
+        }
+        .user-message .message-icon {
+             align-self: flex-start;
+             margin-left: 10px; /* Space between icon and bubble */
+             color: var(--text-light);
+        }
+        .user-message .message-content {
+            background: var(--primary-color);
+            border-bottom-right-radius: 2px;
+        }
+
+
+        .message-icon {
+            font-size: 1.2rem;
+            align-self: flex-start;
+        }
+
+        
+        .chat-input-area {
+            display: flex;
+            padding: 15px 20px 0 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px 0 0 8px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            outline: none;
+        }
+
+        .chat-input-area button {
+            background: var(--primary-color);
+            border: none;
+            color: var(--text-light);
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background: var(--secondary-color);
+        }
+
+        /* AI Analysis Output Styling */
+        .ai-analysis-output {
+            grid-column: 1 / -1; /* Full width */
+            padding: 25px;
+            border-left: 5px solid var(--secondary-color);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-analysis-output h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .analysis-date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .analysis-segment {
+            margin-bottom: 20px;
+        }
+
+        .analysis-segment h4 {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .suggestion {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .suggestion.alert {
+            color: var(--alert-color); 
+            background: rgba(236, 112, 99, 0.1);
+        }
+        
+        .remedy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--glass-border);
+        }
+
+        .remedy-item i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .btn-add-remedy {
+            background: var(--secondary-color);
+            color: var(--background-dark);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Custom Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 15px 10px;
+            }
+            .sidebar:not(.collapsed) {
+                width: 200px;
+            }
+            .sidebar.collapsed {
+                width: 250px; 
+                position: absolute;
+                left: -250px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-info {
+                margin-top: 15px;
+            }
+            .sidebar {
+                left: -250px;
+                transition: left 0.3s ease-in-out;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar.open + .main-content {
+                margin-left: 250px; 
+            }
+            .remedy-card, .record-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .remedy-actions, .record-actions {
+                margin-top: 10px;
+            }
+            .chat-input-area {
+                padding: 10px;
+            }
+            .chat-input-area input {
+                border-radius: 8px 0 0 8px;
+            }
+            .chat-input-area button {
+                border-radius: 0 8px 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar glass-effect" id="sidebar">
         <div class="sidebar-header">
-            <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
             <div class="logo-text">
-                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+                <span class="homeopathy-gradient">Homeo</span><span style="color:#fff;">AI</span>
             </div>
             <button class="sidebar-toggle" id="sidebarToggle">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar homeopathy-avatar">
-                <i class="fas fa-droplet"></i>
-            </div>
-            <div class="user-info">
-                <h4 id="userName">Demo Patient</h4>
-                <span class="user-system homeopathy-system">Homeopathy System</span>
-            </div>
-        </div>
-
         <nav class="sidebar-nav">
-            <a href="#dashboard" class="nav-item active" data-section="dashboard">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
+            <a href="#" class="nav-link active" data-section="section-dashboard">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
             </a>
-            <a href="#remedies" class="nav-item" data-section="remedies">
-                <i class="fas fa-vial"></i>
-                <span>Remedies Tracker</span>
+            <a href="#" class="nav-link" data-section="section-remedies">
+                <i class="fas fa-vial"></i> <span>Homeopathic Remedies</span>
             </a>
-            <a href="#symptoms" class="nav-item" data-section="symptoms">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Symptom Journal</span>
+            <a href="#" class="nav-link" data-section="section-symptoms">
+                <i class="fas fa-search-plus"></i> <span>Symptom Picture</span>
             </a>
-            <a href="#constitution" class="nav-item" data-section="constitution">
-                <i class="fas fa-user-check"></i>
-                <span>Constitutional Type</span>
+             <a href="#" class="nav-link" data-section="section-records">
+                <i class="fas fa-notes-medical"></i> <span>Health Records</span>
             </a>
-            <a href="#response" class="nav-item" data-section="response">
-                <i class="fas fa-chart-line"></i>
-                <span>Treatment Response</span>
+            <a href="#" class="nav-link" data-section="section-ai-assistant">
+                <i class="fas fa-user-md"></i> <span>AI Consultant</span>
             </a>
-            <a href="#consultations" class="nav-item" data-section="consultations">
-                <i class="fas fa-user-doctor"></i>
-                <span>Consultations</span>
-            </a>
-            <a href="#repertory" class="nav-item" data-section="repertory">
-                <i class="fas fa-book-medical"></i>
-                <span>Repertorization</span>
-            </a>
-            <a href="#settings" class="nav-item" data-section="settings">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
+            <a href="#" class="nav-link" data-section="section-settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
             </a>
         </nav>
-
-        <div class="sidebar-footer">
-            <a href="choose-system.html" class="btn-switch-system ripple-effect homeopathy-btn">
-                <i class="fas fa-repeat"></i> Switch System
+        
+        <div style="margin-top: auto;">
+            <a href="#" class="nav-link" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </a>
-            <button class="btn-logout-sidebar ripple-effect" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <!-- Placeholder for User ID display -->
+            <p id="userIdDisplay" style="font-size:0.75rem; opacity:0.6; padding: 10px; word-break: break-all;">User ID: Loading...</p>
         </div>
     </aside>
 
-    
-    <main class="main-content">
-        
-        <header class="content-header glass-effect">
-            <div class="header-left">
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title-header" id="pageTitle">Homeopathy Dashboard</h1>
-            </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search remedies...">
-                </div>
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-dot"></span>
-                </button>
-                <div class="user-menu">
-                    <img src="https://ui-avatars.com/api/?name=Demo+Patient&background=9B59B6&color=fff" alt="User" class="user-avatar-small">
-                </div>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <header class="header">
+            <h1 id="pageTitle" class="homeopathy-gradient">Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, User!</span>
+                <img src="https://placehold.co/40x40/7D3C98/ffffff?text=U" alt="User Avatar">
             </div>
         </header>
 
-       
-        <div class="content-body">
-           
-            <section id="section-dashboard" class="content-section active">
-                <div class="dashboard-grid">
-                   
-                    <div class="welcome-card glass-card homeopathy-card fade-in-up">
-                        <div class="welcome-content">
-                            <div class="homeopathy-icon-lg">
-                                <i class="fas fa-droplet"></i>
-                            </div>
-                            <h2>Welcome, <span id="dashboardUserName">Demo Patient</span></h2>
-                            <p>Personalized healing with homeopathic remedies</p>
-                            <div class="welcome-date">
-                                <i class="fas fa-calendar"></i>
-                                <span id="currentDate"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                    <div class="stat-card glass-card fade-in-up delay-1 homeo-stat">
-                        <div class="stat-icon remedy-icon">
-                            <i class="fas fa-vial"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Active Remedies</span>
-                            <h3 class="stat-value"><span class="counter" data-target="3">0</span></h3>
-                            <span class="stat-status">Currently taking</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card glass-card fade-in-up delay-2 homeo-stat">
-                        <div class="stat-icon symptom-icon">
-                            <i class="fas fa-clipboard-list"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Symptoms Tracked</span>
-                            <h3 class="stat-value"><span class="counter" data-target="12">0</span></h3>
-                            <span class="stat-status">This month</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card glass-card fade-in-up delay-3 homeo-stat">
-                        <div class="stat-icon improvement-icon">
-                            <i class="fas fa-arrow-trend-up"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Improvement Rate</span>
-                            <h3 class="stat-value"><span class="counter" data-target="78">0</span>%</h3>
-                            <span class="stat-status positive">Excellent progress</span>
-                        </div>
-                    </div>
-                </div>
-
+        <!-- DASHBOARD SECTION -->
+        <section id="section-dashboard" class="content-section active">
+            <div class="dashboard-grid">
                 
-                <div class="dashboard-row">
-                    <div class="constitution-card glass-card fade-in-up">
-                        <h3><i class="fas fa-user-check"></i> Constitutional Type</h3>
-                        <div class="constitution-result">
-                            <div class="constitution-badge">
-                                <i class="fas fa-person"></i>
-                                <span>Phosphorus</span>
-                            </div>
-                            <div class="constitution-description">
-                                <h4>Primary Constitution: Phosphorus</h4>
-                                <p>Sensitive, sympathetic, and imaginative personality. Responds well to emotional support and reassurance.</p>
-                                <div class="miasm-info">
-                                    <h5>Miasmatic Tendency:</h5>
-                                    <span class="miasm-badge">Tubercular</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="remedies-active-card glass-card fade-in-up delay-1">
-                        <div class="card-header-flex">
-                            <h3><i class="fas fa-vial"></i> Current Remedies</h3>
-                            <button class="btn-link">View All</button>
-                        </div>
-                        <div class="remedies-list">
-                            <div class="remedy-item">
-                                <div class="remedy-icon">
-                                    <i class="fas fa-droplet"></i>
-                                </div>
-                                <div class="remedy-details">
-                                    <h4>Arsenicum Album 200C</h4>
-                                    <p>3 globules, twice daily</p>
-                                    <div class="remedy-meta">
-                                        <span class="potency-badge">200C</span>
-                                        <span class="frequency">Twice daily</span>
-                                    </div>
-                                </div>
-                                <div class="remedy-status">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                            </div>
-
-                            <div class="remedy-item">
-                                <div class="remedy-icon">
-                                    <i class="fas fa-droplet"></i>
-                                </div>
-                                <div class="remedy-details">
-                                    <h4>Nux Vomica 30C</h4>
-                                    <p>4 globules, morning only</p>
-                                    <div class="remedy-meta">
-                                        <span class="potency-badge">30C</span>
-                                        <span class="frequency">Once daily</span>
-                                    </div>
-                                </div>
-                                <div class="remedy-status">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                            </div>
-
-                            <div class="remedy-item">
-                                <div class="remedy-icon">
-                                    <i class="fas fa-droplet"></i>
-                                </div>
-                                <div class="remedy-details">
-                                    <h4>Phosphorus 1M</h4>
-                                    <p>Single dose weekly</p>
-                                    <div class="remedy-meta">
-                                        <span class="potency-badge high-potency">1M</span>
-                                        <span class="frequency">Weekly</span>
-                                    </div>
-                                </div>
-                                <div class="remedy-status">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Overview Card 1: Main Symptom Picture -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-eye fa-2x" style="color:var(--symptom-color);"></i>
+                    <h3>Current Symptom Picture</h3>
+                    <div class="stat-value" style="color: var(--symptom-color);">Acute</div>
+                    <p style="opacity:0.8;">Localized pain, worse with motion</p>
                 </div>
 
+                <!-- Overview Card 2: Potency Level -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-tint fa-2x" style="color:var(--potency-color);"></i>
+                    <h3>Prescribed Potency</h3>
+                    <div class="stat-value" style="color: var(--potency-color); font-size: 2.5rem;">C30</div>
+                    <p style="opacity:0.8;">Single dose required</p>
+                </div>
+
+                <!-- Overview Card 3: Next Follow-up -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-calendar-alt fa-2x" style="color:var(--alert-color);"></i>
+                    <h3>Next Follow-up</h3>
+                    <div class="stat-value" style="color: var(--alert-color); font-size: 2rem;">2 Days</div>
+                    <p style="opacity:0.8;">Oct 20, 2025</p>
+                </div>
                 
-                <div class="dashboard-row">
-                    <div class="symptom-journal-card glass-card fade-in-up">
-                        <div class="card-header-flex">
-                            <h3><i class="fas fa-book-medical"></i> Recent Symptom Entries</h3>
-                            <button class="btn-link">Add Entry</button>
-                        </div>
-                        <div class="journal-timeline">
-                            <div class="journal-entry">
-                                <div class="entry-date">
-                                    <span class="date-circle">02</span>
-                                    <span class="date-month">Oct</span>
-                                </div>
-                                <div class="entry-content">
-                                    <h4>Headache - Better with cold compress</h4>
-                                    <p><strong>Intensity:</strong> 6/10 | <strong>Time:</strong> 3:00 PM</p>
-                                    <p><strong>Modalities:</strong> Better in fresh air, worse with heat</p>
-                                    <span class="entry-remedy">After: Belladonna 30C</span>
-                                </div>
-                            </div>
-
-                            <div class="journal-entry">
-                                <div class="entry-date">
-                                    <span class="date-circle">01</span>
-                                    <span class="date-month">Oct</span>
-                                </div>
-                                <div class="entry-content">
-                                    <h4>Digestive discomfort after meals</h4>
-                                    <p><strong>Intensity:</strong> 4/10 | <strong>Time:</strong> After lunch</p>
-                                    <p><strong>Modalities:</strong> Better with warm drinks</p>
-                                    <span class="entry-remedy">After: Nux Vomica 30C</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="response-tracking-card glass-card fade-in-up delay-1">
-                        <h3><i class="fas fa-chart-line"></i> Treatment Response</h3>
-                        <div class="response-chart-container">
-                            <canvas id="responseChart"></canvas>
-                        </div>
-                        <div class="response-summary">
-                            <div class="summary-item">
-                                <span class="summary-label">Overall Improvement:</span>
-                                <div class="progress-bar-inline">
-                                    <div class="progress-fill" style="width: 78%"></div>
-                                </div>
-                                <span class="summary-value">78%</span>
-                            </div>
-                            <div class="summary-item">
-                                <span class="summary-label">Symptom Reduction:</span>
-                                <div class="progress-bar-inline">
-                                    <div class="progress-fill" style="width: 65%"></div>
-                                </div>
-                                <span class="summary-value">65%</span>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Chart Card (Symptom Intensity Tracking) -->
+                <div class="chart-card glass-card" style="grid-column: 1 / -1;">
+                    <h3>Symptom Intensity Tracking (Scale 1-10)</h3>
+                    <canvas id="symptomChart"></canvas>
                 </div>
-
                 
-                <div class="dashboard-row">
-                    <div class="repertory-card glass-card fade-in-up">
-                        <h3><i class="fas fa-book-medical"></i> Last Repertorization</h3>
-                        <div class="repertory-result">
-                            <p class="repertory-date"><i class="fas fa-calendar"></i> September 28, 2025 - Dr. James Wilson</p>
-                            <div class="repertory-symptoms">
-                                <h4>Symptoms Analyzed:</h4>
-                                <div class="symptom-chips">
-                                    <span class="symptom-chip">Anxiety - worse evening</span>
-                                    <span class="symptom-chip">Restlessness</span>
-                                    <span class="symptom-chip">Insomnia from worry</span>
-                                    <span class="symptom-chip">Better from company</span>
-                                </div>
-                            </div>
-                            <div class="repertory-remedies">
-                                <h4>Top Matching Remedies:</h4>
-                                <div class="remedy-matches">
-                                    <div class="match-item">
-                                        <span class="match-remedy">Arsenicum Album</span>
-                                        <div class="match-score">
-                                            <div class="score-bar" style="width: 95%"></div>
-                                            <span>95%</span>
-                                        </div>
-                                    </div>
-                                    <div class="match-item">
-                                        <span class="match-remedy">Phosphorus</span>
-                                        <div class="match-score">
-                                            <div class="score-bar" style="width: 88%"></div>
-                                            <span>88%</span>
-                                        </div>
-                                    </div>
-                                    <div class="match-item">
-                                        <span class="match-remedy">Lycopodium</span>
-                                        <div class="match-score">
-                                            <div class="score-bar" style="width: 75%"></div>
-                                            <span>75%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            </div>
+        </section>
+
+        <!-- HOMEOPATHIC REMEDIES SECTION -->
+        <section id="section-remedies" class="content-section">
+            <div class="list-header" style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+                <h2>Active Homeopathic Remedies</h2>
+                <button class="btn-primary"><i class="fas fa-plus"></i> Add Remedy</button>
+            </div>
+            <div class="list-container">
+                <!-- Sample Remedy 1 -->
+                <div class="remedy-card glass-card">
+                    <div class="remedy-info">
+                        <div class="remedy-name">Arnica Montana</div>
+                        <div class="remedy-details">30C Potency • Single Dose • For shock/trauma</div>
                     </div>
-
-                    <div class="followup-card glass-card fade-in-up delay-1">
-                        <h3><i class="fas fa-calendar-check"></i> Follow-up Schedule</h3>
-                        <div class="followup-list">
-                            <div class="followup-item upcoming">
-                                <div class="followup-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="followup-details">
-                                    <h4>Next Consultation</h4>
-                                    <p>Dr. James Wilson - Homeopath</p>
-                                    <div class="followup-time">
-                                        <i class="fas fa-calendar"></i> October 15, 2025
-                                        <i class="fas fa-clock"></i> 11:00 AM
-                                    </div>
-                                </div>
-                                <button class="btn-followup">
-                                    <i class="fas fa-video"></i>
-                                </button>
-                            </div>
-
-                            <div class="followup-item">
-                                <div class="followup-icon completed">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="followup-details">
-                                    <h4>Last Consultation</h4>
-                                    <p>Dr. James Wilson - Homeopath</p>
-                                    <div class="followup-time">
-                                        <i class="fas fa-calendar"></i> September 28, 2025
-                                    </div>
-                                </div>
-                                <button class="btn-followup-view">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                            </div>
-                        </div>
+                    <div class="remedy-actions">
+                        <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
+                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
                     </div>
                 </div>
-            </section>
+                <!-- Sample Remedy 2 -->
+                <div class="remedy-card glass-card">
+                    <div class="remedy-info">
+                        <div class="remedy-name">Nux Vomica</div>
+                        <div class="remedy-details">6C Potency • Twice Daily • Digestive support, Irritability</div>
+                    </div>
+                    <div class="remedy-actions">
+                        <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
+                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SYMPTOM PICTURE SECTION (Placeholder for detail entry) -->
+        <section id="section-symptoms" class="content-section">
+            <h2 class="homeopathy-gradient">Symptom Picture Entry</h2>
+            <div class="glass-card">
+                <p>Record the most characteristic, strange, rare, and peculiar (S.R.P.) symptoms for a proper Similimum selection.</p>
+                <p style="opacity:0.6;">(Detailed Symptom Repertory Feature under development)</p>
+            </div>
+        </section>
 
-            
-            <section id="section-remedies" class="content-section">
-                <div class="remedies-tracker-container">
-                    <div class="section-header-flex">
-                        <div>
-                            <h2 class="section-title-main">Remedies Tracker</h2>
-                            <p class="section-subtitle">Track potency, dosage, and effectiveness of your homeopathic remedies</p>
-                        </div>
-                        <button class="btn btn-primary ripple-effect">
-                            <i class="fas fa-plus"></i> Add Remedy
+
+        <!-- HEALTH RECORDS SECTION -->
+        <section id="section-records" class="content-section">
+            <div class="list-header" style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Uploaded Health Records</h2>
+                <!-- File Input for Report Analysis -->
+                <input type="file" id="reportFileInput" accept=".txt,.md,application/pdf,image/jpeg,image/png" style="display: none;" onchange="analyzeUploadedReport(this.files[0])">
+                <button class="btn-primary" onclick="document.getElementById('reportFileInput').click()">
+                    <i class="fas fa-upload"></i> Upload Report (Image/PDF/TXT)
+                </button>
+            </div>
+            <div class="list-container" id="recordsListContainer">
+                <!-- Sample Record 1: Static Placeholder -->
+                <div id="record-cbc" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">Initial Consultation Notes</div>
+                        <div class="record-details">Homeopath Visit • Sep 10, 2025 • **Sample Data**</div>
+                    </div>
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <!-- Button to re-render default analysis -->
+                        <button class="btn-icon btn-ai-analyze" title="Show Default Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
                         </button>
                     </div>
+                </div>
+            </div>
+        </section>
 
-                    <div class="remedies-grid">
-                        <div class="remedy-card-detailed glass-card">
-                            <div class="remedy-card-header">
-                                <div class="remedy-name-section">
-                                    <h3>Arsenicum Album</h3>
-                                    <span class="potency-badge-large">200C</span>
-                                </div>
-                                <span class="remedy-status-badge active">Active</span>
-                            </div>
-                            <div class="remedy-card-body">
-                                <div class="remedy-info-row">
-                                    <div class="info-col">
-                                        <span class="info-label">Dosage:</span>
-                                        <span class="info-value">3 globules</span>
-                                    </div>
-                                    <div class="info-col">
-                                        <span class="info-label">Frequency:</span>
-                                        <span class="info-value">Twice daily</span>
-                                    </div>
-                                </div>
-                                <div class="remedy-info-row">
-                                    <div class="info-col">
-                                        <span class="info-label">Started:</span>
-                                        <span class="info-value">Sept 20, 2025</span>
-                                    </div>
-                                    <div class="info-col">
-                                        <span class="info-label">Duration:</span>
-                                        <span class="info-value">4 weeks</span>
-                                    </div>
-                                </div>
-                                <div class="remedy-purpose-section">
-                                    <h4>Indications:</h4>
-                                    <p>Anxiety, restlessness, digestive issues. Better with warmth and company.</p>
-                                </div>
-                                <div class="effectiveness-meter">
-                                    <span class="meter-label">Effectiveness:</span>
-                                    <div class="meter-bar">
-                                        <div class="meter-fill" style="width: 85%"></div>
-                                    </div>
-                                    <span class="meter-value">85%</span>
-                                </div>
-                            </div>
-                            <div class="remedy-card-footer">
-                                <button class="btn-remedy-action">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <button class="btn-remedy-action">
-                                    <i class="fas fa-history"></i> History
-                                </button>
-                            </div>
-                        </div>
+        <!-- AI HOMEOPATHY CONSULTANT SECTION (Analysis Card & Chat) -->
+        <section id="section-ai-assistant" class="content-section">
+            
+            <!-- AI Analysis Results Card (Initial state or last analyzed) -->
+            <div id="analysisOutputCard" class="ai-analysis-output glass-card fade-in-up">
+                <h3>AI Symptom Totality Analysis Summary</h3>
+                <p class="analysis-date">Last Analyzed: N/A - Upload a report to begin</p>
+                
+                <div class="analysis-segment problems-suggested">
+                    <h4>Clinical Findings & Symptom Characteristics:</h4>
+                    <div class="suggestion"><i class="fas fa-user-md"></i> Upload a symptom journal or report to get a Homeopathic correlation and remedy suggestion.</div>
+                </div>
 
-                        <div class="remedy-card-detailed glass-card">
-                            <div class="remedy-card-header">
-                                <div class="remedy-name-section">
-                                    <h3>Nux Vomica</h3>
-                                    <span class="potency-badge-large">30C</span>
-                                </div>
-                                <span class="remedy-status-badge active">Active</span>
-                            </div>
-                            <div class="remedy-card-body">
-                                <div class="remedy-info-row">
-                                    <div class="info-col">
-                                        <span class="info-label">Dosage:</span>
-                                        <span class="info-value">4 globules</span>
-                                    </div>
-                                    <div class="info-col">
-                                        <span class="info-label">Frequency:</span>
-                                        <span class="info-value">Once daily (morning)</span>
-                                    </div>
-                                </div>
-                                <div class="remedy-info-row">
-                                    <div class="info-col">
-                                        <span class="info-label">Started:</span>
-                                        <span class="info-value">Sept 25, 2025</span>
-                                    </div>
-                                    <div class="info-col">
-                                        <span class="info-label">Duration:</span>
-                                        <span class="info-value">3 weeks</span>
-                                    </div>
-                                </div>
-                                <div class="remedy-purpose-section">
-                                    <h4>Indications:</h4>
-                                    <p>Digestive discomfort, irritability, sensitivity to stimulants. Better with rest.</p>
-                                </div>
-                                <div class="effectiveness-meter">
-                                    <span class="meter-label">Effectiveness:</span>
-                                    <div class="meter-bar">
-                                        <div class="meter-fill" style="width: 72%"></div>
-                                    </div>
-                                    <span class="meter-value">72%</span>
-                                </div>
-                            </div>
-                            <div class="remedy-card-footer">
-                                <button class="btn-remedy-action">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <button class="btn-remedy-action">
-                                    <i class="fas fa-history"></i> History
-                                </button>
-                            </div>
+                <div class="analysis-segment remedies-suggested">
+                    <h4>AI Suggested Similimum & Potency:</h4>
+                    <div class="remedy-item" style="border-bottom: none;">
+                        <div><i class="fas fa-vial"></i> Recommendations will appear here after analysis.</div>
+                        <div>&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Chat Interface -->
+            <div class="ai-chat-container glass-card">
+                <div class="message-container">
+                    <!-- AI Welcome Message -->
+                    <div class="ai-message">
+                        <div class="message-icon"><i class="fas fa-vial"></i></div>
+                        <div class="message-content">
+                            <p>Greetings! I am your Homeopathy AI Consultant. I'm here to assist with:</p>
+                            <ul>
+                                <li>Analyzing reports for key symptoms</li>
+                                <li>Suggesting potential Similimum (remedies)</li>
+                                <li>Offering advice on potency and repetition</li>
+                            </ul>
+                            <p>How can I assist in the discovery of your symptom picture today?</p>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
-    </main>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Ask about remedy indications, potencies, or miasms...">
+                    <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
 
-    
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Action completed!</span>
+        <!-- SETTINGS SECTION (Placeholder) -->
+        <section id="section-settings" class="content-section">
+            <h2 class="homeopathy-gradient">Settings</h2>
+            <div class="glass-card">
+                <p>Configure your account and privacy settings here.</p>
+                <p style="opacity:0.6;">(Feature under development)</p>
+            </div>
+        </section>
     </div>
 
-    <script src="js/main.js"></script>
-    <script>
+    <!-- Firebase and Application Logic -->
+    <script type="module">
+        // Mandatory Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        let currentUserId = 'Loading...';
+        let chatHistory = []; // Conversation history for the chat assistant
+
+        // --- GEMINI API Configuration ---
+        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=";
+        const API_KEY = ""; // Provided by the Canvas environment
+        const GEMINI_CHAT_MODEL = "gemini-2.5-flash-preview-05-20"; 
+
+        // --- GEMINI SYSTEM INSTRUCTIONS (HOMEOPATHY FOCUS) ---
+        const ANALYSIS_SYSTEM_INSTRUCTION = "You are an expert AI Homeopathic practitioner. Your task is to analyze the provided raw health report, lab data, or symptom journal and synthesize the data into a clear 'Symptom Totality'. Generate a concise, structured JSON summary that includes the most probable Similimum (remedy), recommended potency, and specific follow-up advice. Adhere strictly to the principles of Homeopathy. Do not include any text outside the JSON object.";
         
-        window.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-            initDashboard();
-            initResponseChart();
+        const CHAT_SYSTEM_INSTRUCTION = "You are a warm, knowledgeable, and concise Homeopathy AI Consultant. You specialize in discussing the Materia Medica, understanding miasms, explaining potentization, and providing general guidance on remedy selection based on the 'totality of symptoms'. Keep your responses encouraging, brief, and always advise the user to consult a professional Homeopath (MD/D.H.M.S.) for definitive diagnosis or treatment.";
+
+        // --- STRUCTURED RESPONSE SCHEMA FOR HOMEOPATHY ANALYSIS ---
+        const ANALYSIS_RESPONSE_SCHEMA = {
+            type: "OBJECT",
+            properties: {
+                "reportTitle": { "type": "STRING", "description": "A concise title for the analyzed report (e.g., 'Acute Fever Symptom Analysis')." },
+                "analysisDate": { "type": "STRING", "description": "The current date or date derived from the report, in YYYY-MM-DD format." },
+                "symptomCharacteristics": {
+                    "type": "ARRAY",
+                    "description": "A list of key symptom characteristics (S.R.P.) and clinical correlations.",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "characteristic": { "type": "STRING", "description": "Key symptom, modality, or clinical finding." },
+                            "correlation": { "type": "STRING", "description": "Homeopathic correlation (e.g., 'Worse with heat suggests Pulsatilla type')." }
+                        }
+                    }
+                },
+                "remedyRecommendation": {
+                    "type": "OBJECT",
+                    "description": "The primary recommended Similimum (remedy) and protocol.",
+                    "properties": {
+                        "remedyName": { "type": "STRING", "description": "Name of the most probable Similimum (e.g., 'Belladonna')." },
+                        "potency": { "type": "STRING", "description": "Recommended potency (e.g., '30C', 'LM1')." },
+                        "protocol": { "type": "STRING", "description": "Dosage and repetition instructions (e.g., 'Single dose, wait for reaction.')." }
+                    }
+                },
+                "followUpAdvice": {
+                    "type": "STRING",
+                    "description": "Specific non-medicinal advice for follow-up (e.g., 'Maintain symptom journal. Avoid coffee and mint.')."
+                }
+            },
+            "propertyOrdering": ["reportTitle", "analysisDate", "symptomCharacteristics", "remedyRecommendation", "followUpAdvice"]
+        };
+
+        // Initialize Firebase and Auth
+        if (firebaseConfig) {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                setLogLevel('debug'); // Enable Firestore logging
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        document.getElementById('userIdDisplay').textContent = `User ID: ${user.uid}`;
+                        console.log("Authenticated with user ID:", currentUserId);
+                    } else {
+                        // Attempt to sign in using custom token or anonymously
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                        // Update currentUserId if anonymous sign-in is successful
+                        if(auth.currentUser) {
+                           currentUserId = auth.currentUser.uid;
+                           document.getElementById('userIdDisplay').textContent = `User ID: ${currentUserId}`;
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                document.getElementById('userIdDisplay').textContent = `User ID: Auth Error`;
+            }
+        } else {
+            document.getElementById('userIdDisplay').textContent = `User ID: Config Missing`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupNavigation();
+            initSymptomChart(); // Initialize the Homeopathy specific chart
+            setupSidebarToggle();
+            showDefaultAnalysis(); // Load the default analysis on startup
+            setupChatListeners(); // Initialize chat listeners
         });
 
-        function checkAuth() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const userType = localStorage.getItem('userType');
+        // --- UI UTILITIES ---
 
-            if (!isLoggedIn || userType !== 'patient') {
-                window.location.href = 'patient-login.html';
-            }
+        function setupSidebarToggle() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
 
-            const userName = localStorage.getItem('userName') || 'Patient';
-            document.getElementById('userName').textContent = userName;
-            document.getElementById('dashboardUserName').textContent = userName;
-        }
-
-        function initDashboard() {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
-
-            
-            const counters = document.querySelectorAll('.counter');
-            counters.forEach(counter => {
-                const target = parseInt(counter.dataset.target);
-                const duration = 2000;
-                const step = target / (duration / 16);
-                let current = 0;
-
-                const timer = setInterval(() => {
-                    current += step;
-                    if (current >= target) {
-                        counter.textContent = target;
-                        clearInterval(timer);
+            toggle.addEventListener('click', () => {
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                if (window.innerWidth <= 600) {
+                    sidebar.classList.toggle('open');
+                    if (sidebar.classList.contains('open')) {
+                        mainContent.style.marginLeft = '250px';
                     } else {
-                        counter.textContent = Math.floor(current);
+                        mainContent.style.marginLeft = '0';
                     }
-                }, 16);
-            });
-
-            
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const section = this.dataset.section;
-                    switchSection(section);
-                });
-            });
-
-            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('active');
-            });
-
-            document.getElementById('sidebarToggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('collapsed');
-            });
-        }
-
-        function switchSection(section) {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.section === section) {
-                    item.classList.add('active');
+                } else {
+                    mainContent.style.marginLeft = isCollapsed ? '80px' : '250px';
                 }
             });
-
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            document.getElementById('section-' + section).classList.add('active');
-
-            const titles = {
-                'dashboard': 'Homeopathy Dashboard',
-                'remedies': 'Remedies Tracker',
-                'symptoms': 'Symptom Journal',
-                'constitution': 'Constitutional Type',
-                'response': 'Treatment Response',
-                'consultations': 'Consultations',
-                'repertory': 'Repertorization',
-                'settings': 'Settings'
-            };
-            document.getElementById('pageTitle').textContent = titles[section];
+            
+            if (window.innerWidth <= 600) {
+                sidebar.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
         }
 
-        function initResponseChart() {
-            const ctx = document.getElementById('responseChart');
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+            const pageTitle = document.getElementById('pageTitle');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const targetSectionId = link.getAttribute('data-section');
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    const targetSection = document.getElementById(targetSectionId);
+                    if (targetSection) {
+                         targetSection.classList.add('active');
+                    }
+                   
+                    pageTitle.textContent = link.querySelector('span') ? link.querySelector('span').textContent : 'Dashboard';
+
+                    if (window.innerWidth <= 600) {
+                        const sidebar = document.getElementById('sidebar');
+                        sidebar.classList.remove('open');
+                        document.getElementById('mainContent').style.marginLeft = '0';
+                    }
+                });
+            });
+        }
+
+        function initSymptomChart() {
+            const ctx = document.getElementById('symptomChart');
             if (!ctx) return;
 
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
                     datasets: [{
-                        label: 'Symptom Intensity',
-                        data: [8, 6, 4, 3],
-                        borderColor: '#9B59B6',
-                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        label: 'Symptom Intensity (1-10)',
+                        data: [8, 7, 5, 4, 3, 2, 1], // Simulated healing curve
+                        borderColor: 'var(--primary-color)',
+                        backgroundColor: 'rgba(125, 60, 152, 0.1)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'var(--secondary-color)'
                     }]
                 },
                 options: {
@@ -621,30 +1006,479 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: false
+                            position: 'top',
+                            labels: {
+                                color: 'var(--text-light)'
+                            }
                         }
                     },
                     scales: {
                         y: {
-                            beginAtZero: false,
-                            min: 0,
+                            beginAtZero: true,
                             max: 10,
                             ticks: {
-                                stepSize: 2
+                                stepSize: 1,
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
                             }
                         }
                     }
                 }
             });
         }
+        
+        // Custom Modal implementation (instead of alert/confirm)
+        function showModal(title, message, isLoading = false) {
+            let modal = document.getElementById('customModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'customModal';
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content glass-card">
+                        <h4 id="modalTitle"></h4>
+                        <div id="modalSpinner" class="loading-spinner" style="display:none;"></div>
+                        <p id="modalMessage"></p>
+                        <button id="modalCloseBtn" class="btn-primary" style="margin-top: 20px;">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            
+            const spinner = document.getElementById('modalSpinner');
+            const closeBtn = document.getElementById('modalCloseBtn');
+            
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            if (isLoading) {
+                spinner.style.display = 'block';
+                closeBtn.style.display = 'none';
+            } else {
+                spinner.style.display = 'none';
+                closeBtn.style.display = 'block';
+                closeBtn.onclick = () => modal.style.display = 'none';
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+
+        // --- FIREBASE LOGIC ---
 
         function logout() {
-            localStorage.clear();
-            showToast('Logged out successfully!', 'success');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
+            if (auth) {
+                signOut(auth).then(() => {
+                    showModal('Logged Out', 'You have been successfully logged out. Reloading...');
+                    setTimeout(() => {
+                        window.location.reload(); 
+                    }, 1500);
+                }).catch(error => {
+                    console.error("Logout Error:", error);
+                    showModal('Logout Failed', `Could not sign out: ${error.message}`);
+                });
+            } else {
+                showModal('Error', 'Authentication service is not initialized.');
+            }
         }
+        
+        // --- GEMINI API FUNCTIONALITY (STRUCTURED DATA) ---
+
+        /**
+         * Generic function to call the Gemini API with structured output.
+         */
+        async function geminiApiCall(contents, schema, systemInstruction, maxRetries = 3) {
+            const url = `${GEMINI_API_URL}${API_KEY}`;
+            const payload = {
+                contents: contents,
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema
+                }
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && attempt < maxRetries - 1) {
+                            const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue; // Retry
+                        }
+                        throw new Error(`API call failed with status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (jsonText) {
+                        return JSON.parse(jsonText);
+                    }
+                    throw new Error("API response was missing expected JSON content.");
+
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) throw error;
+                }
+            }
+            throw new Error("Gemini API call failed after multiple retries.");
+        }
+
+
+        /**
+         * Handles analyzing the uploaded file content using the Gemini API.
+         * Supports Text, PDF, and Image files.
+         */
+        window.analyzeUploadedReport = async function(file) { 
+            if (!file) {
+                showModal('Upload Error', 'No file selected.');
+                return;
+            }
+
+            const isTextFile = file.type.startsWith('text/') || file.name.endsWith('.md');
+            const isImageOrPDF = file.type.startsWith('image/') || file.type === 'application/pdf';
+            const reader = new FileReader();
+
+            showModal('Homeopathy AI Analysis Initiated', `Processing report: "${file.name}". This may take a moment...`, true); 
+
+            try {
+                const reportContent = await new Promise((resolve, reject) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = reject;
+
+                    if (isTextFile) {
+                        // For text files, read content directly
+                        reader.readAsText(file);
+                    } else if (isImageOrPDF) {
+                        // For images/PDFs, read as Base64 data URL
+                        if (file.size > 10 * 1024 * 1024) { // 10MB limit check
+                            throw new Error("File is too large. Max size is 10MB for image/PDF reports.");
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        reject(new Error("Unsupported file type. Please upload a text, image (JPG/PNG), or PDF file."));
+                    }
+                });
+
+                let contents;
+                const userPrompt = "Analyze this patient data (report/symptoms). Identify key characteristics, determine the most likely Similimum, and provide potency/protocol details based on homeopathic principles. Provide the results in the required JSON structure only.";
+
+                if (isTextFile) {
+                    // For text, contents is simple text part
+                    contents = [{ parts: [{ text: `${userPrompt}\n\n--- PATIENT DATA ---\n${reportContent}` }] }];
+                } else if (isImageOrPDF) {
+                    // For image/PDF, contents includes inlineData part
+                    const [mimeType, base64Data] = reportContent.split(';base64,');
+
+                    if (!base64Data) {
+                        throw new Error("Failed to extract Base64 data from file.");
+                    }
+
+                    contents = [{ 
+                        parts: [
+                            { text: userPrompt },
+                            {
+                                inlineData: {
+                                    mimeType: file.type,
+                                    data: base64Data
+                                }
+                            }
+                        ]
+                    }];
+                } else {
+                    throw new Error("File type not supported for analysis.");
+                }
+
+
+                const analysisData = await geminiApiCall(
+                    contents, 
+                    ANALYSIS_RESPONSE_SCHEMA, 
+                    ANALYSIS_SYSTEM_INSTRUCTION
+                );
+
+                // Add the analyzed record to the static list (simulated persistence)
+                addAnalyzedRecordToUI(file.name, analysisData.reportTitle);
+
+                // Render the results in the dedicated section
+                renderAnalysisResults(analysisData);
+
+                showModal('Analysis Complete', `Successfully analyzed "${analysisData.reportTitle}". Results displayed in the AI Consultant tab.`, false);
+                
+                // Switch to AI Assistant tab
+                document.querySelector('[data-section="section-ai-assistant"]').click();
+
+            } catch (error) {
+                console.error("Full analysis error:", error);
+                showModal('Analysis Failed', `Could not complete analysis. Error: ${error.message || 'Check console for details.'}`, false);
+            } finally {
+                document.getElementById('reportFileInput').value = ''; // Clear file input
+            }
+        }
+        
+        /**
+         * Renders the structured analysis results based on the Gemini API output structure.
+         */
+        function renderAnalysisResults(analysisData) {
+            const card = document.getElementById('analysisOutputCard');
+            const problemsSegment = card.querySelector('.problems-suggested');
+            const remediesSegment = card.querySelector('.remedies-suggested');
+
+            if (!analysisData || !analysisData.reportTitle) {
+                showDefaultAnalysis();
+                return;
+            }
+            
+            // Animate transition
+            card.style.opacity = 0;
+            setTimeout(() => {
+                card.querySelector('h3').textContent = analysisData.reportTitle;
+                card.querySelector('.analysis-date').textContent = `Last Analyzed: ${analysisData.analysisDate || new Date().toLocaleDateString()}`;
+
+                // 1. Symptom Characteristics / Correlations
+                let problemsHtml = '<h4>Clinical Findings & Symptom Characteristics:</h4>';
+                if (analysisData.symptomCharacteristics && analysisData.symptomCharacteristics.length > 0) {
+                    analysisData.symptomCharacteristics.forEach(p => {
+                        const isKey = p.characteristic && (p.characteristic.toLowerCase().includes('mental') || p.characteristic.toLowerCase().includes('peculiar'));
+                        const icon = isKey ? 'fa-star' : 'fa-clipboard-list';
+
+                        problemsHtml += `
+                            <div class="suggestion ${isKey ? 'alert' : ''}">
+                                <i class="fas ${icon}"></i> 
+                                <strong>${p.characteristic}:</strong> ${p.correlation}
+                            </div>
+                        `;
+                    });
+                } else {
+                    problemsHtml += '<div class="suggestion"><i class="fas fa-check-circle"></i> No characteristic symptoms identified from report.</div>';
+                }
+                problemsSegment.innerHTML = problemsHtml;
+
+                // 2. Remedy Recommendation & Protocol
+                let remediesHtml = '<h4>AI Suggested Similimum & Potency:</h4>';
+                const remedy = analysisData.remedyRecommendation;
+
+                if (remedy && remedy.remedyName) {
+                    remediesHtml += `
+                        <div class="remedy-item">
+                            <div>
+                                <i class="fas fa-vial"></i> 
+                                <strong>Remedy:</strong> ${remedy.remedyName || 'N/A'}
+                            </div>
+                            <div>
+                                <strong>Potency:</strong> ${remedy.potency || 'N/A'}
+                            </div>
+                        </div>
+                        <div class="remedy-item" style="border-bottom: none;">
+                            <div>
+                                <i class="fas fa-prescription"></i> 
+                                <strong>Protocol:</strong> ${remedy.protocol || 'N/A'}
+                            </div>
+                            <button class="btn-add-remedy">Add to Regimen</button>
+                        </div>
+                    `;
+                    if (analysisData.followUpAdvice) {
+                         remediesHtml += `<p style="margin-top: 15px; border-top: 1px dashed var(--glass-border); padding-top: 10px;">
+                             <i class="fas fa-lightbulb" style="color: var(--symptom-color);"></i> 
+                             <strong>Follow-up Advice:</strong> ${analysisData.followUpAdvice}
+                         </p>`;
+                    }
+
+                } else {
+                    remediesHtml += '<div class="remedy-item" style="border-bottom: none;"><i class="fas fa-leaf"></i> Insufficient data for Similimum recommendation.</div>';
+                }
+                remediesSegment.innerHTML = remediesHtml;
+
+                card.style.opacity = 1;
+            }, 300);
+        }
+
+        /**
+         * Simulates adding the newly analyzed record to the records list.
+         */
+        function addAnalyzedRecordToUI(fileName, reportTitle) {
+            const listContainer = document.getElementById('recordsListContainer');
+            const newRecordId = `record-${Date.now()}`;
+            const date = new Date().toLocaleDateString();
+            const displayTitle = reportTitle || `New Report: ${fileName}`;
+
+            const newRecordHtml = `
+                <div id="${newRecordId}" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">${displayTitle}</div>
+                        <div class="record-details">Custom Upload • ${date} • **Homeopathy AI Analysis Complete**</div>
+                    </div>
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <button class="btn-icon btn-ai-analyze" title="Rerun AI Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            // Add the new record after the file input mechanism
+            listContainer.insertAdjacentHTML('afterbegin', newRecordHtml);
+        }
+        
+        /**
+         * Loads a default, simulated Homeopathy analysis result.
+         */
+        function showDefaultAnalysis() {
+            const defaultAnalysis = {
+                reportTitle: "Simulated Acute Headache Symptom Totality",
+                analysisDate: "Oct 15, 2025",
+                symptomCharacteristics: [
+                    { "characteristic": "Pulsating headache, right side", "correlation": "Classic symptom for Belladonna or Sanguinaria." },
+                    { "characteristic": "Aggravation from bright light & noise", "correlation": "Key modality pointing strongly to Belladonna." },
+                    { "characteristic": "Desire for cold drinks, but vomits after", "correlation": "Peculiar symptom that requires careful differentiation." }
+                ],
+                remedyRecommendation: {
+                    "remedyName": "Belladonna",
+                    "potency": "30C",
+                    "protocol": "Dissolve 4 pellets in water. Take one sip every 4 hours for 3 doses, stop upon improvement."
+                },
+                followUpAdvice: "Keep a detailed journal noting any change in pain intensity, location, or associated feelings (e.g., irritation, fear). Avoid strong smelling substances like camphor and mint."
+            };
+            renderAnalysisResults(defaultAnalysis);
+        }
+
+        // --- CHAT FUNCTIONALITY ---
+
+        /**
+         * Renders a message to the chat interface.
+         */
+        function appendMessage(sender, text, isHtml = false) {
+            const container = document.querySelector('.message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${sender}-message`;
+            
+            const iconClass = sender === 'ai' ? 'fa-vial' : 'fa-user-circle';
+            
+            // Only add actual messages (not loading dots) to history
+            if (text !== '...') {
+                chatHistory.push({ role: sender === 'ai' ? 'model' : 'user', parts: [{ text: text }] });
+            }
+
+            messageDiv.innerHTML = `
+                <div class="message-icon"><i class="fas ${iconClass}"></i></div>
+                <div class="message-content">
+                    ${isHtml ? text : `<p>${text}</p>`}
+                </div>
+            `;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            return messageDiv; // Return for potentially updating loading message
+        }
+
+        function setupChatListeners() {
+            const chatInput = document.getElementById('chatInput');
+            const sendButton = document.getElementById('sendButton');
+
+            sendButton.addEventListener('click', handleChatSubmit);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleChatSubmit();
+                }
+            });
+        }
+
+        async function handleChatSubmit() {
+            const chatInput = document.getElementById('chatInput');
+            const userQuery = chatInput.value.trim();
+
+            if (!userQuery) return;
+
+            // 1. Display user message
+            appendMessage('user', userQuery);
+            chatInput.value = ''; // Clear input
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+
+            // 2. Display loading indicator
+            const loadingMessageElement = appendMessage('ai', '...', true);
+            loadingMessageElement.querySelector('.message-content').classList.add('loading-pulse');
+
+            try {
+                // 3. Call Gemini Chat API
+                const aiResponseText = await callGeminiChat(userQuery);
+
+                // 4. Update display
+                loadingMessageElement.remove(); // Remove loading state
+                appendMessage('ai', aiResponseText);
+
+            } catch (error) {
+                console.error("AI Chat Error:", error);
+                // Ensure loading indicator is removed on error
+                loadingMessageElement.remove();
+                appendMessage('ai', "Apologies, the vital force (network connection) is disrupted. Please try again soon.", true);
+            } finally {
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        /**
+         * Handles the actual API call for conversational chat.
+         */
+        async function callGeminiChat(prompt, maxRetries = 3) {
+            const url = `${GEMINI_API_URL.replace('gemini-2.5-flash-preview-05-20', GEMINI_CHAT_MODEL)}${API_KEY}`;
+            
+            // The history accumulates in appendMessage
+            const payload = {
+                contents: chatHistory, 
+                systemInstruction: { parts: [{ text: CHAT_SYSTEM_INSTRUCTION }] }
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && attempt < maxRetries - 1) {
+                            const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue; // Retry
+                        }
+                        throw new Error(`API call failed with status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    }
+                    throw new Error("API response was missing expected text content.");
+
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) throw error;
+                }
+            }
+            throw new Error("Gemini Chat API call failed after multiple retries.");
+        }
+
     </script>
 </body>
 </html>
