@@ -22,9 +22,8 @@
             --glass-bg: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.1);
             --shadow-color: rgba(0, 0, 0, 0.4);
-            --symptom-color: #F7DC6F; /* Pale Yellow for gentle response */
-            --potency-color: #5DADE2; /* Medium Blue */
-            --alert-color: #EC7063; /* Soft Red for warning signs */
+            --success-color: #58D68D; /* Subtle Green */
+            --alert-color: #E74C3C;
         }
 
         * {
@@ -33,8 +32,7 @@
         }
 
         body {
-            /* Gentle, deep background gradient */
-            background: linear-gradient(135deg, #1C1520, #0a0a0a);
+            background: linear-gradient(135deg, var(--background-dark), #101010);
             color: var(--text-light);
             margin: 0;
             padding: 0;
@@ -65,7 +63,7 @@
             box-shadow: 0 8px 35px var(--shadow-color);
         }
 
-        .homeopathy-gradient {
+        .health-gradient {
             background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -109,6 +107,12 @@
             display: none;
         }
 
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        
         .sidebar-toggle {
             background: none;
             border: none;
@@ -152,7 +156,7 @@
 
         .nav-link.active, .nav-link:hover {
             background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 4px 15px rgba(125, 60, 152, 0.4); /* Shadow from primary color */
+            box-shadow: 0 4px 15px rgba(125, 60, 152, 0.4);
             color: var(--text-light);
         }
 
@@ -233,7 +237,6 @@
             font-weight: 700;
             margin-top: 10px;
             line-height: 1;
-            /* Using Homeopathy Colors for Stats */
             background: var(--primary-color);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -242,10 +245,10 @@
 
         @keyframes pulse-color {
             0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(20deg); }
+            100% { filter: hue-rotate(30deg); }
         }
 
-        /* Homeopathic Remedies & Records List */
+        /* Remedies & Records List */
         .list-container {
             display: grid;
             gap: 20px;
@@ -290,7 +293,7 @@
         }
 
         .btn-icon:hover {
-            background: var(--secondary-color);
+            background: var(--primary-color);
         }
         
         .btn-primary {
@@ -347,7 +350,7 @@
         .ai-message .message-icon {
             align-self: flex-start;
             margin-right: 10px; /* Space between icon and bubble */
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         .ai-message .message-content {
             background: var(--surface-dark);
@@ -463,8 +466,8 @@
         }
         
         .suggestion.alert {
-            color: var(--alert-color); 
-            background: rgba(236, 112, 99, 0.1);
+            color: var(--alert-color);
+            background: rgba(231, 76, 60, 0.1);
         }
         
         .remedy-item {
@@ -477,11 +480,11 @@
 
         .remedy-item i {
             margin-right: 10px;
-            color: var(--secondary-color);
+            color: var(--success-color);
         }
 
         .btn-add-remedy {
-            background: var(--secondary-color);
+            background: var(--success-color);
             color: var(--background-dark);
             border: none;
             padding: 5px 10px;
@@ -539,7 +542,7 @@
                 width: 200px;
             }
             .sidebar.collapsed {
-                width: 250px; 
+                width: 250px;
                 position: absolute;
                 left: -250px;
             }
@@ -581,7 +584,7 @@
                 margin-left: 0;
             }
             .sidebar.open + .main-content {
-                margin-left: 250px; 
+                margin-left: 250px;
             }
             .remedy-card, .record-card {
                 flex-direction: column;
@@ -608,7 +611,7 @@
     <aside class="sidebar glass-effect" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-text">
-                <span class="homeopathy-gradient">Homeo</span><span style="color:#fff;">AI</span>
+                <span class="health-gradient">Homeo</span><span style="color:#fff;">AI</span>
             </div>
             <button class="sidebar-toggle" id="sidebarToggle">
                 <i class="fas fa-bars"></i>
@@ -620,16 +623,13 @@
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
             </a>
             <a href="#" class="nav-link" data-section="section-remedies">
-                <i class="fas fa-vial"></i> <span>Homeopathic Remedies</span>
+                <i class="fas fa-leaf"></i> <span>Remedies</span>
             </a>
-            <a href="#" class="nav-link" data-section="section-symptoms">
-                <i class="fas fa-search-plus"></i> <span>Symptom Picture</span>
-            </a>
-             <a href="#" class="nav-link" data-section="section-records">
+            <a href="#" class="nav-link" data-section="section-records">
                 <i class="fas fa-notes-medical"></i> <span>Health Records</span>
             </a>
             <a href="#" class="nav-link" data-section="section-ai-assistant">
-                <i class="fas fa-user-md"></i> <span>AI Consultant</span>
+                <i class="fas fa-robot"></i> <span>AI Assistant</span>
             </a>
             <a href="#" class="nav-link" data-section="section-settings">
                 <i class="fas fa-cog"></i> <span>Settings</span>
@@ -637,18 +637,31 @@
         </nav>
         
         <div style="margin-top: auto;">
-            <a href="#" class="nav-link" onclick="logout()">
+            <!-- START: Added Switch System link -->
+            <a href="choose-system.html" class="nav-link">
+                <i class="fas fa-repeat"></i> <span>Switch System</span>
+            </a>
+            <!-- END: Added Switch System link -->
+            
+            <!-- START: Confirmed Logout link calls logout() and redirects to index.html -->
+            <a href="index.html" class="nav-link" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </a>
+            <!-- END: Confirmed Logout link -->
+            
             <!-- Placeholder for User ID display -->
             <p id="userIdDisplay" style="font-size:0.75rem; opacity:0.6; padding: 10px; word-break: break-all;">User ID: Loading...</p>
+        </div>
+
+        <div class="sidebar-footer">
+            <!-- Content moved to above div -->
         </div>
     </aside>
 
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
         <header class="header">
-            <h1 id="pageTitle" class="homeopathy-gradient">Dashboard</h1>
+            <h1 id="pageTitle">Dashboard</h1>
             <div class="user-info">
                 <span>Welcome, User!</span>
                 <img src="https://placehold.co/40x40/7D3C98/ffffff?text=U" alt="User Avatar">
@@ -659,51 +672,51 @@
         <section id="section-dashboard" class="content-section active">
             <div class="dashboard-grid">
                 
-                <!-- Overview Card 1: Main Symptom Picture -->
+                <!-- Overview Card 1: Vitals Score -->
                 <div class="overview-card glass-card">
-                    <i class="fas fa-eye fa-2x" style="color:var(--symptom-color);"></i>
-                    <h3>Current Symptom Picture</h3>
-                    <div class="stat-value" style="color: var(--symptom-color);">Acute</div>
-                    <p style="opacity:0.8;">Localized pain, worse with motion</p>
+                    <i class="fas fa-seedling fa-2x" style="color:var(--success-color);"></i>
+                    <h3>Current Vitality Score</h3>
+                    <div class="stat-value" style="color: var(--success-color);">8.5</div>
+                    <p style="opacity:0.8;">(On a scale of 10)</p>
                 </div>
 
-                <!-- Overview Card 2: Potency Level -->
+                <!-- Overview Card 2: Symptoms Intensity -->
                 <div class="overview-card glass-card">
-                    <i class="fas fa-tint fa-2x" style="color:var(--potency-color);"></i>
-                    <h3>Prescribed Potency</h3>
-                    <div class="stat-value" style="color: var(--potency-color); font-size: 2.5rem;">C30</div>
-                    <p style="opacity:0.8;">Single dose required</p>
+                    <i class="fas fa-sad-tear fa-2x" style="color:var(--alert-color);"></i>
+                    <h3>Avg Symptom Intensity</h3>
+                    <div class="stat-value" style="color: var(--alert-color);">3/10</div>
+                    <p style="opacity:0.8;">(Last 7 days)</p>
                 </div>
 
-                <!-- Overview Card 3: Next Follow-up -->
+                <!-- Overview Card 3: Next Consultation -->
                 <div class="overview-card glass-card">
-                    <i class="fas fa-calendar-alt fa-2x" style="color:var(--alert-color);"></i>
-                    <h3>Next Follow-up</h3>
-                    <div class="stat-value" style="color: var(--alert-color); font-size: 2rem;">2 Days</div>
-                    <p style="opacity:0.8;">Oct 20, 2025</p>
+                    <i class="fas fa-calendar-check fa-2x" style="color:var(--primary-color);"></i>
+                    <h3>Next Consultation</h3>
+                    <div class="stat-value" style="color: var(--primary-color); font-size: 2rem;">Dr. Patil</div>
+                    <p style="opacity:0.8;">Oct 25, 2025</p>
                 </div>
                 
-                <!-- Chart Card (Symptom Intensity Tracking) -->
+                <!-- Chart Card -->
                 <div class="chart-card glass-card" style="grid-column: 1 / -1;">
-                    <h3>Symptom Intensity Tracking (Scale 1-10)</h3>
+                    <h3>Symptom Trend: Weekly Intensity</h3>
                     <canvas id="symptomChart"></canvas>
                 </div>
                 
             </div>
         </section>
 
-        <!-- HOMEOPATHIC REMEDIES SECTION -->
+        <!-- REMEDIES SECTION -->
         <section id="section-remedies" class="content-section">
             <div class="list-header" style="display:flex; justify-content:space-between; margin-bottom: 20px;">
-                <h2>Active Homeopathic Remedies</h2>
+                <h2>Active Remedies</h2>
                 <button class="btn-primary"><i class="fas fa-plus"></i> Add Remedy</button>
             </div>
             <div class="list-container">
                 <!-- Sample Remedy 1 -->
                 <div class="remedy-card glass-card">
                     <div class="remedy-info">
-                        <div class="remedy-name">Arnica Montana</div>
-                        <div class="remedy-details">30C Potency • Single Dose • For shock/trauma</div>
+                        <div class="remedy-name">Arnica Montana 30C</div>
+                        <div class="remedy-details">Twice Daily • For Muscle Soreness</div>
                     </div>
                     <div class="remedy-actions">
                         <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
@@ -713,8 +726,8 @@
                 <!-- Sample Remedy 2 -->
                 <div class="remedy-card glass-card">
                     <div class="remedy-info">
-                        <div class="remedy-name">Nux Vomica</div>
-                        <div class="remedy-details">6C Potency • Twice Daily • Digestive support, Irritability</div>
+                        <div class="remedy-name">Nux Vomica 6C</div>
+                        <div class="remedy-details">As Needed • For Digestive Discomfort</div>
                     </div>
                     <div class="remedy-actions">
                         <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
@@ -723,16 +736,6 @@
                 </div>
             </div>
         </section>
-        
-        <!-- SYMPTOM PICTURE SECTION (Placeholder for detail entry) -->
-        <section id="section-symptoms" class="content-section">
-            <h2 class="homeopathy-gradient">Symptom Picture Entry</h2>
-            <div class="glass-card">
-                <p>Record the most characteristic, strange, rare, and peculiar (S.R.P.) symptoms for a proper Similimum selection.</p>
-                <p style="opacity:0.6;">(Detailed Symptom Repertory Feature under development)</p>
-            </div>
-        </section>
-
 
         <!-- HEALTH RECORDS SECTION -->
         <section id="section-records" class="content-section">
@@ -746,10 +749,10 @@
             </div>
             <div class="list-container" id="recordsListContainer">
                 <!-- Sample Record 1: Static Placeholder -->
-                <div id="record-cbc" class="record-card glass-card">
+                <div id="record-symptom-diary" class="record-card glass-card">
                     <div class="record-info">
-                        <div class="record-name">Initial Consultation Notes</div>
-                        <div class="record-details">Homeopath Visit • Sep 10, 2025 • **Sample Data**</div>
+                        <div class="record-name">Detailed Symptom Diary</div>
+                        <div class="record-details">Personal Note • Oct 1, 2025 • **Sample Data**</div>
                     </div>
                     <div class="record-actions">
                         <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
@@ -760,26 +763,40 @@
                         </button>
                     </div>
                 </div>
+                <!-- Sample Record 2 -->
+                <div id="record-consultation" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">Consultation Summary</div>
+                        <div class="record-details">Dr. Patil • Sep 15, 2025</div>
+                    </div>
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <button class="btn-icon btn-ai-analyze" title="Show Default Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- AI HOMEOPATHY CONSULTANT SECTION (Analysis Card & Chat) -->
+        <!-- AI HEALTH ASSISTANT SECTION (Analysis Card & Chat) -->
         <section id="section-ai-assistant" class="content-section">
             
             <!-- AI Analysis Results Card (Initial state or last analyzed) -->
             <div id="analysisOutputCard" class="ai-analysis-output glass-card fade-in-up">
-                <h3>AI Symptom Totality Analysis Summary</h3>
+                <h3>AI Symptom & Remedy Analysis Summary</h3>
                 <p class="analysis-date">Last Analyzed: N/A - Upload a report to begin</p>
                 
                 <div class="analysis-segment problems-suggested">
-                    <h4>Clinical Findings & Symptom Characteristics:</h4>
-                    <div class="suggestion"><i class="fas fa-user-md"></i> Upload a symptom journal or report to get a Homeopathic correlation and remedy suggestion.</div>
+                    <h4>Identified Constitutional Pattern:</h4>
+                    <div class="suggestion"><i class="fas fa-robot"></i> Upload a detailed symptom report or diary to get an automated constitutional analysis and remedy suggestion.</div>
                 </div>
 
                 <div class="analysis-segment remedies-suggested">
-                    <h4>AI Suggested Similimum & Potency:</h4>
+                    <h4>AI Remedy & Wellness Recommendations:</h4>
                     <div class="remedy-item" style="border-bottom: none;">
-                        <div><i class="fas fa-vial"></i> Recommendations will appear here after analysis.</div>
+                        <div><i class="fas fa-leaf"></i> Recommendations will appear here after analysis.</div>
                         <div>&nbsp;</div>
                     </div>
                 </div>
@@ -790,20 +807,20 @@
                 <div class="message-container">
                     <!-- AI Welcome Message -->
                     <div class="ai-message">
-                        <div class="message-icon"><i class="fas fa-vial"></i></div>
+                        <div class="message-icon"><i class="fas fa-robot"></i></div>
                         <div class="message-content">
-                            <p>Greetings! I am your Homeopathy AI Consultant. I'm here to assist with:</p>
+                            <p>Hello! I'm your AI Homeopathy Assistant. I specialize in the principles of similia similibus curantur.</p>
                             <ul>
-                                <li>Analyzing reports for key symptoms</li>
-                                <li>Suggesting potential Similimum (remedies)</li>
-                                <li>Offering advice on potency and repetition</li>
+                                <li>Analyze symptoms and suggest potential remedies</li>
+                                <li>Check remedy incompatibilities</li>
+                                <li>Provide information on potencies and dosing</li>
                             </ul>
-                            <p>How can I assist in the discovery of your symptom picture today?</p>
+                            <p>How can I assist you today?</p>
                         </div>
                     </div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Ask about remedy indications, potencies, or miasms...">
+                    <input type="text" id="chatInput" placeholder="Describe your symptoms for a remedy check...">
                     <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -811,7 +828,7 @@
 
         <!-- SETTINGS SECTION (Placeholder) -->
         <section id="section-settings" class="content-section">
-            <h2 class="homeopathy-gradient">Settings</h2>
+            <h2 style="color: var(--secondary-color);">Settings</h2>
             <div class="glass-card">
                 <p>Configure your account and privacy settings here.</p>
                 <p style="opacity:0.6;">(Feature under development)</p>
@@ -836,47 +853,47 @@
         let chatHistory = []; // Conversation history for the chat assistant
 
         // --- GEMINI API Configuration ---
-        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=";
+        const API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
         const API_KEY = ""; // Provided by the Canvas environment
-        const GEMINI_CHAT_MODEL = "gemini-2.5-flash-preview-05-20"; 
+        const ANALYSIS_MODEL = "gemini-2.5-flash-preview-05-20"; // Model for structured analysis
+        const CHAT_MODEL = "gemini-2.5-flash-preview-05-20"; // Model for conversational chat
 
-        // --- GEMINI SYSTEM INSTRUCTIONS (HOMEOPATHY FOCUS) ---
-        const ANALYSIS_SYSTEM_INSTRUCTION = "You are an expert AI Homeopathic practitioner. Your task is to analyze the provided raw health report, lab data, or symptom journal and synthesize the data into a clear 'Symptom Totality'. Generate a concise, structured JSON summary that includes the most probable Similimum (remedy), recommended potency, and specific follow-up advice. Adhere strictly to the principles of Homeopathy. Do not include any text outside the JSON object.";
+        // --- GEMINI SYSTEM INSTRUCTIONS ---
+        const ANALYSIS_SYSTEM_INSTRUCTION = "You are an expert AI Homeopathy analyst. Your task is to analyze the provided raw symptom report or health data and generate a concise, structured JSON summary of key symptomatic findings and a primary constitutional remedy recommendation. Focus on the totality of symptoms, modalities (worse/better by), and mental/emotional state to suggest the most appropriate single remedy. Do not include any text outside the JSON object.";
         
-        const CHAT_SYSTEM_INSTRUCTION = "You are a warm, knowledgeable, and concise Homeopathy AI Consultant. You specialize in discussing the Materia Medica, understanding miasms, explaining potentization, and providing general guidance on remedy selection based on the 'totality of symptoms'. Keep your responses encouraging, brief, and always advise the user to consult a professional Homeopath (MD/D.H.M.S.) for definitive diagnosis or treatment.";
+        const CHAT_SYSTEM_INSTRUCTION = "You are a friendly, concise, and helpful AI Homeopathy Assistant. You specialize in analyzing symptoms based on homeopathic principles, suggesting potential remedies (e.g., Arnica 30C), checking remedy incompatibilities, and offering general wellness tips congruent with homeopathy. Keep your responses short and encouraging. Always state that suggested remedies are not a substitute for consulting a qualified homeopath or doctor.";
 
-        // --- STRUCTURED RESPONSE SCHEMA FOR HOMEOPATHY ANALYSIS ---
+        // --- STRUCTURED RESPONSE SCHEMA FOR ANALYSIS ---
         const ANALYSIS_RESPONSE_SCHEMA = {
             type: "OBJECT",
             properties: {
-                "reportTitle": { "type": "STRING", "description": "A concise title for the analyzed report (e.g., 'Acute Fever Symptom Analysis')." },
+                "reportTitle": { "type": "STRING", "description": "A concise title for the analyzed report (e.g., 'Acute Symptom Analysis')." },
                 "analysisDate": { "type": "STRING", "description": "The current date or date derived from the report, in YYYY-MM-DD format." },
-                "symptomCharacteristics": {
+                "suggestedProblems": {
                     "type": "ARRAY",
-                    "description": "A list of key symptom characteristics (S.R.P.) and clinical correlations.",
+                    "description": "A list of identified symptom patterns or constitutional types.",
                     "items": {
                         "type": "OBJECT",
                         "properties": {
-                            "characteristic": { "type": "STRING", "description": "Key symptom, modality, or clinical finding." },
-                            "correlation": { "type": "STRING", "description": "Homeopathic correlation (e.g., 'Worse with heat suggests Pulsatilla type')." }
+                            "type": { "type": "STRING", "description": "PATTERN (for symptom clusters) or CONSTITUTIONAL (for type matches)." },
+                            "description": { "type": "STRING", "description": "The description of the symptom pattern or constitutional match (e.g., 'Acute pain with bruising tendency, key modality: worse from motion')." }
                         }
                     }
                 },
-                "remedyRecommendation": {
-                    "type": "OBJECT",
-                    "description": "The primary recommended Similimum (remedy) and protocol.",
-                    "properties": {
-                        "remedyName": { "type": "STRING", "description": "Name of the most probable Similimum (e.g., 'Belladonna')." },
-                        "potency": { "type": "STRING", "description": "Recommended potency (e.g., '30C', 'LM1')." },
-                        "protocol": { "type": "STRING", "description": "Dosage and repetition instructions (e.g., 'Single dose, wait for reaction.')." }
+                "remedyRecommendations": {
+                    "type": "ARRAY",
+                    "description": "A list of primary homeopathic remedies and wellness recommendations.",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "name": { "type": "STRING", "description": "Name of the remedy or recommendation (e.g., 'Arnica Montana 30C', 'Hydration Focus')." },
+                            "details": { "type": "STRING", "description": "Potency, dosage/instruction details, or a short description of the wellness change needed." },
+                            "actionRequired": { "type": "BOOLEAN", "description": "True if this is a new remedy/action the user should add to their schedule, false otherwise." }
+                        }
                     }
-                },
-                "followUpAdvice": {
-                    "type": "STRING",
-                    "description": "Specific non-medicinal advice for follow-up (e.g., 'Maintain symptom journal. Avoid coffee and mint.')."
                 }
             },
-            "propertyOrdering": ["reportTitle", "analysisDate", "symptomCharacteristics", "remedyRecommendation", "followUpAdvice"]
+            "propertyOrdering": ["reportTitle", "analysisDate", "suggestedProblems", "remedyRecommendations"]
         };
 
         // Initialize Firebase and Auth
@@ -890,7 +907,7 @@
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         currentUserId = user.uid;
-                        document.getElementById('userIdDisplay').textContent = `User ID: ${user.uid}`;
+                        document.getElementById('userIdDisplay').textContent = `User ID: ${currentUserId}`;
                         console.log("Authenticated with user ID:", currentUserId);
                     } else {
                         // Attempt to sign in using custom token or anonymously
@@ -898,11 +915,6 @@
                             await signInWithCustomToken(auth, initialAuthToken);
                         } else {
                             await signInAnonymously(auth);
-                        }
-                        // Update currentUserId if anonymous sign-in is successful
-                        if(auth.currentUser) {
-                           currentUserId = auth.currentUser.uid;
-                           document.getElementById('userIdDisplay').textContent = `User ID: ${currentUserId}`;
                         }
                     }
                 });
@@ -916,7 +928,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             setupNavigation();
-            initSymptomChart(); // Initialize the Homeopathy specific chart
+            initChart();
             setupSidebarToggle();
             showDefaultAnalysis(); // Load the default analysis on startup
             setupChatListeners(); // Initialize chat listeners
@@ -956,6 +968,11 @@
 
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
+                    // Check if the link is the logout or switch system link and let default behavior take over if no section is defined
+                    if (!link.getAttribute('data-section') && link.getAttribute('href') !== '#') {
+                        return; 
+                    }
+                    
                     e.preventDefault();
                     
                     navLinks.forEach(l => l.classList.remove('active'));
@@ -965,12 +982,12 @@
                     sections.forEach(section => {
                         section.classList.remove('active');
                     });
-                    const targetSection = document.getElementById(targetSectionId);
-                    if (targetSection) {
-                         targetSection.classList.add('active');
+                    
+                    if (targetSectionId) {
+                        document.getElementById(targetSectionId).classList.add('active');
+                    
+                        pageTitle.textContent = link.querySelector('span') ? link.querySelector('span').textContent : 'Dashboard';
                     }
-                   
-                    pageTitle.textContent = link.querySelector('span') ? link.querySelector('span').textContent : 'Dashboard';
 
                     if (window.innerWidth <= 600) {
                         const sidebar = document.getElementById('sidebar');
@@ -981,24 +998,21 @@
             });
         }
 
-        function initSymptomChart() {
+        function initChart() {
             const ctx = document.getElementById('symptomChart');
             if (!ctx) return;
 
             new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                     datasets: [{
                         label: 'Symptom Intensity (1-10)',
-                        data: [8, 7, 5, 4, 3, 2, 1], // Simulated healing curve
+                        data: [5, 4, 6, 3, 2, 3, 1],
+                        backgroundColor: 'var(--primary-color)',
                         borderColor: 'var(--primary-color)',
-                        backgroundColor: 'rgba(125, 60, 152, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 6,
-                        pointHoverRadius: 8,
-                        pointBackgroundColor: 'var(--secondary-color)'
+                        borderWidth: 1,
+                        borderRadius: 5,
                     }]
                 },
                 options: {
@@ -1006,31 +1020,19 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'top',
-                            labels: {
-                                color: 'var(--text-light)'
-                            }
+                            display: false
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             max: 10,
-                            ticks: {
-                                stepSize: 1,
-                                color: 'rgba(255, 255, 255, 0.7)'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'var(--text-light)' }
                         },
                         x: {
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                            grid: { display: false },
+                            ticks: { color: 'var(--text-light)' }
                         }
                     }
                 }
@@ -1076,19 +1078,24 @@
 
         // --- FIREBASE LOGIC ---
 
-        function logout() {
+        // Exposed globally to be callable from the static HTML element
+        window.logout = function() {
             if (auth) {
                 signOut(auth).then(() => {
-                    showModal('Logged Out', 'You have been successfully logged out. Reloading...');
+                    showModal('Logged Out', 'You have been successfully logged out. Redirecting to index.html...', false);
                     setTimeout(() => {
-                        window.location.reload(); 
+                        window.location.href = "index.html"; 
                     }, 1500);
                 }).catch(error => {
                     console.error("Logout Error:", error);
                     showModal('Logout Failed', `Could not sign out: ${error.message}`);
                 });
             } else {
-                showModal('Error', 'Authentication service is not initialized.');
+                // Fallback for non-auth environments to fulfill the redirect requirement
+                showModal('Logout', 'Logging out (Auth not initialized). Redirecting to index.html...', false);
+                setTimeout(() => {
+                    window.location.href = "index.html"; 
+                }, 1500);
             }
         }
         
@@ -1097,8 +1104,9 @@
         /**
          * Generic function to call the Gemini API with structured output.
          */
-        async function geminiApiCall(contents, schema, systemInstruction, maxRetries = 3) {
-            const url = `${GEMINI_API_URL}${API_KEY}`;
+        async function geminiApiCall(contents, schema, systemInstruction, modelName, maxRetries = 3) {
+            const url = `${API_BASE_URL}${modelName}:generateContent?key=${API_KEY}`;
+            
             const payload = {
                 contents: contents,
                 systemInstruction: { parts: [{ text: systemInstruction }] },
@@ -1120,8 +1128,9 @@
                         if (response.status === 429 && attempt < maxRetries - 1) {
                             const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
                             await new Promise(resolve => setTimeout(resolve, delay));
-                            continue; // Retry
+                            continue;
                         }
+                        console.error(`API Call Error: Status ${response.status}`, await response.text());
                         throw new Error(`API call failed with status ${response.status}`);
                     }
 
@@ -1145,7 +1154,7 @@
          * Handles analyzing the uploaded file content using the Gemini API.
          * Supports Text, PDF, and Image files.
          */
-        window.analyzeUploadedReport = async function(file) { 
+        window.analyzeUploadedReport = async function(file) {
             if (!file) {
                 showModal('Upload Error', 'No file selected.');
                 return;
@@ -1155,7 +1164,7 @@
             const isImageOrPDF = file.type.startsWith('image/') || file.type === 'application/pdf';
             const reader = new FileReader();
 
-            showModal('Homeopathy AI Analysis Initiated', `Processing report: "${file.name}". This may take a moment...`, true); 
+            showModal('AI Analysis Initiated', `Processing report: "${file.name}". This may take a moment...`, true); 
 
             try {
                 const reportContent = await new Promise((resolve, reject) => {
@@ -1163,11 +1172,9 @@
                     reader.onerror = reject;
 
                     if (isTextFile) {
-                        // For text files, read content directly
                         reader.readAsText(file);
                     } else if (isImageOrPDF) {
-                        // For images/PDFs, read as Base64 data URL
-                        if (file.size > 10 * 1024 * 1024) { // 10MB limit check
+                        if (file.size > 10 * 1024 * 1024) {
                             throw new Error("File is too large. Max size is 10MB for image/PDF reports.");
                         }
                         reader.readAsDataURL(file);
@@ -1177,13 +1184,11 @@
                 });
 
                 let contents;
-                const userPrompt = "Analyze this patient data (report/symptoms). Identify key characteristics, determine the most likely Similimum, and provide potency/protocol details based on homeopathic principles. Provide the results in the required JSON structure only.";
+                const userPrompt = "Analyze this health report or symptom diary. Identify the primary symptom pattern and suggest a constitutional or acute homeopathic remedy based on the principles of similia. Provide the results in the required JSON structure only.";
 
                 if (isTextFile) {
-                    // For text, contents is simple text part
-                    contents = [{ parts: [{ text: `${userPrompt}\n\n--- PATIENT DATA ---\n${reportContent}` }] }];
+                    contents = [{ parts: [{ text: `${userPrompt}\n\n--- REPORT TEXT ---\n${reportContent}` }] }];
                 } else if (isImageOrPDF) {
-                    // For image/PDF, contents includes inlineData part
                     const [mimeType, base64Data] = reportContent.split(';base64,');
 
                     if (!base64Data) {
@@ -1209,30 +1214,27 @@
                 const analysisData = await geminiApiCall(
                     contents, 
                     ANALYSIS_RESPONSE_SCHEMA, 
-                    ANALYSIS_SYSTEM_INSTRUCTION
+                    ANALYSIS_SYSTEM_INSTRUCTION,
+                    ANALYSIS_MODEL
                 );
 
-                // Add the analyzed record to the static list (simulated persistence)
                 addAnalyzedRecordToUI(file.name, analysisData.reportTitle);
-
-                // Render the results in the dedicated section
                 renderAnalysisResults(analysisData);
 
-                showModal('Analysis Complete', `Successfully analyzed "${analysisData.reportTitle}". Results displayed in the AI Consultant tab.`, false);
+                showModal('Analysis Complete', `Successfully analyzed "${analysisData.reportTitle}". Results displayed in the AI Assistant tab.`, false);
                 
-                // Switch to AI Assistant tab
                 document.querySelector('[data-section="section-ai-assistant"]').click();
 
             } catch (error) {
                 console.error("Full analysis error:", error);
                 showModal('Analysis Failed', `Could not complete analysis. Error: ${error.message || 'Check console for details.'}`, false);
             } finally {
-                document.getElementById('reportFileInput').value = ''; // Clear file input
+                document.getElementById('reportFileInput').value = '';
             }
         }
         
         /**
-         * Renders the structured analysis results based on the Gemini API output structure.
+         * Renders the simulated analysis results based on the Gemini API output structure.
          */
         function renderAnalysisResults(analysisData) {
             const card = document.getElementById('analysisOutputCard');
@@ -1250,57 +1252,40 @@
                 card.querySelector('h3').textContent = analysisData.reportTitle;
                 card.querySelector('.analysis-date').textContent = `Last Analyzed: ${analysisData.analysisDate || new Date().toLocaleDateString()}`;
 
-                // 1. Symptom Characteristics / Correlations
-                let problemsHtml = '<h4>Clinical Findings & Symptom Characteristics:</h4>';
-                if (analysisData.symptomCharacteristics && analysisData.symptomCharacteristics.length > 0) {
-                    analysisData.symptomCharacteristics.forEach(p => {
-                        const isKey = p.characteristic && (p.characteristic.toLowerCase().includes('mental') || p.characteristic.toLowerCase().includes('peculiar'));
-                        const icon = isKey ? 'fa-star' : 'fa-clipboard-list';
-
+                // 1. Symptom Patterns/Constitutional Types
+                let problemsHtml = '<h4>Identified Constitutional Pattern:</h4>';
+                if (analysisData.suggestedProblems && analysisData.suggestedProblems.length > 0) {
+                    analysisData.suggestedProblems.forEach(p => {
+                        const isAlert = p.type && p.type.toUpperCase() === 'PATTERN';
                         problemsHtml += `
-                            <div class="suggestion ${isKey ? 'alert' : ''}">
-                                <i class="fas ${icon}"></i> 
-                                <strong>${p.characteristic}:</strong> ${p.correlation}
+                            <div class="suggestion ${isAlert ? 'alert' : ''}">
+                                <i class="fas ${isAlert ? 'fa-star' : 'fa-check-circle'}"></i> 
+                                ${p.description}
                             </div>
                         `;
                     });
                 } else {
-                    problemsHtml += '<div class="suggestion"><i class="fas fa-check-circle"></i> No characteristic symptoms identified from report.</div>';
+                    problemsHtml += '<div class="suggestion"><i class="fas fa-search"></i> Needs more detailed symptomology for pattern matching.</div>';
                 }
                 problemsSegment.innerHTML = problemsHtml;
 
-                // 2. Remedy Recommendation & Protocol
-                let remediesHtml = '<h4>AI Suggested Similimum & Potency:</h4>';
-                const remedy = analysisData.remedyRecommendation;
-
-                if (remedy && remedy.remedyName) {
-                    remediesHtml += `
-                        <div class="remedy-item">
-                            <div>
-                                <i class="fas fa-vial"></i> 
-                                <strong>Remedy:</strong> ${remedy.remedyName || 'N/A'}
+                // 2. Remedy/Wellness Recommendations
+                let remediesHtml = '<h4>AI Remedy & Wellness Recommendations:</h4>';
+                if (analysisData.remedyRecommendations && analysisData.remedyRecommendations.length > 0) {
+                    analysisData.remedyRecommendations.forEach(m => {
+                        const icon = m.name.toLowerCase().includes('wellness') || m.name.toLowerCase().includes('dietary') ? 'fa-sun' : 'fa-leaf';
+                        const buttonHtml = m.actionRequired ? `<button class="btn-add-remedy">Add to Schedule</button>` : `<div>&nbsp;</div>`;
+                        remediesHtml += `
+                            <div class="remedy-item">
+                                <div>
+                                    <i class="fas ${icon}"></i> **${m.name}:** ${m.details}
+                                </div>
+                                ${buttonHtml}
                             </div>
-                            <div>
-                                <strong>Potency:</strong> ${remedy.potency || 'N/A'}
-                            </div>
-                        </div>
-                        <div class="remedy-item" style="border-bottom: none;">
-                            <div>
-                                <i class="fas fa-prescription"></i> 
-                                <strong>Protocol:</strong> ${remedy.protocol || 'N/A'}
-                            </div>
-                            <button class="btn-add-remedy">Add to Regimen</button>
-                        </div>
-                    `;
-                    if (analysisData.followUpAdvice) {
-                         remediesHtml += `<p style="margin-top: 15px; border-top: 1px dashed var(--glass-border); padding-top: 10px;">
-                             <i class="fas fa-lightbulb" style="color: var(--symptom-color);"></i> 
-                             <strong>Follow-up Advice:</strong> ${analysisData.followUpAdvice}
-                         </p>`;
-                    }
-
+                        `;
+                    });
                 } else {
-                    remediesHtml += '<div class="remedy-item" style="border-bottom: none;"><i class="fas fa-leaf"></i> Insufficient data for Similimum recommendation.</div>';
+                    remediesHtml += '<div class="remedy-item" style="border-bottom: none;"><i class="fas fa-robot"></i> No specific remedy recommended without further detail.</div>';
                 }
                 remediesSegment.innerHTML = remediesHtml;
 
@@ -1321,7 +1306,7 @@
                 <div id="${newRecordId}" class="record-card glass-card">
                     <div class="record-info">
                         <div class="record-name">${displayTitle}</div>
-                        <div class="record-details">Custom Upload • ${date} • **Homeopathy AI Analysis Complete**</div>
+                        <div class="record-details">Custom Upload • ${date} • **AI Analysis Complete**</div>
                     </div>
                     <div class="record-actions">
                         <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
@@ -1332,28 +1317,25 @@
                     </div>
                 </div>
             `;
-            // Add the new record after the file input mechanism
             listContainer.insertAdjacentHTML('afterbegin', newRecordHtml);
         }
         
         /**
-         * Loads a default, simulated Homeopathy analysis result.
+         * Loads a default, simulated analysis result for the static records.
          */
         function showDefaultAnalysis() {
             const defaultAnalysis = {
-                reportTitle: "Simulated Acute Headache Symptom Totality",
-                analysisDate: "Oct 15, 2025",
-                symptomCharacteristics: [
-                    { "characteristic": "Pulsating headache, right side", "correlation": "Classic symptom for Belladonna or Sanguinaria." },
-                    { "characteristic": "Aggravation from bright light & noise", "correlation": "Key modality pointing strongly to Belladonna." },
-                    { "characteristic": "Desire for cold drinks, but vomits after", "correlation": "Peculiar symptom that requires careful differentiation." }
+                reportTitle: "Simulated Symptom Analysis",
+                analysisDate: "Oct 1, 2025",
+                suggestedProblems: [
+                    { "type": "PATTERN", "description": "Symptoms worse from cold, damp weather, better from warm applications. Indicates a Rhus Tox-like pattern." },
+                    { "type": "CONSTITUTIONAL", "description": "Mental State: Anxious, restless, and fearful." }
                 ],
-                remedyRecommendation: {
-                    "remedyName": "Belladonna",
-                    "potency": "30C",
-                    "protocol": "Dissolve 4 pellets in water. Take one sip every 4 hours for 3 doses, stop upon improvement."
-                },
-                followUpAdvice: "Keep a detailed journal noting any change in pain intensity, location, or associated feelings (e.g., irritation, fear). Avoid strong smelling substances like camphor and mint."
+                remedyRecommendations: [
+                    { "name": "Rhus Toxicodendron 30C", "details": "4 pellets, twice daily until improvement. Stop on relief.", "actionRequired": true },
+                    { "name": "Hydration Focus", "details": "Maintain high fluid intake to support detoxification.", "actionRequired": true },
+                    { "name": "Wellness Tip", "details": "Gentle, repetitive motion helps alleviate joint stiffness.", "actionRequired": false }
+                ]
             };
             renderAnalysisResults(defaultAnalysis);
         }
@@ -1368,9 +1350,8 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `${sender}-message`;
             
-            const iconClass = sender === 'ai' ? 'fa-vial' : 'fa-user-circle';
+            const iconClass = sender === 'ai' ? 'fa-robot' : 'fa-user-circle';
             
-            // Only add actual messages (not loading dots) to history
             if (text !== '...') {
                 chatHistory.push({ role: sender === 'ai' ? 'model' : 'user', parts: [{ text: text }] });
             }
@@ -1383,7 +1364,7 @@
             `;
             container.appendChild(messageDiv);
             container.scrollTop = container.scrollHeight;
-            return messageDiv; // Return for potentially updating loading message
+            return messageDiv;
         }
 
         function setupChatListeners() {
@@ -1407,7 +1388,7 @@
 
             // 1. Display user message
             appendMessage('user', userQuery);
-            chatInput.value = ''; // Clear input
+            chatInput.value = '';
             chatInput.disabled = true;
             sendButton.disabled = true;
 
@@ -1420,14 +1401,13 @@
                 const aiResponseText = await callGeminiChat(userQuery);
 
                 // 4. Update display
-                loadingMessageElement.remove(); // Remove loading state
+                loadingMessageElement.remove();
                 appendMessage('ai', aiResponseText);
 
             } catch (error) {
                 console.error("AI Chat Error:", error);
-                // Ensure loading indicator is removed on error
                 loadingMessageElement.remove();
-                appendMessage('ai', "Apologies, the vital force (network connection) is disrupted. Please try again soon.", true);
+                appendMessage('ai', "Sorry, I'm having trouble connecting to the AI Assistant right now. Please check your network or try refreshing.", true);
             } finally {
                 chatInput.disabled = false;
                 sendButton.disabled = false;
@@ -1439,9 +1419,8 @@
          * Handles the actual API call for conversational chat.
          */
         async function callGeminiChat(prompt, maxRetries = 3) {
-            const url = `${GEMINI_API_URL.replace('gemini-2.5-flash-preview-05-20', GEMINI_CHAT_MODEL)}${API_KEY}`;
+            const url = `${API_BASE_URL}${CHAT_MODEL}:generateContent?key=${API_KEY}`;
             
-            // The history accumulates in appendMessage
             const payload = {
                 contents: chatHistory, 
                 systemInstruction: { parts: [{ text: CHAT_SYSTEM_INSTRUCTION }] }
@@ -1459,7 +1438,7 @@
                         if (response.status === 429 && attempt < maxRetries - 1) {
                             const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
                             await new Promise(resolve => setTimeout(resolve, delay));
-                            continue; // Retry
+                            continue;
                         }
                         throw new Error(`API call failed with status ${response.status}`);
                     }
