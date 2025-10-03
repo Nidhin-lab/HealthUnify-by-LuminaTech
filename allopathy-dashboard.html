@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dashboard-body">
-
+    
     <aside class="sidebar glass-effect" id="sidebar">
         <div class="sidebar-header">
             <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
@@ -86,9 +86,9 @@
         </div>
     </aside>
 
-
+    
     <main class="main-content">
-
+        
         <header class="content-header glass-effect">
             <div class="header-left">
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -111,12 +111,12 @@
             </div>
         </header>
 
-
+       
         <div class="content-body">
-
+            
             <section id="section-dashboard" class="content-section active">
                 <div class="dashboard-grid">
-
+                    
                     <div class="welcome-card glass-card fade-in-up">
                         <div class="welcome-content">
                             <h2>Welcome back, <span id="dashboardUserName">Demo Patient</span>!</h2>
@@ -139,7 +139,7 @@
                         </div>
                     </div>
 
-
+                   
                     <div class="vital-card glass-card fade-in-up delay-1" style="--delay: 0.1s">
                         <div class="vital-icon heart-rate">
                             <i class="fas fa-heartbeat"></i>
@@ -197,7 +197,7 @@
                     </div>
                 </div>
 
-
+               
                 <div class="dashboard-row">
                     <div class="quick-actions-card glass-card fade-in-up">
                         <h3>Quick Actions</h3>
@@ -227,7 +227,7 @@
                     </div>
                 </div>
 
-
+                
                 <div class="dashboard-row">
                     <div class="recent-activity-card glass-card fade-in-up">
                         <div class="card-header-flex">
@@ -311,7 +311,7 @@
                 </div>
             </section>
 
-
+            
             <section id="section-records" class="content-section">
                 <div class="section-header-flex">
                     <div>
@@ -428,7 +428,7 @@
                 </div>
             </section>
 
-
+            
             <section id="section-medications" class="content-section">
                 <div class="section-header-flex">
                     <div>
@@ -527,7 +527,7 @@
                 </div>
             </section>
 
-
+            
             <section id="section-ai-assistant" class="content-section">
                 <div class="ai-assistant-container">
                     <div class="ai-header glass-card">
@@ -581,315 +581,7 @@
                 </div>
             </section>
 
-
-            <section id="section-lab-results" class="content-section">
-                <div class="section-header-flex">
-                    <div>
-                        <h2 class="section-title-main">Lab Results</h2>
-                        <p class="section-subtitle">View and track your laboratory test results</p>
-                    </div>
-                    <button class="btn btn-primary ripple-effect">
-                        <i class="fas fa-upload"></i> Upload Results
-                    </button>
-                </div>
-
-                <div class="lab-results-grid">
-                    <div class="lab-result-card glass-card">
-                        <div class="lab-result-header">
-                            <h4>Complete Blood Count (CBC)</h4>
-                            <span class="result-date">October 1, 2025</span>
-                        </div>
-                        <div class="lab-result-values">
-                            <div class="result-item">
-                                <span class="result-label">Hemoglobin:</span>
-                                <span class="result-value normal">14.5 g/dL</span>
-                                <span class="result-range">(13-17)</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-label">WBC Count:</span>
-                                <span class="result-value normal">7,500/µL</span>
-                                <span class="result-range">(4,000-11,000)</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-label">Platelets:</span>
-                                <span class="result-value normal">250,000/µL</span>
-                                <span class="result-range">(150,000-400,000)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="lab-result-card glass-card">
-                        <div class="lab-result-header">
-                            <h4>Lipid Profile</h4>
-                            <span class="result-date">September 28, 2025</span>
-                        </div>
-                        <div class="lab-result-values">
-                            <div class="result-item">
-                                <span class="result-label">Total Cholesterol:</span>
-                                <span class="result-value normal">180 mg/dL</span>
-                                <span class="result-range">(&lt;200)</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-label">LDL:</span>
-                                <span class="result-value normal">100 mg/dL</span>
-                                <span class="result-range">(&lt;130)</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-label">HDL:</span>
-                                <span class="result-value normal">55 mg/dL</span>
-                                <span class="result-range">(&gt;40)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-analytics" class="content-section">
-                <div>
-                    <h2 class="section-title-main">Health Analytics</h2>
-                    <p class="section-subtitle">Track your health trends and patterns</p>
-                </div>
-
-                <div class="analytics-grid">
-                    <div class="analytics-card glass-card">
-                        <h3>Weight Trend (Last 6 Months)</h3>
-                        <canvas id="weightChart"></canvas>
-                    </div>
-
-                    <div class="analytics-card glass-card">
-                        <h3>Blood Pressure Trend</h3>
-                        <canvas id="bpChart"></canvas>
-                    </div>
-
-                    <div class="analytics-card glass-card">
-                        <h3>Activity Summary</h3>
-                        <div class="activity-summary">
-                            <div class="summary-item">
-                                <i class="fas fa-walking"></i>
-                                <div>
-                                    <h4>8,542</h4>
-                                    <p>Steps Today</p>
-                                </div>
-                            </div>
-                            <div class="summary-item">
-                                <i class="fas fa-fire"></i>
-                                <div>
-                                    <h4>450</h4>
-                                    <p>Calories Burned</p>
-                                </div>
-                            </div>
-                            <div class="summary-item">
-                                <i class="fas fa-bed"></i>
-                                <div>
-                                    <h4>7.5 hrs</h4>
-                                    <p>Sleep Duration</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-appointments" class="content-section">
-                <div class="section-header-flex">
-                    <div>
-                        <h2 class="section-title-main">Appointments</h2>
-                        <p class="section-subtitle">Manage your doctor appointments</p>
-                    </div>
-                    <button class="btn btn-primary ripple-effect">
-                        <i class="fas fa-calendar-plus"></i> Schedule New
-                    </button>
-                </div>
-
-                <div class="appointments-detailed-list">
-                    <div class="appointment-detailed-card glass-card">
-                        <div class="appointment-header">
-                            <div class="doctor-info">
-                                <img src="https://ui-avatars.com/api/?name=Dr+Michael+Chen&background=0078D4&color=fff" alt="Doctor" class="doctor-avatar">
-                                <div>
-                                    <h4>Dr. Michael Chen</h4>
-                                    <p>General Physician</p>
-                                </div>
-                            </div>
-                            <span class="appointment-badge upcoming">Upcoming</span>
-                        </div>
-                        <div class="appointment-details">
-                            <div class="detail-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>October 15, 2025</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-clock"></i>
-                                <span>10:00 AM - 10:30 AM</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-video"></i>
-                                <span>Virtual Consultation</span>
-                            </div>
-                        </div>
-                        <div class="appointment-actions">
-                            <button class="btn btn-primary ripple-effect">Join Call</button>
-                            <button class="btn btn-secondary ripple-effect">Reschedule</button>
-                        </div>
-                    </div>
-
-                    <div class="appointment-detailed-card glass-card">
-                        <div class="appointment-header">
-                            <div class="doctor-info">
-                                <img src="https://ui-avatars.com/api/?name=Dr+Emily+Rodriguez&background=0078D4&color=fff" alt="Doctor" class="doctor-avatar">
-                                <div>
-                                    <h4>Dr. Emily Rodriguez</h4>
-                                    <p>Cardiologist</p>
-                                </div>
-                            </div>
-                            <span class="appointment-badge upcoming">Upcoming</span>
-                        </div>
-                        <div class="appointment-details">
-                            <div class="detail-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>October 22, 2025</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-clock"></i>
-                                <span>2:30 PM - 3:00 PM</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-hospital"></i>
-                                <span>In-Person Visit</span>
-                            </div>
-                        </div>
-                        <div class="appointment-actions">
-                            <button class="btn btn-primary ripple-effect">Get Directions</button>
-                            <button class="btn btn-secondary ripple-effect">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-messages" class="content-section">
-                <div>
-                    <h2 class="section-title-main">Messages</h2>
-                    <p class="section-subtitle">Communicate with your healthcare providers</p>
-                </div>
-
-                <div class="messages-container glass-card">
-                    <div class="messages-list">
-                        <div class="message-thread">
-                            <img src="https://ui-avatars.com/api/?name=Dr+Sarah+Johnson&background=0078D4&color=fff" alt="Doctor" class="message-avatar">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <h4>Dr. Sarah Johnson</h4>
-                                    <span class="message-time">2 hours ago</span>
-                                </div>
-                                <p>Your latest lab results look good. Let's schedule a follow-up next month.</p>
-                            </div>
-                            <span class="message-unread">New</span>
-                        </div>
-
-                        <div class="message-thread">
-                            <img src="https://ui-avatars.com/api/?name=Dr+Michael+Chen&background=0078D4&color=fff" alt="Doctor" class="message-avatar">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <h4>Dr. Michael Chen</h4>
-                                    <span class="message-time">Yesterday</span>
-                                </div>
-                                <p>Please continue with the prescribed medication and update me on any changes.</p>
-                            </div>
-                        </div>
-
-                        <div class="message-thread">
-                            <img src="https://ui-avatars.com/api/?name=City+Hospital&background=0078D4&color=fff" alt="Hospital" class="message-avatar">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <h4>City Hospital</h4>
-                                    <span class="message-time">3 days ago</span>
-                                </div>
-                                <p>Your appointment has been confirmed for October 15th at 10:00 AM.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-settings" class="content-section">
-                <div>
-                    <h2 class="section-title-main">Settings</h2>
-                    <p class="section-subtitle">Manage your account and preferences</p>
-                </div>
-
-                <div class="settings-grid">
-                    <div class="settings-card glass-card">
-                        <h3><i class="fas fa-user"></i> Profile Information</h3>
-                        <div class="settings-form">
-                            <div class="form-group">
-                                <label>Full Name</label>
-                                <input type="text" class="form-input" value="Demo Patient" placeholder="">
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" class="form-input" value="patient@demo.com" placeholder="">
-                            </div>
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <input type="tel" class="form-input" value="+91 9876543210" placeholder="">
-                            </div>
-                            <button class="btn btn-primary ripple-effect">Update Profile</button>
-                        </div>
-                    </div>
-
-                    <div class="settings-card glass-card">
-                        <h3><i class="fas fa-bell"></i> Notification Preferences</h3>
-                        <div class="settings-toggles">
-                            <div class="toggle-item">
-                                <div>
-                                    <h4>Appointment Reminders</h4>
-                                    <p>Get notified about upcoming appointments</p>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="toggle-item">
-                                <div>
-                                    <h4>Medication Reminders</h4>
-                                    <p>Daily reminders for your medications</p>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="toggle-item">
-                                <div>
-                                    <h4>Lab Results</h4>
-                                    <p>Notifications when new results are available</p>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-card glass-card">
-                        <h3><i class="fas fa-lock"></i> Privacy & Security</h3>
-                        <div class="security-options">
-                            <button class="btn btn-secondary ripple-effect" style="width: 100%; margin-bottom: 1rem;">
-                                <i class="fas fa-key"></i> Change Password
-                            </button>
-                            <button class="btn btn-secondary ripple-effect" style="width: 100%; margin-bottom: 1rem;">
-                                <i class="fas fa-shield-alt"></i> Two-Factor Authentication
-                            </button>
-                            <button class="btn btn-secondary ripple-effect" style="width: 100%;">
-                                <i class="fas fa-download"></i> Download My Data
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            
             <section id="section-emergency" class="content-section">
                 <div class="emergency-container">
                     <div class="emergency-header">
@@ -976,7 +668,7 @@
         </div>
     </main>
 
-
+    
     <div class="toast" id="toast">
         <i class="fas fa-check-circle"></i>
         <span id="toastMessage">Action completed!</span>
@@ -984,7 +676,7 @@
 
     <script src="js/main.js"></script>
     <script>
-
+       
         window.addEventListener('DOMContentLoaded', function() {
             checkAuth();
             initDashboard();
@@ -1005,15 +697,15 @@
         }
 
         function initDashboard() {
-
+            
             const today = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
 
-
+            
             animateCounters();
 
-
+            
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
@@ -1023,7 +715,7 @@
                 });
             });
 
-
+           
             document.getElementById('mobileMenuBtn').addEventListener('click', function() {
                 document.getElementById('sidebar').classList.toggle('active');
             });
@@ -1034,7 +726,7 @@
         }
 
         function switchSection(section) {
-
+            
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.section === section) {
@@ -1042,13 +734,13 @@
                 }
             });
 
-
+           
             document.querySelectorAll('.content-section').forEach(sec => {
                 sec.classList.remove('active');
             });
             document.getElementById('section-' + section).classList.add('active');
 
-
+            
             const titles = {
                 'dashboard': 'Dashboard Overview',
                 'records': 'Health Records',
