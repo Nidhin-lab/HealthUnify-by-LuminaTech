@@ -69,7 +69,7 @@
                 <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#features" class="nav-link">Features</a></li>
-                <li><a href="#team" class="nav-link">Team</a></li>
+                <li><a href="#team" class="nav-link">Our Team</a></li>
                 <li><a href="patient-login.html" class="btn-nav patient-btn">Patient Login</a></li>
                 <li><a href="doctor-login.html" class="btn-nav doctor-btn">Doctor Login</a></li>
             </ul>
@@ -516,11 +516,235 @@
         </div>
     </footer>
 
-
     <button class="scroll-top" id="scrollTop">
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <div class="chatbot-widget" id="chatbotWidget">
+        <div class="chatbot-icon" id="chatbotIcon">
+            <div class="robot-head">
+                <img src="images/logo.png" alt="HealthUnify Bot" class="bot-face">
+                <div class="robot-antenna"></div>
+                <div class="robot-eyes">
+                    <div class="eye left-eye"></div>
+                    <div class="eye right-eye"></div>
+                </div>
+                <div class="online-indicator"></div>
+            </div>
+            <div class="bot-pulse"></div>
+        </div>
+
+        <div class="welcome-bubble" id="welcomeBubble">
+            <button class="close-bubble" id="closeBubble">×</button>
+            <div class="bubble-content">
+                <div class="bubble-header">
+                    <img src="images/logo.png" alt="Bot" class="bubble-logo">
+                    <strong>HealthUnify Bot</strong>
+                </div>
+                <p>👋 Hi! I can help you with:</p>
+                <ul>
+                    <li>🩺 Common health conditions</li>
+                    <li>👥 Our team info</li>
+                    <li>⚡ HealthUnify features</li>
+                </ul>
+                <button class="open-chat-btn" id="openChatFromBubble">Ask Me Anything!</button>
+            </div>
+        </div>
+
+        <div class="chatbot-popup" id="chatbotPopup">
+            <div class="chatbot-header">
+                <img src="images/logo.png" alt="HealthUnify Bot" class="header-logo">
+                <div class="header-text">
+                    <h4>HealthUnify Bot</h4>
+                    <span class="status-online">Online</span>
+                </div>
+                <button class="close-chat" id="closeChat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="bot-message">
+                    <div class="message-avatar">
+                        <img src="images/logo.png" alt="Bot">
+                    </div>
+                    <div class="message-content">
+                        <p>Hi! I am <strong>HealthUnify Bot</strong> 👋</p>
+                        <p>Ask me about:</p>
+                        <ul>
+                            <li>Common health conditions</li>
+                            <li>Our team members</li>
+                            <li>HealthUnify features</li>
+                            <li>Medical systems we support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-suggestions" id="suggestions"></div>
+            <div class="chatbot-input">
+                <input type="text" id="chatInput" placeholder="Type your question...">
+                <button id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+        </div>
+
+        <script>
+        const chatbotIcon = document.getElementById('chatbotIcon');
+        const chatbotPopup = document.getElementById('chatbotPopup');
+        const closeChat = document.getElementById('closeChat');
+        const chatInput = document.getElementById('chatInput');
+        const sendMessage = document.getElementById('sendMessage');
+        const chatMessages = document.getElementById('chatbotMessages');
+        const welcomeBubble = document.getElementById('welcomeBubble');
+        const closeBubble = document.getElementById('closeBubble');
+        const openChatFromBubble = document.getElementById('openChatFromBubble');
+
+        setTimeout(() => welcomeBubble.classList.add('show'), 1000);
+        setTimeout(() => welcomeBubble.classList.remove('show'), 120000);
+
+        closeBubble.addEventListener('click', () => welcomeBubble.classList.remove('show'));
+
+        openChatFromBubble.addEventListener('click', () => {
+            welcomeBubble.classList.remove('show');
+            chatbotPopup.classList.add('active');
+            chatbotIcon.classList.add('hidden');
+        });
+
+        const medicalKnowledge = {
+            team: { keywords: ['team','member','developer','who made','creator','who built','nidhin','agam','hritik','anmol','founder'], response: `👨‍💻 <strong>Nidhin R</strong> - Web Developer (r.nidhinofficial@gmail.com)\n👨‍💻 <strong>Agam Sahni</strong> - AI Tools Specialist (alexpitt009@gmail.com)\n👨‍💻 <strong>Hritik Kumar</strong> - Video Editor & Data Researcher (Kumarhritik030@gmail.com)\n👨‍💻 <strong>Anmol Katiyar</strong> - Documentation (anmolkatiyar084@gmail.com)\n\n🚀 Revolutionizing healthcare technology!` },
+            features: { keywords: ['feature','how work','what can do','benefit','healthunify','platform'], response: `✅ Unified medical records\n✅ AI health insights\n✅ Emergency QR code\n✅ Appointment scheduling\n✅ Medication reminders\n✅ Bank-grade security\n✅ Cross-platform access\n✅ Allopathy + Ayurveda + Homeopathy` },
+            allopathy: { keywords: ['allopath','modern medicine','western medicine','scientific'], response: `<strong>Allopathy</strong> - Evidence-Based Medicine\n\n🏥 Lab results, diagnostics, prescriptions, surgery records, vaccinations, X-rays, CT scans, MRI\n💊 Based on scientific research & clinical trials` },
+            ayurveda: { keywords: ['ayurved','dosha','vata','pitta','kapha','herbal','panchakarma'], response: `<strong>Ayurveda</strong> - 5000-Year Ancient Medicine\n\n🌿 Dosha analysis, herbal treatments, Panchakarma, diet guidance\n🍃 Ashwagandha, Triphala, Turmeric, Brahmi, Neem, Tulsi` },
+            homeopathy: { keywords: ['homeopath','remedy','potency','dilution','like cures like'], response: `<strong>Homeopathy</strong> - Personalized Medicine\n\n💧 Remedies (6C, 30C, 200C), symptom tracking, constitutional analysis\n⚗️ Founded by Samuel Hahnemann (1796)` },
+            diabetes: { keywords: ['diabete','blood sugar','glucose','insulin','type 1','type 2','hba1c'], response: `<strong>Diabetes</strong>\n\n📊 Type 1: No insulin | Type 2: Insulin resistance\n🔍 Symptoms: Thirst, frequent urination, fatigue, blurred vision\n💊 Allopathy: Metformin, Insulin\n🌿 Ayurveda: Bitter melon, Fenugreek, Jamun\n💧 Homeopathy: Syzygium jambolanum` },
+            hypertension: { keywords: ['hypertension','blood pressure','high bp','systolic','diastolic'], response: `<strong>High Blood Pressure</strong>\n\n📈 Normal: <120/80 | Stage 1: 130-139/80-89 | Stage 2: ≥140/90\n💊 Allopathy: ACE inhibitors, Beta-blockers\n🌿 Ayurveda: Arjuna, Ashwagandha, Garlic\n💧 Homeopathy: Rauwolfia, Crataegus` },
+            asthma: { keywords: ['asthma','wheez','breathless','inhaler','respiratory'], response: `<strong>Asthma</strong>\n\n🫁 Wheezing, shortness of breath, chest tightness\n⚡ Triggers: Dust, pollen, smoke, cold air\n💊 Allopathy: Salbutamol, Budesonide\n🌿 Ayurveda: Vasaka, Tulsi, Ginger\n💧 Homeopathy: Arsenicum album` },
+            migraine: { keywords: ['migraine','severe headache','throbbing','aura'], response: `<strong>Migraine</strong>\n\n🧠 Throbbing pain (one side), nausea, light/sound sensitivity, visual aura\n💊 Allopathy: Sumatriptan, Propranolol\n🌿 Ayurveda: Brahmi, Shankhapushpi\n💧 Homeopathy: Belladonna, Glonoinum` },
+            anxiety: { keywords: ['anxiety','panic','worry','stress','depression','mental health'], response: `<strong>Anxiety Disorders</strong>\n\n😰 Excessive worry, restlessness, rapid heartbeat, panic attacks\n💊 Allopathy: SSRIs, Benzodiazepines\n🌿 Ayurveda: Ashwagandha, Brahmi, meditation\n💧 Homeopathy: Aconitum, Argentum nit\n🧘 CBT therapy highly effective` },
+            arthritis: { keywords: ['arthrit','joint pain','rheumatoid','stiff joint','knee pain'], response: `<strong>Arthritis</strong>\n\n🦴 Osteoarthritis (wear & tear) | Rheumatoid (autoimmune) | Gout (uric acid)\n💊 Allopathy: NSAIDs, Methotrexate\n🌿 Ayurveda: Shallaki, Guggulu, Nirgundi\n💧 Homeopathy: Rhus tox, Bryonia` },
+            thyroid: { keywords: ['thyroid','hypothyroid','hyperthyroid','tsh','t3','t4','goiter'], response: `<strong>Thyroid Disorders</strong>\n\n🦋 Hypothyroid: Weight gain, fatigue, cold sensitivity\n🔥 Hyperthyroid: Weight loss, anxiety, heat sensitivity\n💊 Allopathy: Levothyroxine, Carbimazole\n🌿 Ayurveda: Kanchanar Guggulu\n💧 Homeopathy: Calcarea carb, Iodum` },
+            cancer: { keywords: ['cancer','tumor','malignant','chemotherapy','oncology','leukemia'], response: `<strong>Cancer</strong>\n\n🎗️ Types: Breast, lung, prostate, colorectal, skin, blood\n⚠️ Warning: Unexplained weight loss, persistent fatigue, lumps\n💊 Allopathy: Surgery, Chemo, Radiation, Immunotherapy\n🌿 Ayurveda: Supportive care only\n⚠️ NEVER replace conventional treatment` },
+            covid: { keywords: ['covid','corona','coronavirus','pandemic','omicron'], response: `<strong>COVID-19</strong>\n\n🦠 Symptoms: Fever, cough, loss of taste/smell, shortness of breath\n🛡️ Prevention: Vaccination, masks, hand hygiene\n💊 Allopathy: Paracetamol, Dexamethasone\n🌿 Ayurveda: Giloy, Tulsi (immunity)\n💧 Homeopathy: Arsenicum album 30` },
+            heart: { keywords: ['heart attack','cardiac','chest pain','coronary','angina','heart disease'], response: `<strong>Heart Attack</strong>\n\n❤️ Warning: Chest pain, arm/jaw pain, shortness of breath, cold sweat\n💊 Allopathy: Aspirin, Statins, Angioplasty\n🌿 Ayurveda: Arjuna, Pushkarmool\n💧 Homeopathy: Crataegus, Cactus\n🚨 CALL 108 IMMEDIATELY!` },
+            stroke: { keywords: ['stroke','brain attack','paralysis','facial droop'], response: `<strong>Stroke - FAST</strong>\n\n🧠 F: Face drooping | A: Arm weakness | S: Speech difficulty | T: Time to call emergency\n⚡ Ischemic (87%) vs Hemorrhagic (13%)\n💊 Treatment within 3-4.5 hours critical\n🚨 TIME IS BRAIN - Every minute counts!` },
+            pneumonia: { keywords: ['pneumonia','lung infection','chest infection'], response: `<strong>Pneumonia</strong>\n\n🫁 Cough with phlegm, fever, chest pain, shortness of breath\n💊 Allopathy: Antibiotics, Oxygen therapy\n🌿 Ayurveda: Tulsi, Ginger, Turmeric\n💧 Homeopathy: Bryonia, Phosphorus\n💉 Prevention: Pneumococcal vaccine` },
+            kidney: { keywords: ['kidney','renal','dialysis','nephrology','kidney disease'], response: `<strong>Kidney Disease</strong>\n\n🔴 Swelling, decreased urination, fatigue, foamy urine\n💊 Allopathy: BP control, Dialysis, Transplant\n🌿 Ayurveda: Punarnava, Gokshura\n💧 Homeopathy: Apis mel, Berberis\n🥤 Stay hydrated, avoid NSAIDs overuse` },
+            liver: { keywords: ['liver','hepatic','hepatitis','cirrhosis','fatty liver','jaundice'], response: `<strong>Liver Disease</strong>\n\n🟡 Jaundice, abdominal pain, dark urine, pale stools\n💊 Allopathy: Antivirals (Hepatitis), Liver transplant\n🌿 Ayurveda: Kutki, Bhumyamalaki, Kalmegh\n💧 Homeopathy: Chelidonium, Carduus mar\n🍺 Limit alcohol, healthy weight` },
+            allergy: { keywords: ['allergy','allergic','rash','hives','itching','anaphylaxis'], response: `<strong>Allergies</strong>\n\n🤧 Sneezing, itchy eyes, skin rash, swelling\n💊 Allopathy: Antihistamines, EpiPen (anaphylaxis)\n🌿 Ayurveda: Haridra, Neem, Tulsi\n💧 Homeopathy: Allium cepa, Natrum mur\n⚠️ Anaphylaxis is EMERGENCY` },
+            tuberculosis: { keywords: ['tb','tuberculosis','koch','consumption'], response: `<strong>Tuberculosis (TB)</strong>\n\n🦠 Persistent cough (>3 weeks), night sweats, weight loss, blood in sputum\n💊 Allopathy: DOTS therapy (6-9 months) - Rifampicin, Isoniazid, Pyrazinamide\n🌿 Ayurveda: Ashwagandha, Tulsi (supportive)\n💧 Homeopathy: Tuberculinum, Bacillinum\n⚠️ Highly contagious - isolation required` },
+            malaria: { keywords: ['malaria','mosquito','plasmodium','fever cycles'], response: `<strong>Malaria</strong>\n\n🦟 High fever (cyclic), chills, sweating, headache, nausea\n💊 Allopathy: Chloroquine, Artemisinin-based therapy\n🌿 Ayurveda: Neem, Tulsi, Chirayata\n💧 Homeopathy: China officinalis, Natrum mur\n🛡️ Prevention: Mosquito nets, repellents` },
+            dengue: { keywords: ['dengue','breakbone fever','mosquito fever'], response: `<strong>Dengue Fever</strong>\n\n🦟 High fever, severe headache, pain behind eyes, joint/muscle pain, rash\n⚠️ Warning: Bleeding gums, vomiting, abdominal pain (severe dengue)\n💊 Allopathy: Paracetamol, IV fluids (NO aspirin/ibuprofen)\n🌿 Ayurveda: Papaya leaf extract, Giloy\n💧 Homeopathy: Eupatorium perf, Gelsemium\n📊 Monitor platelet count` },
+            typhoid: { keywords: ['typhoid','enteric fever','salmonella'], response: `<strong>Typhoid Fever</strong>\n\n🦠 Sustained fever, headache, abdominal pain, rose spots rash\n💊 Allopathy: Antibiotics (Azithromycin, Ceftriaxone)\n🌿 Ayurveda: Tulsi, Giloy, Neem\n💧 Homeopathy: Baptisia, Rhus tox\n💉 Prevention: Vaccination, safe food/water` },
+            cholesterol: { keywords: ['cholesterol','hdl','ldl','triglyceride','lipid'], response: `<strong>High Cholesterol</strong>\n\n📊 Total: <200 mg/dL | LDL: <100 | HDL: >60 | Triglycerides: <150\n💊 Allopathy: Statins (Atorvastatin), Ezetimibe\n🌿 Ayurveda: Arjuna, Guggulu, Garlic\n💧 Homeopathy: Crataegus, Cholesterinum\n🥗 Diet: Reduce saturated fats, increase fiber` },
+            obesity: { keywords: ['obesity','overweight','weight loss','fat','bmi'], response: `<strong>Obesity</strong>\n\n⚖️ BMI: Overweight (25-29.9) | Obese (≥30)\n💊 Allopathy: Orlistat, Liraglutide, Bariatric surgery\n🌿 Ayurveda: Triphala, Guggulu, Garcinia\n💧 Homeopathy: Phytolacca, Calcarea carb\n🏃 Lifestyle: Calorie deficit, exercise 150 min/week` },
+            anemia: { keywords: ['anemia','anaemia','low hemoglobin','iron deficiency','pallor'], response: `<strong>Anemia</strong>\n\n🔴 Fatigue, pale skin, shortness of breath, dizziness, cold hands\n💊 Allopathy: Iron supplements (Ferrous sulfate), B12, Folic acid\n🌿 Ayurveda: Amalaki, Punarnava, Dates, Pomegranate\n💧 Homeopathy: Ferrum met, China officinalis\n🥩 Diet: Red meat, spinach, lentils, Vitamin C` },
+            insomnia: { keywords: ['insomnia','sleep problem','cant sleep','sleepless'], response: `<strong>Insomnia</strong>\n\n😴 Difficulty falling asleep, staying asleep, waking too early\n💊 Allopathy: Zolpidem, Eszopiclone (short-term), Melatonin\n🌿 Ayurveda: Brahmi, Ashwagandha, warm milk with nutmeg\n💧 Homeopathy: Coffea cruda, Passiflora\n🌙 Sleep hygiene: Regular schedule, dark room, no screens` },
+            acne: { keywords: ['acne','pimple','blackhead','whitehead','skin problem'], response: `<strong>Acne Vulgaris</strong>\n\n🔴 Pimples, blackheads, whiteheads, cysts (face, back, chest)\n💊 Allopathy: Benzoyl peroxide, Retinoids, Antibiotics (severe)\n🌿 Ayurveda: Neem, Turmeric, Manjistha, Aloe vera\n💧 Homeopathy: Sulphur, Hepar sulph, Pulsatilla\n🧼 Cleanse twice daily, don't pick pimples` },
+            eczema: { keywords: ['eczema','atopic dermatitis','skin rash','itchy skin'], response: `<strong>Eczema (Atopic Dermatitis)</strong>\n\n🔴 Itchy, red, dry, cracked skin patches\n💊 Allopathy: Topical steroids, Tacrolimus, Antihistamines\n🌿 Ayurveda: Neem, Manjistha, Turmeric, Coconut oil\n💧 Homeopathy: Graphites, Petroleum, Sulphur\n🧴 Moisturize frequently, avoid triggers` },
+            psoriasis: { keywords: ['psoriasis','scaly skin','plaque'], response: `<strong>Psoriasis</strong>\n\n🔴 Red patches with silvery scales (elbows, knees, scalp)\n💊 Allopathy: Topical steroids, Methotrexate, Biologics\n🌿 Ayurveda: Neem, Turmeric, Guggulu, Panchakarma\n💧 Homeopathy: Arsenicum album, Graphites\n☀️ Sunlight exposure helpful (in moderation)` },
+            constipation: { keywords: ['constipation','hard stool','cant pass stool'], response: `<strong>Constipation</strong>\n\n💩 <3 bowel movements/week, hard/dry stools, straining\n💊 Allopathy: Laxatives (Lactulose, Bisacodyl), Fiber supplements\n🌿 Ayurveda: Triphala, Isabgol (Psyllium husk), warm water\n💧 Homeopathy: Nux vomica, Bryonia, Alumina\n💧 Drink 8-10 glasses water, high-fiber diet` },
+            diarrhea: { keywords: ['diarrhea','loose stool','loose motion','gastroenteritis'], response: `<strong>Diarrhea</strong>\n\n💩 Loose/watery stools (≥3 times/day), abdominal cramps\n💊 Allopathy: ORS, Loperamide, Antibiotics (bacterial)\n🌿 Ayurveda: Kutaja, Bilva, Pomegranate, Curd with rice\n💧 Homeopathy: Podophyllum, Arsenicum album, Veratrum\n⚠️ Dehydration risk - drink plenty of fluids + ORS` },
+            ibs: { keywords: ['ibs','irritable bowel','abdominal pain','bloating'], response: `<strong>Irritable Bowel Syndrome (IBS)</strong>\n\n🤢 Abdominal pain, bloating, diarrhea/constipation alternating\n💊 Allopathy: Antispasmodics, Loperamide, Fiber supplements\n🌿 Ayurveda: Hingvastak churna, Triphala, Ajwain\n💧 Homeopathy: Nux vomica, Colocynthis, Lycopodium\n🥗 Low FODMAP diet, stress management` },
+            gerd: { keywords: ['gerd','acid reflux','heartburn','acidity'], response: `<strong>GERD (Acid Reflux)</strong>\n\n🔥 Heartburn, chest pain, regurgitation, sour taste\n💊 Allopathy: PPIs (Omeprazole, Pantoprazole), H2 blockers\n🌿 Ayurveda: Amla, Yashtimadhu (Licorice), Shatavari\n💧 Homeopathy: Natrum phos, Robinia, Carbo veg\n🍽️ Avoid spicy/fatty foods, eat small meals, elevate head` },
+            ulcer: { keywords: ['ulcer','stomach ulcer','peptic ulcer','gastric'], response: `<strong>Peptic Ulcer</strong>\n\n🔴 Burning stomach pain, nausea, bloating, blood in stool\n💊 Allopathy: PPIs, H. pylori eradication (triple therapy)\n🌿 Ayurveda: Shatavari, Yashtimadhu, Amla\n💧 Homeopathy: Argentum nit, Kali bich, Ornithogalum\n⚠️ Avoid NSAIDs, alcohol, smoking` },
+            pcos: { keywords: ['pcos','polycystic','ovary','irregular period'], response: `<strong>PCOS (Polycystic Ovary Syndrome)</strong>\n\n🔴 Irregular periods, excess hair growth, acne, weight gain, infertility\n💊 Allopathy: Metformin, Birth control pills, Clomiphene (fertility)\n🌿 Ayurveda: Shatavari, Ashoka, Lodhra, Triphala\n💧 Homeopathy: Pulsatilla, Sepia, Calcarea carb\n🏃 Weight loss, exercise, low-GI diet` },
+            uti: { keywords: ['uti','urinary infection','burning urination','cystitis'], response: `<strong>Urinary Tract Infection (UTI)</strong>\n\n🔥 Burning during urination, frequent urge, cloudy/bloody urine, pelvic pain\n💊 Allopathy: Antibiotics (Nitrofurantoin, Ciprofloxacin)\n🌿 Ayurveda: Gokshura, Punarnava, Varuna, Cranberry\n💧 Homeopathy: Cantharis, Berberis, Sarsaparilla\n💧 Drink plenty of water, urinate after intercourse` },
+            erectile: { keywords: ['erectile','ed','impotence','male sexual'], response: `<strong>Erectile Dysfunction (ED)</strong>\n\n⚠️ Inability to achieve/maintain erection\n💊 Allopathy: Sildenafil (Viagra), Tadalafil (Cialis)\n🌿 Ayurveda: Ashwagandha, Shilajit, Safed Musli, Gokshura\n💧 Homeopathy: Lycopodium, Agnus castus, Selenium\n🏋️ Lifestyle: Exercise, quit smoking, reduce stress` },
+            menopause: { keywords: ['menopause','hot flash','perimenopause'], response: `<strong>Menopause</strong>\n\n🔥 Hot flashes, night sweats, mood changes, vaginal dryness (age 45-55)\n💊 Allopathy: HRT (Hormone Replacement Therapy), SSRIs\n🌿 Ayurveda: Shatavari, Ashoka, Ashwagandha\n💧 Homeopathy: Sepia, Lachesis, Pulsatilla\n🏃 Exercise, calcium/vitamin D, healthy diet` },
+            osteoporosis: { keywords: ['osteoporosis','bone density','bone weak','fracture'], response: `<strong>Osteoporosis</strong>\n\n🦴 Weak/brittle bones, increased fracture risk, back pain, loss of height\n💊 Allopathy: Bisphosphonates, Calcium + Vit D, Denosumab\n🌿 Ayurveda: Ashwagandha, Shatavari, Arjuna, Guggulu\n💧 Homeopathy: Calcarea phos, Symphytum, Silicea\n🏋️ Weight-bearing exercise, quit smoking/alcohol` },
+            vertigo: { keywords: ['vertigo','dizziness','spinning sensation','bppv'], response: `<strong>Vertigo (BPPV)</strong>\n\n🌀 Spinning sensation, nausea, balance problems\n💊 Allopathy: Betahistine, Cinnarizine, Epley maneuver\n🌿 Ayurveda: Brahmi, Shankhapushpi, Jatamansi\n💧 Homeopathy: Conium, Cocculus, Gelsemium\n⚠️ Sudden vertigo with neurological symptoms = STROKE (emergency)` },
+            tinnitus: { keywords: ['tinnitus','ringing ear','ear noise'], response: `<strong>Tinnitus</strong>\n\n🔊 Ringing, buzzing, hissing sound in ears (no external source)\n💊 Allopathy: No cure - manage underlying cause, masking devices\n🌿 Ayurveda: Ashwagandha, Brahmi, ear oil (Bilva oil)\n💧 Homeopathy: Chininum sulph, Graphites, Natrum sal\n🎧 Avoid loud noises, reduce caffeine/alcohol` },
+            sinusitis: { keywords: ['sinusitis','sinus','nasal congestion'], response: `<strong>Sinusitis</strong>\n\n👃 Facial pain/pressure, nasal congestion, thick discharge, headache\n💊 Allopathy: Decongestants, Nasal steroids, Antibiotics (bacterial)\n🌿 Ayurveda: Trikatu, Haridra, Eucalyptus steam\n💧 Homeopathy: Kali bich, Pulsatilla, Hydrastis\n💨 Steam inhalation, nasal saline rinse` },
+            cataract: { keywords: ['cataract','cloudy vision','eye lens'], response: `<strong>Cataract</strong>\n\n👁️ Cloudy/blurry vision, glare sensitivity, faded colors\n💊 Allopathy: Surgery (lens replacement) - only effective treatment\n🌿 Ayurveda: Triphala eye wash, Saptamrit lauh (preventive)\n💧 Homeopathy: Cineraria maritima eye drops, Calcarea fluor\n😎 UV protection, quit smoking, manage diabetes` },
+            glaucoma: { keywords: ['glaucoma','eye pressure','vision loss'], response: `<strong>Glaucoma</strong>\n\n👁️ Increased eye pressure → optic nerve damage → vision loss\n⚠️ Often NO symptoms until vision loss (silent thief)\n💊 Allopathy: Eye drops (Timolol, Latanoprost), Surgery\n🌿 Ayurveda: Triphala, Punarnava, Saptamrit lauh\n💧 Homeopathy: Phosphorus, Gelsemium, Physostigma\n📊 Regular eye exams after age 40` },
+            piles: { keywords: ['piles','hemorrhoid','anal pain','bleeding'], response: `<strong>Piles (Hemorrhoids)</strong>\n\n🔴 Anal pain, bleeding during bowel movements, itching, swelling\n💊 Allopathy: Topical creams, Rubber band ligation, Surgery\n🌿 Ayurveda: Triphala, Abhayarishta, Kasisadi taila\n💧 Homeopathy: Aesculus, Hamamelis, Ratanhia\n🚰 High-fiber diet, drink water, avoid straining` },
+            hair: { keywords: ['hair loss','baldness','alopecia','hair fall'], response: `<strong>Hair Loss (Alopecia)</strong>\n\n💇 Thinning hair, bald patches, excessive shedding\n💊 Allopathy: Minoxidil, Finasteride, Hair transplant\n🌿 Ayurveda: Bhringraj, Amla, Brahmi, Coconut oil massage\n💧 Homeopathy: Lycopodium, Phosphorus, Fluoricum acid\n🍽️ Protein-rich diet, biotin, reduce stress` },
+            smoking: { keywords: ['smoking','quit smoking','tobacco','cigarette'], response: `<strong>Smoking Cessation</strong>\n\n🚬 Leads to lung cancer, heart disease, COPD, stroke\n💊 Allopathy: Nicotine replacement (patches, gum), Varenicline, Bupropion\n🌿 Ayurveda: Brahmi, Ashwagandha (reduce cravings)\n💧 Homeopathy: Tabacum, Caladium, Nux vomica\n💪 Set quit date, behavioral therapy, support groups` }
+        };
+
+        chatbotIcon.addEventListener('click', () => {
+            chatbotPopup.classList.toggle('active');
+            chatbotIcon.classList.toggle('hidden');
+            welcomeBubble.classList.remove('show');
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatbotPopup.classList.remove('active');
+            chatbotIcon.classList.remove('hidden');
+        });
+
+        const suggestionButtons = [
+            { text: '👥 Our Team', msg: 'Tell me about the team' },
+            { text: '💊 Diabetes', msg: 'diabetes' },
+            { text: '❤️ Heart Disease', msg: 'heart attack' },
+            { text: '🫁 Asthma', msg: 'asthma' },
+            { text: '🧠 Migraine', msg: 'migraine' },
+            { text: '⚡ Features', msg: 'healthunify features' }
+        ];
+
+        const suggestionsContainer = document.getElementById('suggestions');
+        suggestionsContainer.innerHTML = '';
+        suggestionButtons.forEach(btn => {
+            const button = document.createElement('button');
+            button.className = 'suggestion-btn';
+            button.setAttribute('data-msg', btn.msg);
+            button.textContent = btn.text;
+            button.addEventListener('click', () => sendUserMessage(btn.msg));
+            suggestionsContainer.appendChild(button);
+        });
+
+        sendMessage.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message) {
+                sendUserMessage(message);
+                chatInput.value = '';
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const message = chatInput.value.trim();
+                if (message) {
+                    sendUserMessage(message);
+                    chatInput.value = '';
+                }
+            }
+        });
+
+        function sendUserMessage(message) {
+            addMessage(message, 'user');
+            setTimeout(() => {
+                const response = getBotResponse(message);
+                addMessage(response, 'bot');
+            }, 500);
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = sender === 'user' ? 'user-message' : 'bot-message';
+            if (sender === 'bot') {
+                messageDiv.innerHTML = `<div class="message-avatar"><img src="images/logo.png" alt="Bot"></div><div class="message-content"><p>${text}</p></div>`;
+            } else {
+                messageDiv.innerHTML = `<div class="message-content"><p>${text}</p></div>`;
+            }
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            const lowerMessage = message.toLowerCase().trim();
+            for (const [key, data] of Object.entries(medicalKnowledge)) {
+                for (const keyword of data.keywords) {
+                    if (lowerMessage.includes(keyword.toLowerCase())) {
+                        return data.response;
+                    }
+                }
+            }
+            return `I can help with 50+ conditions:\n\n💊 <strong>Diseases:</strong> Diabetes, Hypertension, Asthma, Migraine, Arthritis, Thyroid, Cancer, COVID, Heart, Stroke, Pneumonia, Kidney, Liver, Allergies, TB, Malaria, Dengue, Typhoid\n\n🩺 <strong>Digestive:</strong> GERD, IBS, Constipation, Diarrhea, Ulcer, Piles\n\n👩 <strong>Women's Health:</strong> PCOS, Menopause\n\n🧠 <strong>Mental Health:</strong> Anxiety, Insomnia, Depression\n\n👁️ <strong>Eyes:</strong> Cataract, Glaucoma\n\n💇 <strong>Skin & Hair:</strong> Acne, Eczema, Psoriasis, Hair Loss\n\nAsk me anything! 😊`;
+        }
+        </script>
     <script src="js/main.js"></script>
-</body>
-</html>
+    </body>
+    </html>
