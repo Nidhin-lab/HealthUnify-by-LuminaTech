@@ -3,530 +3,976 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayurveda Dashboard | HealthUnify by LuminaTech</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Ayurveda Dashboard | HealthAI</title>
+    <!-- Importing Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Importing Poppins and Inter fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Importing Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="dashboard-body ayurveda-theme">
     
-    <aside class="sidebar glass-effect ayurveda-sidebar" id="sidebar">
+    <style>
+        /* Ayurveda Theme Colors */
+        :root {
+            --primary-color: #A0522D; /* Sienna - Earthy Brown */
+            --secondary-color: #388E3C; /* Forest Green - Herb/Nature */
+            --background-dark: #212121;
+            --surface-dark: #303030;
+            --text-light: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --vata-color: #0288D1; /* Deep Blue/Sky */
+            --pitta-color: #D32F2F; /* Deep Red/Fire */
+            --kapha-color: #FFC107; /* Yellow/Earth */
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Earthy, deep background gradient */
+            background: linear-gradient(135deg, #302015, #0a0a0a);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Helper Styles */
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px var(--shadow-color);
+        }
+
+        .glass-card {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px var(--shadow-color);
+        }
+
+        .ayurveda-gradient {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: none;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s;
+        }
+        
+        .sidebar.collapsed .logo-text,
+        .sidebar.collapsed .sidebar-logo {
+            display: none;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(160, 82, 45, 0.4); /* Shadow from primary color */
+            color: var(--text-light);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 15px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .content-section {
+            display: none;
+            padding-top: 20px;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Chart Card */
+        .chart-card {
+            min-height: 350px;
+        }
+
+        .chart-card canvas {
+            max-height: 280px;
+        }
+
+        /* Overview Card */
+        .overview-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .overview-card .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-top: 10px;
+            line-height: 1;
+            /* Using Ayurveda Colors for Stats */
+            background: var(--primary-color);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse-color 5s infinite alternate;
+        }
+
+        @keyframes pulse-color {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(20deg); }
+        }
+
+        /* Herbal Remedies & Records List */
+        .list-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .remedy-card, .record-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .remedy-info, .record-info {
+            flex-grow: 1;
+        }
+
+        .remedy-name, .record-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .remedy-details, .record-details {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .remedy-actions, .record-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-icon:hover {
+            background: var(--secondary-color);
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+        }
+        
+        /* AI Health Assistant Section */
+        #section-ai-assistant {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        .ai-chat-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .message-container {
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 350px;
+        }
+        
+        .ai-message, .user-message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .ai-message .message-content,
+        .user-message .message-content {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+        }
+        
+        /* AI message specific styles */
+        .ai-message {
+            justify-content: flex-start;
+        }
+        .ai-message .message-icon {
+            align-self: flex-start;
+            margin-right: 10px; /* Space between icon and bubble */
+            color: var(--secondary-color);
+        }
+        .ai-message .message-content {
+            background: var(--surface-dark);
+            border-bottom-left-radius: 2px;
+        }
+        .ai-message .message-content.loading-pulse {
+             font-size: 1.5rem;
+             animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* User message specific styles */
+        .user-message {
+            justify-content: flex-end;
+        }
+        .user-message .message-icon {
+             align-self: flex-start;
+             margin-left: 10px; /* Space between icon and bubble */
+             color: var(--text-light);
+        }
+        .user-message .message-content {
+            background: var(--primary-color);
+            border-bottom-right-radius: 2px;
+        }
+
+
+        .message-icon {
+            font-size: 1.2rem;
+            align-self: flex-start;
+        }
+
+        
+        .chat-input-area {
+            display: flex;
+            padding: 15px 20px 0 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px 0 0 8px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            outline: none;
+        }
+
+        .chat-input-area button {
+            background: var(--primary-color);
+            border: none;
+            color: var(--text-light);
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background: var(--secondary-color);
+        }
+
+        /* AI Analysis Output Styling */
+        .ai-analysis-output {
+            grid-column: 1 / -1; /* Full width */
+            padding: 25px;
+            border-left: 5px solid var(--secondary-color);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-analysis-output h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .analysis-date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .analysis-segment {
+            margin-bottom: 20px;
+        }
+
+        .analysis-segment h4 {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .suggestion {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .suggestion.alert {
+            color: var(--pitta-color); /* Use Pitta Red for alerts */
+            background: rgba(211, 47, 47, 0.1);
+        }
+        
+        .remedy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--glass-border);
+        }
+
+        .remedy-item i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .btn-add-remedy {
+            background: var(--secondary-color);
+            color: var(--background-dark);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Custom Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsiveness (Kept consistent with previous file) */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 15px 10px;
+            }
+            .sidebar:not(.collapsed) {
+                width: 200px;
+            }
+            .sidebar.collapsed {
+                width: 250px; 
+                position: absolute;
+                left: -250px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-info {
+                margin-top: 15px;
+            }
+            .sidebar {
+                left: -250px;
+                transition: left 0.3s ease-in-out;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar.open + .main-content {
+                margin-left: 250px; 
+            }
+            .remedy-card, .record-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .remedy-actions, .record-actions {
+                margin-top: 10px;
+            }
+            .chat-input-area {
+                padding: 10px;
+            }
+            .chat-input-area input {
+                border-radius: 8px 0 0 8px;
+            }
+            .chat-input-area button {
+                border-radius: 0 8px 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar glass-effect" id="sidebar">
         <div class="sidebar-header">
-            <img src="images/logo.png" alt="HealthUnify Logo" class="sidebar-logo" onerror="this.style.display='none'">
             <div class="logo-text">
-                <span class="health-gradient">Health</span><span class="unify-gradient">Unify</span>
+                <span class="ayurveda-gradient">Ayur</span><span style="color:#fff;">AI</span>
             </div>
             <button class="sidebar-toggle" id="sidebarToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-
-        <div class="sidebar-user">
-            <div class="user-avatar ayurveda-avatar">
                 <i class="fas fa-leaf"></i>
-            </div>
-            <div class="user-info">
-                <h4 id="userName">Demo Patient</h4>
-                <span class="user-system ayurveda-system">Ayurveda System</span>
-            </div>
+            </button>
         </div>
 
         <nav class="sidebar-nav">
-            <a href="#dashboard" class="nav-item active" data-section="dashboard">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
+            <a href="#" class="nav-link active" data-section="section-dashboard">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
             </a>
-            <a href="#dosha" class="nav-item" data-section="dosha">
-                <i class="fas fa-yin-yang"></i>
-                <span>Dosha Analysis</span>
+            <a href="#" class="nav-link" data-section="section-remedies">
+                <i class="fas fa-mortar-pestle"></i> <span>Herbal Remedies</span>
             </a>
-            <a href="#herbs" class="nav-item" data-section="herbs">
-                <i class="fas fa-seedling"></i>
-                <span>Herbal Medicines</span>
+            <a href="#" class="nav-link" data-section="section-diet">
+                <i class="fas fa-utensils"></i> <span>Diet & Lifestyle</span>
             </a>
-            <a href="#diet" class="nav-item" data-section="diet">
-                <i class="fas fa-apple-alt"></i>
-                <span>Diet & Lifestyle</span>
+             <a href="#" class="nav-link" data-section="section-records">
+                <i class="fas fa-notes-medical"></i> <span>Health Records</span>
             </a>
-            <a href="#panchakarma" class="nav-item" data-section="panchakarma">
-                <i class="fas fa-spa"></i>
-                <span>Panchakarma</span>
+            <a href="#" class="nav-link" data-section="section-ai-assistant">
+                <i class="fas fa-robot"></i> <span>AI Assistant</span>
             </a>
-            <a href="#consultations" class="nav-item" data-section="consultations">
-                <i class="fas fa-user-doctor"></i>
-                <span>Consultations</span>
-            </a>
-            <a href="#seasonal" class="nav-item" data-section="seasonal">
-                <i class="fas fa-calendar-days"></i>
-                <span>Seasonal Guide</span>
-            </a>
-            <a href="#yoga" class="nav-item" data-section="yoga">
-                <i class="fas fa-person-praying"></i>
-                <span>Yoga & Meditation</span>
-            </a>
-            <a href="#settings" class="nav-item" data-section="settings">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
+            <a href="#" class="nav-link" data-section="section-settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
             </a>
         </nav>
-
-        <div class="sidebar-footer">
-            <a href="choose-system.html" class="btn-switch-system ripple-effect ayurveda-btn">
-                <i class="fas fa-repeat"></i> Switch System
+        
+        <div style="margin-top: auto;">
+            <a href="#" class="nav-link" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </a>
-            <button class="btn-logout-sidebar ripple-effect" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <!-- Placeholder for User ID display -->
+            <p id="userIdDisplay" style="font-size:0.75rem; opacity:0.6; padding: 10px; word-break: break-all;">User ID: Loading...</p>
         </div>
     </aside>
 
-   
-    <main class="main-content">
-        
-        <header class="content-header glass-effect">
-            <div class="header-left">
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title-header" id="pageTitle">Ayurveda Dashboard</h1>
-            </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search records...">
-                </div>
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-dot"></span>
-                </button>
-                <div class="user-menu">
-                    <img src="https://ui-avatars.com/api/?name=Demo+Patient&background=2D7A2E&color=fff" alt="User" class="user-avatar-small">
-                </div>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <header class="header">
+            <h1 id="pageTitle" class="ayurveda-gradient">Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, User!</span>
+                <img src="https://placehold.co/40x40/A0522D/ffffff?text=U" alt="User Avatar">
             </div>
         </header>
 
+        <!-- DASHBOARD SECTION -->
+        <section id="section-dashboard" class="content-section active">
+            <div class="dashboard-grid">
+                
+                <!-- Overview Card 1: Dosha Imbalance -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-fire fa-2x" style="color:var(--pitta-color);"></i>
+                    <h3>Current Imbalance</h3>
+                    <div class="stat-value" style="color: var(--pitta-color);">Pitta</div>
+                    <p style="opacity:0.8;">Aggravated</p>
+                </div>
+
+                <!-- Overview Card 2: Agni Strength -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-leaf fa-2x" style="color:var(--secondary-color);"></i>
+                    <h3>Digestive Fire (Agni)</h3>
+                    <div class="stat-value" style="color: var(--secondary-color); font-size: 2.5rem;">Moderate</div>
+                    <p style="opacity:0.8;">Needs support</p>
+                </div>
+
+                <!-- Overview Card 3: Next Therapy -->
+                <div class="overview-card glass-card">
+                    <i class="fas fa-spa fa-2x" style="color:var(--vata-color);"></i>
+                    <h3>Next Therapy</h3>
+                    <div class="stat-value" style="color: var(--vata-color); font-size: 2rem;">Abhyanga</div>
+                    <p style="opacity:0.8;">Oct 20, 2025</p>
+                </div>
+                
+                <!-- Chart Card (Dosha Chart) -->
+                <div class="chart-card glass-card" style="grid-column: 1 / -1;">
+                    <h3>Dosha Prakriti & Vikriti</h3>
+                    <canvas id="doshaChart"></canvas>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- HERBAL REMEDIES SECTION (Replaces Medications) -->
+        <section id="section-remedies" class="content-section">
+            <div class="list-header" style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+                <h2>Active Herbal Remedies</h2>
+                <button class="btn-primary"><i class="fas fa-plus"></i> Add Remedy</button>
+            </div>
+            <div class="list-container">
+                <!-- Sample Remedy 1 -->
+                <div class="remedy-card glass-card">
+                    <div class="remedy-info">
+                        <div class="remedy-name">Triphala Powder</div>
+                        <div class="remedy-details">Daily, 1 tsp with warm water before bed • For Agni & Cleansing</div>
+                    </div>
+                    <div class="remedy-actions">
+                        <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
+                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                    </div>
+                </div>
+                <!-- Sample Remedy 2 -->
+                <div class="remedy-card glass-card">
+                    <div class="remedy-info">
+                        <div class="remedy-name">Ashwagandha Capsules</div>
+                        <div class="remedy-details">Twice Daily, with milk • Stress & Vata Balance</div>
+                    </div>
+                    <div class="remedy-actions">
+                        <button class="btn-icon" title="Mark Taken"><i class="fas fa-check"></i></button>
+                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
         
-        <div class="content-body">
+        <!-- DIET SECTION (Placeholder) -->
+        <section id="section-diet" class="content-section">
+            <h2 class="ayurveda-gradient">Diet & Lifestyle</h2>
+            <div class="glass-card">
+                <p>Personalized dietary plans based on your current Dosha imbalance and seasonal recommendations (Ritucharya).</p>
+                <p style="opacity:0.6;">(Feature under development)</p>
+            </div>
+        </section>
+
+
+        <!-- HEALTH RECORDS SECTION -->
+        <section id="section-records" class="content-section">
+            <div class="list-header" style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Uploaded Health Records</h2>
+                <!-- File Input for Report Analysis -->
+                <input type="file" id="reportFileInput" accept=".txt,.md,application/pdf,image/jpeg,image/png" style="display: none;" onchange="analyzeUploadedReport(this.files[0])">
+                <button class="btn-primary" onclick="document.getElementById('reportFileInput').click()">
+                    <i class="fas fa-upload"></i> Upload Report (Image/PDF/TXT)
+                </button>
+            </div>
+            <div class="list-container" id="recordsListContainer">
+                <!-- Sample Record 1: Static Placeholder -->
+                <div id="record-cbc" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">Prakriti Analysis Report</div>
+                        <div class="record-details">Ayurvedic Consultant • Sep 10, 2025 • **Sample Data**</div>
+                    </div>
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <!-- Button to re-render default analysis -->
+                        <button class="btn-icon btn-ai-analyze" title="Show Default Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI HEALTH ASSISTANT SECTION (Analysis Card & Chat) -->
+        <section id="section-ai-assistant" class="content-section">
             
-            <section id="section-dashboard" class="content-section active">
-                <div class="dashboard-grid">
-                    
-                    <div class="welcome-card glass-card ayurveda-card fade-in-up">
-                        <div class="welcome-content">
-                            <div class="ayurveda-icon-lg">
-                                <i class="fas fa-om"></i>
-                            </div>
-                            <h2>Namaste, <span id="dashboardUserName">Demo Patient</span></h2>
-                            <p>Balance your mind, body, and spirit with Ayurveda</p>
-                            <div class="welcome-date">
-                                <i class="fas fa-calendar"></i>
-                                <span id="currentDate"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                    <div class="dosha-card glass-card fade-in-up delay-1 vata-card">
-                        <div class="dosha-icon">
-                            <i class="fas fa-wind"></i>
-                        </div>
-                        <div class="dosha-info">
-                            <h3>Vata</h3>
-                            <p>Air & Space</p>
-                        </div>
-                        <div class="dosha-meter">
-                            <div class="dosha-progress">
-                                <div class="dosha-bar vata-bar" style="width: 35%"></div>
-                            </div>
-                            <span class="dosha-percentage">35%</span>
-                        </div>
-                    </div>
-
-                    <div class="dosha-card glass-card fade-in-up delay-2 pitta-card">
-                        <div class="dosha-icon">
-                            <i class="fas fa-fire"></i>
-                        </div>
-                        <div class="dosha-info">
-                            <h3>Pitta</h3>
-                            <p>Fire & Water</p>
-                        </div>
-                        <div class="dosha-meter">
-                            <div class="dosha-progress">
-                                <div class="dosha-bar pitta-bar" style="width: 40%"></div>
-                            </div>
-                            <span class="dosha-percentage">40%</span>
-                        </div>
-                    </div>
-
-                    <div class="dosha-card glass-card fade-in-up delay-3 kapha-card">
-                        <div class="dosha-icon">
-                            <i class="fas fa-water"></i>
-                        </div>
-                        <div class="dosha-info">
-                            <h3>Kapha</h3>
-                            <p>Water & Earth</p>
-                        </div>
-                        <div class="dosha-meter">
-                            <div class="dosha-progress">
-                                <div class="dosha-bar kapha-bar" style="width: 25%"></div>
-                            </div>
-                            <span class="dosha-percentage">25%</span>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- AI Analysis Results Card (Initial state or last analyzed) -->
+            <div id="analysisOutputCard" class="ai-analysis-output glass-card fade-in-up">
+                <h3>AI Report Analysis Summary</h3>
+                <p class="analysis-date">Last Analyzed: N/A - Upload a report to begin</p>
                 
-                <div class="dashboard-row">
-                    <div class="prakriti-card glass-card fade-in-up">
-                        <h3><i class="fas fa-user-check"></i> Your Prakriti (Constitution)</h3>
-                        <div class="prakriti-result">
-                            <div class="prakriti-type">
-                                <div class="type-badge pitta-dominant">Pitta-Vata</div>
-                                <p>You have a predominant Pitta constitution with Vata tendencies</p>
-                            </div>
-                            <div class="prakriti-characteristics">
-                                <h4>Key Characteristics:</h4>
-                                <ul>
-                                    <li><i class="fas fa-check-circle"></i> Strong digestion and metabolism</li>
-                                    <li><i class="fas fa-check-circle"></i> Sharp intellect and focus</li>
-                                    <li><i class="fas fa-check-circle"></i> Creative and energetic</li>
-                                    <li><i class="fas fa-check-circle"></i> Tendency towards heat sensitivity</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div class="analysis-segment problems-suggested">
+                    <h4>Dosha Imbalances & Clinical Correlations:</h4>
+                    <div class="suggestion"><i class="fas fa-robot"></i> Upload a physical or blood report to get an Ayurvedic correlation and suggestions.</div>
+                </div>
 
-                    <div class="recommendations-card glass-card fade-in-up delay-1">
-                        <h3><i class="fas fa-lightbulb"></i> Today's Recommendations</h3>
-                        <div class="recommendations-list">
-                            <div class="recommendation-item">
-                                <div class="rec-icon diet-icon">
-                                    <i class="fas fa-apple-alt"></i>
-                                </div>
-                                <div class="rec-content">
-                                    <h4>Diet Advice</h4>
-                                    <p>Include cooling foods like cucumber, coconut water, and mint</p>
-                                </div>
-                            </div>
-                            <div class="recommendation-item">
-                                <div class="rec-icon yoga-icon">
-                                    <i class="fas fa-spa"></i>
-                                </div>
-                                <div class="rec-content">
-                                    <h4>Yoga Practice</h4>
-                                    <p>Practice cooling pranayama like Shitali for 10 minutes</p>
-                                </div>
-                            </div>
-                            <div class="recommendation-item">
-                                <div class="rec-icon lifestyle-icon">
-                                    <i class="fas fa-sun"></i>
-                                </div>
-                                <div class="rec-content">
-                                    <h4>Lifestyle Tip</h4>
-                                    <p>Avoid excessive heat and spicy foods during midday</p>
-                                </div>
-                            </div>
+                <div class="analysis-segment remedies-suggested">
+                    <h4>AI Herbal Remedy & Lifestyle Recommendations:</h4>
+                    <div class="remedy-item" style="border-bottom: none;">
+                        <div><i class="fas fa-mortar-pestle"></i> Recommendations will appear here after analysis.</div>
+                        <div>&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Chat Interface -->
+            <div class="ai-chat-container glass-card">
+                <div class="message-container">
+                    <!-- AI Welcome Message -->
+                    <div class="ai-message">
+                        <div class="message-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="message-content">
+                            <p>Namaste! I'm your Ayur-AI Assistant. I can help you with:</p>
+                            <ul>
+                                <li>Analyzing reports for Dosha imbalances</li>
+                                <li>Suggesting personalized herbal remedies</li>
+                                <li>Offering seasonal lifestyle tips (Ritucharya)</li>
+                            </ul>
+                            <p>How can I assist you on your path to balance today?</p>
                         </div>
                     </div>
                 </div>
-
-                
-                <div class="dashboard-row">
-                    <div class="herbs-summary-card glass-card fade-in-up">
-                        <div class="card-header-flex">
-                            <h3><i class="fas fa-seedling"></i> Current Herbal Medicines</h3>
-                            <button class="btn-link">View All</button>
-                        </div>
-                        <div class="herbs-list">
-                            <div class="herb-item">
-                                <div class="herb-icon">
-                                    <i class="fas fa-leaf"></i>
-                                </div>
-                                <div class="herb-details">
-                                    <h4>Ashwagandha Churna</h4>
-                                    <p>1 tsp with warm milk before bed</p>
-                                    <span class="herb-purpose">For stress relief & vitality</span>
-                                </div>
-                            </div>
-                            <div class="herb-item">
-                                <div class="herb-icon">
-                                    <i class="fas fa-leaf"></i>
-                                </div>
-                                <div class="herb-details">
-                                    <h4>Triphala</h4>
-                                    <p>2 tablets after dinner</p>
-                                    <span class="herb-purpose">For digestive health</span>
-                                </div>
-                            </div>
-                            <div class="herb-item">
-                                <div class="herb-icon">
-                                    <i class="fas fa-leaf"></i>
-                                </div>
-                                <div class="herb-details">
-                                    <h4>Brahmi Tea</h4>
-                                    <p>1 cup in the morning</p>
-                                    <span class="herb-purpose">For mental clarity</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="diet-plan-card glass-card fade-in-up delay-1">
-                        <div class="card-header-flex">
-                            <h3><i class="fas fa-utensils"></i> Daily Diet Plan</h3>
-                            <button class="btn-link">Customize</button>
-                        </div>
-                        <div class="meal-timeline">
-                            <div class="meal-item">
-                                <div class="meal-time">
-                                    <span class="time-icon">🌅</span>
-                                    <span class="time-text">6:00 AM</span>
-                                </div>
-                                <div class="meal-content">
-                                    <h4>Morning Routine</h4>
-                                    <p>Warm water with lemon, tongue scraping, oil pulling</p>
-                                </div>
-                            </div>
-                            <div class="meal-item">
-                                <div class="meal-time">
-                                    <span class="time-icon">☀️</span>
-                                    <span class="time-text">8:00 AM</span>
-                                </div>
-                                <div class="meal-content">
-                                    <h4>Breakfast</h4>
-                                    <p>Oats porridge with dates and almonds</p>
-                                </div>
-                            </div>
-                            <div class="meal-item">
-                                <div class="meal-time">
-                                    <span class="time-icon">🌤️</span>
-                                    <span class="time-text">12:30 PM</span>
-                                </div>
-                                <div class="meal-content">
-                                    <h4>Lunch</h4>
-                                    <p>Rice, dal, vegetables, and buttermilk</p>
-                                </div>
-                            </div>
-                            <div class="meal-item">
-                                <div class="meal-time">
-                                    <span class="time-icon">🌙</span>
-                                    <span class="time-text">7:00 PM</span>
-                                </div>
-                                <div class="meal-content">
-                                    <h4>Dinner</h4>
-                                    <p>Light khichdi with ghee and vegetables</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Ask about Doshas, herbs, or diet...">
+                    <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
                 </div>
+            </div>
+        </section>
 
-                
-                <div class="dashboard-row">
-                    <div class="seasonal-card glass-card fade-in-up">
-                        <h3><i class="fas fa-calendar-alt"></i> Current Season: Sharad (Autumn)</h3>
-                        <div class="seasonal-content">
-                            <p class="seasonal-desc">Autumn is a transitional season where Pitta accumulated during summer may get aggravated.</p>
-                            <div class="seasonal-tips">
-                                <h4>Ritucharya (Seasonal Regimen):</h4>
-                                <ul>
-                                    <li>Prefer cooling and sweet foods</li>
-                                    <li>Avoid excessive exposure to sun</li>
-                                    <li>Practice calming yoga and meditation</li>
-                                    <li>Take evening walks in pleasant weather</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="yoga-tracker-card glass-card fade-in-up delay-1">
-                        <h3><i class="fas fa-person-praying"></i> Yoga & Meditation Tracker</h3>
-                        <div class="practice-stats">
-                            <div class="stat-circle">
-                                <svg class="progress-circle" width="100" height="100">
-                                    <circle cx="50" cy="50" r="45" stroke="#e0e0e0" stroke-width="6" fill="none"/>
-                                    <circle cx="50" cy="50" r="45" stroke="#2D7A2E" stroke-width="6" fill="none" 
-                                            stroke-dasharray="283" stroke-dashoffset="70" transform="rotate(-90 50 50)"/>
-                                </svg>
-                                <div class="stat-text">
-                                    <span class="stat-number">75%</span>
-                                    <span class="stat-label">Weekly Goal</span>
-                                </div>
-                            </div>
-                            <div class="practice-details">
-                                <div class="practice-item">
-                                    <span class="practice-label">This Week:</span>
-                                    <span class="practice-value">5 sessions</span>
-                                </div>
-                                <div class="practice-item">
-                                    <span class="practice-label">Total Time:</span>
-                                    <span class="practice-value">3.5 hours</span>
-                                </div>
-                                <div class="practice-item">
-                                    <span class="practice-label">Streak:</span>
-                                    <span class="practice-value">12 days 🔥</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            
-            <section id="section-dosha" class="content-section">
-                <div class="dosha-analysis-container">
-                    <h2 class="section-title-main">Dosha Analysis</h2>
-                    <p class="section-subtitle">Understanding your unique mind-body constitution</p>
-
-                    <div class="dosha-chart-card glass-card">
-                        <h3>Your Dosha Distribution</h3>
-                        <canvas id="doshaChart"></canvas>
-                    </div>
-
-                    <div class="dosha-details-grid">
-                        <div class="dosha-detail-card glass-card vata-detail">
-                            <div class="detail-header">
-                                <i class="fas fa-wind"></i>
-                                <h3>Vata (Air & Space)</h3>
-                            </div>
-                            <p><strong>Balance State:</strong> Moderate</p>
-                            <h4>Characteristics:</h4>
-                            <ul>
-                                <li>Creative and enthusiastic</li>
-                                <li>Quick thinking and adaptable</li>
-                                <li>Light sleeper</li>
-                            </ul>
-                            <h4>When Imbalanced:</h4>
-                            <ul>
-                                <li>Anxiety and restlessness</li>
-                                <li>Irregular digestion</li>
-                                <li>Insomnia</li>
-                            </ul>
-                        </div>
-
-                        <div class="dosha-detail-card glass-card pitta-detail">
-                            <div class="detail-header">
-                                <i class="fas fa-fire"></i>
-                                <h3>Pitta (Fire & Water)</h3>
-                            </div>
-                            <p><strong>Balance State:</strong> Good</p>
-                            <h4>Characteristics:</h4>
-                            <ul>
-                                <li>Strong digestion</li>
-                                <li>Sharp intellect</li>
-                                <li>Natural leadership</li>
-                            </ul>
-                            <h4>When Imbalanced:</h4>
-                            <ul>
-                                <li>Irritability and anger</li>
-                                <li>Inflammation</li>
-                                <li>Excessive heat</li>
-                            </ul>
-                        </div>
-
-                        <div class="dosha-detail-card glass-card kapha-detail">
-                            <div class="detail-header">
-                                <i class="fas fa-water"></i>
-                                <h3>Kapha (Water & Earth)</h3>
-                            </div>
-                            <p><strong>Balance State:</strong> Low</p>
-                            <h4>Characteristics:</h4>
-                            <ul>
-                                <li>Calm and stable</li>
-                                <li>Strong endurance</li>
-                                <li>Compassionate</li>
-                            </ul>
-                            <h4>When Imbalanced:</h4>
-                            <ul>
-                                <li>Lethargy and sluggishness</li>
-                                <li>Weight gain</li>
-                                <li>Congestion</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Action completed!</span>
+        <!-- SETTINGS SECTION (Placeholder) -->
+        <section id="section-settings" class="content-section">
+            <h2 class="ayurveda-gradient">Settings</h2>
+            <div class="glass-card">
+                <p>Configure your account and privacy settings here.</p>
+                <p style="opacity:0.6;">(Feature under development)</p>
+            </div>
+        </section>
     </div>
 
-    <script src="js/main.js"></script>
-    <script>
+    <!-- Firebase and Application Logic -->
+    <script type="module">
+        // Mandatory Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        let currentUserId = 'Loading...';
+        let chatHistory = []; // Conversation history for the chat assistant
+
+        // --- GEMINI API Configuration ---
+        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=";
+        const API_KEY = ""; // Provided by the Canvas environment
+        const GEMINI_CHAT_MODEL = "gemini-2.5-flash-preview-05-20"; // Standard conversational model
+
+        // --- GEMINI SYSTEM INSTRUCTIONS (AYURVEDA FOCUS) ---
+        const ANALYSIS_SYSTEM_INSTRUCTION = "You are an expert AI Ayurvedic analyst. Your task is to analyze the provided raw health report text or image/PDF content (which may be bloodwork or a clinical observation) and correlate the findings with Ayurvedic principles. Generate a concise, structured JSON summary of key findings regarding Dosha imbalance (Vikriti) and actionable recommendations (herbal remedies, lifestyle/diet advice). If the report is clinical, use it to infer Dosha status (e.g., low hemoglobin suggests Kapha/Pitta imbalance). Do not include any text outside the JSON object.";
         
-        window.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-            initDashboard();
-            initDoshaChart();
+        const CHAT_SYSTEM_INSTRUCTION = "You are a friendly, concise, and helpful AI Ayurvedic Assistant. You specialize in analyzing health data, correlating findings to Dosha imbalances (Vata, Pitta, Kapha), providing general Ayurvedic information, checking herbal interactions, and offering lifestyle/dietary tips. Keep your responses short and encouraging, using a warm, respectful tone. Always advise the user to consult a Vaidya (Ayurvedic practitioner) for definitive diagnosis or treatment.";
+
+        // --- STRUCTURED RESPONSE SCHEMA FOR ANALYSIS ---
+        const ANALYSIS_RESPONSE_SCHEMA = {
+            type: "OBJECT",
+            properties: {
+                "reportTitle": { "type": "STRING", "description": "A concise title for the analyzed report (e.g., 'Blood Report - Pitta Analysis')." },
+                "analysisDate": { "type": "STRING", "description": "The current date or date derived from the report, in YYYY-MM-DD format." },
+                "doshaImbalance": {
+                    "type": "ARRAY",
+                    "description": "A list of identified Dosha imbalances (Vikriti) and their clinical correlations.",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "dosha": { "type": "STRING", "description": "The dominant aggravated Dosha (Vata, Pitta, or Kapha)." },
+                            "correlation": { "type": "STRING", "description": "Clinical finding correlation (e.g., 'Aggravated Vata indicated by low body weight and dry skin')." }
+                        }
+                    }
+                },
+                "herbalRecommendations": {
+                    "type": "ARRAY",
+                    "description": "A list of herbal remedies or wellness recommendations.",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "name": { "type": "STRING", "description": "Name of the herb, formulation, or wellness practice (e.g., 'Triphala', 'Pitta-Pacifying Diet')." },
+                            "details": { "type": "STRING", "description": "Dosage/instruction details or a short description of the lifestyle change needed." },
+                            "actionRequired": { "type": "BOOLEAN", "description": "True if this is a new remedy/action the user should add to their schedule, false otherwise." }
+                        }
+                    }
+                }
+            },
+            "propertyOrdering": ["reportTitle", "analysisDate", "doshaImbalance", "herbalRecommendations"]
+        };
+
+        // Initialize Firebase and Auth
+        if (firebaseConfig) {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                setLogLevel('debug'); // Enable Firestore logging
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        document.getElementById('userIdDisplay').textContent = `User ID: ${currentUserId}`;
+                        console.log("Authenticated with user ID:", currentUserId);
+                    } else {
+                        // Attempt to sign in using custom token or anonymously
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                document.getElementById('userIdDisplay').textContent = `User ID: Auth Error`;
+            }
+        } else {
+            document.getElementById('userIdDisplay').textContent = `User ID: Config Missing`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupNavigation();
+            initDoshaChart(); // Use the dedicated Ayurveda chart init
+            setupSidebarToggle();
+            showDefaultAnalysis(); // Load the default analysis on startup
+            setupChatListeners(); // Initialize chat listeners
         });
 
-        function checkAuth() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const userType = localStorage.getItem('userType');
+        // --- UI UTILITIES ---
 
-            if (!isLoggedIn || userType !== 'patient') {
-                window.location.href = 'patient-login.html';
-            }
+        function setupSidebarToggle() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
 
-            const userName = localStorage.getItem('userName') || 'Patient';
-            document.getElementById('userName').textContent = userName;
-            document.getElementById('dashboardUserName').textContent = userName;
-        }
-
-        function initDashboard() {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
-
-            
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const section = this.dataset.section;
-                    switchSection(section);
-                });
-            });
-
-            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('active');
-            });
-
-            document.getElementById('sidebarToggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('collapsed');
-            });
-        }
-
-        function switchSection(section) {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.section === section) {
-                    item.classList.add('active');
+            toggle.addEventListener('click', () => {
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                if (window.innerWidth <= 600) {
+                    sidebar.classList.toggle('open');
+                    if (sidebar.classList.contains('open')) {
+                        mainContent.style.marginLeft = '250px';
+                    } else {
+                        mainContent.style.marginLeft = '0';
+                    }
+                } else {
+                    mainContent.style.marginLeft = isCollapsed ? '80px' : '250px';
                 }
             });
+            
+            if (window.innerWidth <= 600) {
+                sidebar.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
+        }
 
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.classList.remove('active');
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+            const pageTitle = document.getElementById('pageTitle');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const targetSectionId = link.getAttribute('data-section');
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    const targetSection = document.getElementById(targetSectionId);
+                    if (targetSection) {
+                         targetSection.classList.add('active');
+                    }
+                   
+                    pageTitle.textContent = link.querySelector('span') ? link.querySelector('span').textContent : 'Dashboard';
+
+                    if (window.innerWidth <= 600) {
+                        const sidebar = document.getElementById('sidebar');
+                        sidebar.classList.remove('open');
+                        document.getElementById('mainContent').style.marginLeft = '0';
+                    }
+                });
             });
-            document.getElementById('section-' + section).classList.add('active');
-
-            const titles = {
-                'dashboard': 'Ayurveda Dashboard',
-                'dosha': 'Dosha Analysis',
-                'herbs': 'Herbal Medicines',
-                'diet': 'Diet & Lifestyle',
-                'panchakarma': 'Panchakarma',
-                'consultations': 'Consultations',
-                'seasonal': 'Seasonal Guide',
-                'yoga': 'Yoga & Meditation',
-                'settings': 'Settings'
-            };
-            document.getElementById('pageTitle').textContent = titles[section];
         }
 
         function initDoshaChart() {
@@ -538,8 +984,13 @@
                 data: {
                     labels: ['Vata', 'Pitta', 'Kapha'],
                     datasets: [{
-                        data: [35, 40, 25],
-                        backgroundColor: ['#87CEEB', '#FF6347', '#90EE90'],
+                        // Simulated data: Slight Pitta aggravation
+                        data: [35, 45, 20], 
+                        backgroundColor: [
+                            'var(--vata-color)', /* Blue for Vata */
+                            'var(--pitta-color)', /* Red for Pitta */
+                            'var(--kapha-color)' /* Yellow/Orange for Kapha */
+                        ],
                         borderWidth: 0
                     }]
                 },
@@ -548,20 +999,443 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: 'var(--text-light)'
+                            }
                         }
                     }
                 }
             });
         }
+        
+        // Custom Modal implementation (instead of alert/confirm)
+        function showModal(title, message, isLoading = false) {
+            let modal = document.getElementById('customModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'customModal';
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content glass-card">
+                        <h4 id="modalTitle"></h4>
+                        <div id="modalSpinner" class="loading-spinner" style="display:none;"></div>
+                        <p id="modalMessage"></p>
+                        <button id="modalCloseBtn" class="btn-primary" style="margin-top: 20px;">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            
+            const spinner = document.getElementById('modalSpinner');
+            const closeBtn = document.getElementById('modalCloseBtn');
+            
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            if (isLoading) {
+                spinner.style.display = 'block';
+                closeBtn.style.display = 'none';
+            } else {
+                spinner.style.display = 'none';
+                closeBtn.style.display = 'block';
+                closeBtn.onclick = () => modal.style.display = 'none';
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+
+        // --- FIREBASE LOGIC ---
 
         function logout() {
-            localStorage.clear();
-            showToast('Logged out successfully!', 'success');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
+            if (auth) {
+                signOut(auth).then(() => {
+                    showModal('Logged Out', 'You have been successfully logged out. Reloading...');
+                    setTimeout(() => {
+                        window.location.reload(); 
+                    }, 1500);
+                }).catch(error => {
+                    console.error("Logout Error:", error);
+                    showModal('Logout Failed', `Could not sign out: ${error.message}`);
+                });
+            } else {
+                showModal('Error', 'Authentication service is not initialized.');
+            }
         }
+        
+        // --- GEMINI API FUNCTIONALITY (STRUCTURED DATA) ---
+
+        /**
+         * Generic function to call the Gemini API with structured output.
+         */
+        async function geminiApiCall(contents, schema, systemInstruction, maxRetries = 3) {
+            const url = `${GEMINI_API_URL}${API_KEY}`;
+            const payload = {
+                contents: contents,
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema
+                }
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && attempt < maxRetries - 1) {
+                            const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue; // Retry
+                        }
+                        throw new Error(`API call failed with status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (jsonText) {
+                        return JSON.parse(jsonText);
+                    }
+                    throw new Error("API response was missing expected JSON content.");
+
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) throw error;
+                }
+            }
+            throw new Error("Gemini API call failed after multiple retries.");
+        }
+
+
+        /**
+         * Handles analyzing the uploaded file content using the Gemini API.
+         * Supports Text, PDF, and Image files.
+         */
+        window.analyzeUploadedReport = async function(file) { 
+            if (!file) {
+                showModal('Upload Error', 'No file selected.');
+                return;
+            }
+
+            const isTextFile = file.type.startsWith('text/') || file.name.endsWith('.md');
+            const isImageOrPDF = file.type.startsWith('image/') || file.type === 'application/pdf';
+            const reader = new FileReader();
+
+            showModal('Ayur-AI Analysis Initiated', `Processing report: "${file.name}". This may take a moment...`, true); 
+
+            try {
+                const reportContent = await new Promise((resolve, reject) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = reject;
+
+                    if (isTextFile) {
+                        // For text files, read content directly
+                        reader.readAsText(file);
+                    } else if (isImageOrPDF) {
+                        // For images/PDFs, read as Base64 data URL
+                        if (file.size > 10 * 1024 * 1024) { // 10MB limit check
+                            throw new Error("File is too large. Max size is 10MB for image/PDF reports.");
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        reject(new Error("Unsupported file type. Please upload a text, image (JPG/PNG), or PDF file."));
+                    }
+                });
+
+                let contents;
+                const userPrompt = "Analyze this health report. Correlate findings to Dosha imbalances and provide suggested herbal remedies or lifestyle recommendations based on the data. Provide the results in the required JSON structure only.";
+
+                if (isTextFile) {
+                    // For text, contents is simple text part
+                    contents = [{ parts: [{ text: `${userPrompt}\n\n--- REPORT TEXT ---\n${reportContent}` }] }];
+                } else if (isImageOrPDF) {
+                    // For image/PDF, contents includes inlineData part
+                    const [mimeType, base64Data] = reportContent.split(';base64,');
+
+                    if (!base64Data) {
+                        throw new Error("Failed to extract Base64 data from file.");
+                    }
+
+                    contents = [{ 
+                        parts: [
+                            { text: userPrompt },
+                            {
+                                inlineData: {
+                                    mimeType: file.type,
+                                    data: base64Data
+                                }
+                            }
+                        ]
+                    }];
+                } else {
+                    throw new Error("File type not supported for analysis.");
+                }
+
+
+                const analysisData = await geminiApiCall(
+                    contents, 
+                    ANALYSIS_RESPONSE_SCHEMA, 
+                    ANALYSIS_SYSTEM_INSTRUCTION
+                );
+
+                // Add the analyzed report to the static list (simulated persistence)
+                addAnalyzedRecordToUI(file.name, analysisData.reportTitle);
+
+                // Render the results in the dedicated section
+                renderAnalysisResults(analysisData);
+
+                showModal('Analysis Complete', `Successfully analyzed "${analysisData.reportTitle}". Results displayed in the AI Assistant tab.`, false);
+                
+                // Switch to AI Assistant tab
+                document.querySelector('[data-section="section-ai-assistant"]').click();
+
+            } catch (error) {
+                console.error("Full analysis error:", error);
+                showModal('Analysis Failed', `Could not complete analysis. Error: ${error.message || 'Check console for details.'}`, false);
+            } finally {
+                document.getElementById('reportFileInput').value = ''; // Clear file input
+            }
+        }
+        
+        /**
+         * Renders the structured analysis results based on the Gemini API output structure.
+         * Uses Ayurvedic terminology.
+         */
+        function renderAnalysisResults(analysisData) {
+            const card = document.getElementById('analysisOutputCard');
+            const problemsSegment = card.querySelector('.problems-suggested');
+            const remediesSegment = card.querySelector('.remedies-suggested');
+
+            if (!analysisData || !analysisData.reportTitle) {
+                showDefaultAnalysis();
+                return;
+            }
+            
+            // Animate transition
+            card.style.opacity = 0;
+            setTimeout(() => {
+                card.querySelector('h3').textContent = analysisData.reportTitle;
+                card.querySelector('.analysis-date').textContent = `Last Analyzed: ${analysisData.analysisDate || new Date().toLocaleDateString()}`;
+
+                // 1. Dosha Imbalances / Correlations
+                let problemsHtml = '<h4>Dosha Imbalances & Clinical Correlations:</h4>';
+                if (analysisData.doshaImbalance && analysisData.doshaImbalance.length > 0) {
+                    analysisData.doshaImbalance.forEach(p => {
+                        const isAlert = p.dosha && p.dosha.toUpperCase() === 'PITTA'; // Highlight Pitta imbalances with alert style
+                        const icon = p.dosha.toUpperCase() === 'PITTA' ? 'fa-fire' : (p.dosha.toUpperCase() === 'VATA' ? 'fa-wind' : 'fa-water');
+
+                        problemsHtml += `
+                            <div class="suggestion ${isAlert ? 'alert' : ''}">
+                                <i class="fas ${icon}"></i> 
+                                <strong>${p.dosha} Imbalance:</strong> ${p.correlation}
+                            </div>
+                        `;
+                    });
+                } else {
+                    problemsHtml += '<div class="suggestion"><i class="fas fa-check-circle"></i> Good balance observed, continue current regimen.</div>';
+                }
+                problemsSegment.innerHTML = problemsHtml;
+
+                // 2. Herbal Remedy/Lifestyle Recommendations
+                let remediesHtml = '<h4>AI Herbal Remedy & Lifestyle Recommendations:</h4>';
+                if (analysisData.herbalRecommendations && analysisData.herbalRecommendations.length > 0) {
+                    analysisData.herbalRecommendations.forEach(m => {
+                        const icon = m.name.toLowerCase().includes('diet') || m.name.toLowerCase().includes('lifestyle') ? 'fa-utensils' : 'fa-mortar-pestle';
+                        const buttonHtml = m.actionRequired ? `<button class="btn-add-remedy">Add to Regimen</button>` : `<div>&nbsp;</div>`;
+                        remediesHtml += `
+                            <div class="remedy-item">
+                                <div>
+                                    <i class="fas ${icon}"></i> **${m.name}:** ${m.details}
+                                </div>
+                                ${buttonHtml}
+                            </div>
+                        `;
+                    });
+                } else {
+                    remediesHtml += '<div class="remedy-item" style="border-bottom: none;"><i class="fas fa-leaf"></i> No urgent changes recommended at this time.</div>';
+                }
+                remediesSegment.innerHTML = remediesHtml;
+
+                card.style.opacity = 1;
+            }, 300);
+        }
+
+        /**
+         * Simulates adding the newly analyzed record to the records list.
+         */
+        function addAnalyzedRecordToUI(fileName, reportTitle) {
+            const listContainer = document.getElementById('recordsListContainer');
+            const newRecordId = `record-${Date.now()}`;
+            const date = new Date().toLocaleDateString();
+            const displayTitle = reportTitle || `New Report: ${fileName}`;
+
+            const newRecordHtml = `
+                <div id="${newRecordId}" class="record-card glass-card">
+                    <div class="record-info">
+                        <div class="record-name">${displayTitle}</div>
+                        <div class="record-details">Custom Upload • ${date} • **Ayur-AI Analysis Complete**</div>
+                    </div>
+                    <div class="record-actions">
+                        <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                        <button class="btn-icon btn-ai-analyze" title="Rerun AI Analysis" onclick="showDefaultAnalysis()">
+                            <i class="fas fa-brain"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            // Add the new record after the file input mechanism
+            listContainer.insertAdjacentHTML('afterbegin', newRecordHtml);
+        }
+        
+        /**
+         * Loads a default, simulated Ayurvedic analysis result.
+         */
+        function showDefaultAnalysis() {
+            const defaultAnalysis = {
+                reportTitle: "Simulated Pitta Aggravation Analysis",
+                analysisDate: "Oct 15, 2025",
+                doshaImbalance: [
+                    { "dosha": "Pitta", "correlation": "Aggravated Pitta indicated by high body heat, acidity, and increased irritability." },
+                    { "dosha": "Vata", "correlation": "Vata is balanced, but needs careful management to prevent dryness." }
+                ],
+                herbalRecommendations: [
+                    { "name": "Avipattikar Churna", "details": "1 tsp with cool water, 30 min before lunch and dinner.", "actionRequired": true },
+                    { "name": "Pitta-Pacifying Diet", "details": "Avoid fermented foods, chilies, coffee. Favor sweet, bitter, and astringent tastes.", "actionRequired": true },
+                    { "name": "Sheetali Pranayama", "details": "Practice cooling breathwork for 5 minutes morning and evening.", "actionRequired": true }
+                ]
+            };
+            renderAnalysisResults(defaultAnalysis);
+        }
+
+        // --- CHAT FUNCTIONALITY ---
+
+        /**
+         * Renders a message to the chat interface.
+         */
+        function appendMessage(sender, text, isHtml = false) {
+            const container = document.querySelector('.message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${sender}-message`;
+            
+            const iconClass = sender === 'ai' ? 'fa-leaf' : 'fa-user-circle';
+            
+            // Only add actual messages (not loading dots) to history
+            if (text !== '...') {
+                chatHistory.push({ role: sender === 'ai' ? 'model' : 'user', parts: [{ text: text }] });
+            }
+
+            messageDiv.innerHTML = `
+                <div class="message-icon"><i class="fas ${iconClass}"></i></div>
+                <div class="message-content">
+                    ${isHtml ? text : `<p>${text}</p>`}
+                </div>
+            `;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            return messageDiv; // Return for potentially updating loading message
+        }
+
+        function setupChatListeners() {
+            const chatInput = document.getElementById('chatInput');
+            const sendButton = document.getElementById('sendButton');
+
+            sendButton.addEventListener('click', handleChatSubmit);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleChatSubmit();
+                }
+            });
+        }
+
+        async function handleChatSubmit() {
+            const chatInput = document.getElementById('chatInput');
+            const userQuery = chatInput.value.trim();
+
+            if (!userQuery) return;
+
+            // 1. Display user message
+            appendMessage('user', userQuery);
+            chatInput.value = ''; // Clear input
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+
+            // 2. Display loading indicator
+            const loadingMessageElement = appendMessage('ai', '...', true);
+            loadingMessageElement.querySelector('.message-content').classList.add('loading-pulse');
+
+            try {
+                // 3. Call Gemini Chat API
+                const aiResponseText = await callGeminiChat(userQuery);
+
+                // 4. Update display
+                loadingMessageElement.remove(); // Remove loading state
+                appendMessage('ai', aiResponseText);
+
+            } catch (error) {
+                console.error("AI Chat Error:", error);
+                // Ensure loading indicator is removed on error
+                loadingMessageElement.remove();
+                appendMessage('ai', "Apologies, I'm experiencing trouble connecting to the flow of *Prana* (network). Please try again soon.", true);
+            } finally {
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        /**
+         * Handles the actual API call for conversational chat.
+         * Uses chatHistory for context.
+         */
+        async function callGeminiChat(prompt, maxRetries = 3) {
+            const url = `${GEMINI_API_URL.replace('gemini-2.5-flash-preview-05-20', GEMINI_CHAT_MODEL)}${API_KEY}`;
+            
+            // The history accumulates in appendMessage
+            const payload = {
+                contents: chatHistory, 
+                systemInstruction: { parts: [{ text: CHAT_SYSTEM_INSTRUCTION }] }
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && attempt < maxRetries - 1) {
+                            const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue; // Retry
+                        }
+                        throw new Error(`API call failed with status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    }
+                    throw new Error("API response was missing expected text content.");
+
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) throw error;
+                }
+            }
+            throw new Error("Gemini Chat API call failed after multiple retries.");
+        }
+
     </script>
 </body>
 </html>
