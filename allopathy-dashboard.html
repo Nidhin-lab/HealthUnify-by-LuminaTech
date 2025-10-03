@@ -639,11 +639,22 @@
         </nav>
         
         <div style="margin-top: auto;">
-            <a href="#" class="nav-link" onclick="logout()">
+            <!-- Added Switch System button to the navigation list -->
+            <a href="choose-system.html" class="nav-link">
+                <i class="fas fa-repeat"></i> <span>Switch System</span>
+            </a>
+            
+            <a href="index.html" class="nav-link" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </a>
             <!-- Placeholder for User ID display -->
             <p id="userIdDisplay" style="font-size:0.75rem; opacity:0.6; padding: 10px; word-break: break-all;">User ID: Loading...</p>
+        </div>
+
+        <!-- The sidebar-footer class is no longer necessary as the button is in the nav, 
+             but keeping the structure if custom styles were applied to the footer -->
+        <div class="sidebar-footer">
+            <!-- Content moved to above div -->
         </div>
     </aside>
 
@@ -842,9 +853,11 @@
         let chatHistory = []; // Conversation history for the chat assistant
 
         // --- GEMINI API Configuration ---
-        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=";
+        // Refactored constants to separate base URL and model names for robust API key injection
+        const API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
         const API_KEY = ""; // Provided by the Canvas environment
-        const GEMINI_CHAT_MODEL = "gemini-2.5-flash-preview-05-20"; // Standard conversational model
+        const ANALYSIS_MODEL = "gemini-2.5-flash-preview-05-20"; // Model for structured analysis
+        const CHAT_MODEL = "gemini-2.5-flash-preview-05-20"; // Model for conversational chat
 
         // --- GEMINI SYSTEM INSTRUCTIONS ---
         const ANALYSIS_SYSTEM_INSTRUCTION = "You are an expert AI medical analyst. Your task is to analyze the provided raw health report text or image/PDF content and generate a concise, structured JSON summary of key findings and actionable recommendations (problems/conditions and suggested medications/wellness advice). If the report is an ECG, focus on heart rhythm and rate. If the report is bloodwork, focus on out-of-range parameters. Do not include any text outside the JSON object.";
@@ -956,6 +969,13 @@
 
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
+                    // Check if the link is the logout or switch system link and let default behavior take over if no section is defined
+                    if (!link.getAttribute('data-section') && link.getAttribute('href') !== '#') {
+                        // For Logout/Switch System links, let the browser handle the navigation in the href
+                        // The existing onclick="logout()" on the Logout link will still be handled if globally defined.
+                        return; 
+                    }
+                    
                     e.preventDefault();
                     
                     navLinks.forEach(l => l.classList.remove('active'));
@@ -965,9 +985,13 @@
                     sections.forEach(section => {
                         section.classList.remove('active');
                     });
-                    document.getElementById(targetSectionId).classList.add('active');
                     
-                    pageTitle.textContent = link.querySelector('span') ? link.querySelector('span').textContent : 'Dashboard';
+                    if (targetSectionId) {
+                        document.getElementById(targetSectionId).classList.add('active');
+                    
+                        // Only update title for section links
+                        pageTitle.textContent = link.querySelector('span') ? link.querySelector('span').textContent : 'Dashboard';
+                    }
 
                     if (window.innerWidth <= 600) {
                         const sidebar = document.getElementById('sidebar');
@@ -1059,19 +1083,24 @@
 
         // --- FIREBASE LOGIC ---
 
-        function logout() {
+        // Exposed globally to be callable from the static HTML element
+        window.logout = function() {
             if (auth) {
                 signOut(auth).then(() => {
-                    showModal('Logged Out', 'You have been successfully logged out. Reloading...');
+                    showModal('Logged Out', 'You have been successfully logged out. Redirecting to index.html...', false);
                     setTimeout(() => {
-                        window.location.reload(); 
+                        window.location.href = "index.html"; 
                     }, 1500);
                 }).catch(error => {
                     console.error("Logout Error:", error);
                     showModal('Logout Failed', `Could not sign out: ${error.message}`);
                 });
             } else {
-                showModal('Error', 'Authentication service is not initialized.');
+                // Fallback for non-auth environments to fulfill the redirect requirement
+                showModal('Logout', 'Logging out (Auth not initialized). Redirecting to index.html...', false);
+                setTimeout(() => {
+                    window.location.href = "index.html"; 
+                }, 1500);
             }
         }
         
@@ -1080,9 +1109,12 @@
         /**
          * Generic function to call the Gemini API with structured output.
          * @param {Array<Object>} contents - The contents array for the API payload.
+         * @param {string} modelName - The specific Gemini model to use.
          */
-        async function geminiApiCall(contents, schema, systemInstruction, maxRetries = 3) {
-            const url = `${GEMINI_API_URL}${API_KEY}`;
+        async function geminiApiCall(contents, schema, systemInstruction, modelName, maxRetries = 3) {
+            // Construct the URL using the base and model name
+            const url = `${API_BASE_URL}${modelName}:generateContent?key=${API_KEY}`;
+            
             const payload = {
                 contents: contents,
                 systemInstruction: { parts: [{ text: systemInstruction }] },
@@ -1106,6 +1138,8 @@
                             await new Promise(resolve => setTimeout(resolve, delay));
                             continue; // Retry
                         }
+                        // Log the status specifically on error
+                        console.error(`API Call Error: Status ${response.status}`, await response.text());
                         throw new Error(`API call failed with status ${response.status}`);
                     }
 
@@ -1130,7 +1164,7 @@
          * Supports Text, PDF, and Image files.
          * @param {File} file - The file object from the input.
          */
-        window.analyzeUploadedReport = async function(file) { // FIX: Expose function globally
+        window.analyzeUploadedReport = async function(file) {
             if (!file) {
                 showModal('Upload Error', 'No file selected.');
                 return;
@@ -1194,7 +1228,8 @@
                 const analysisData = await geminiApiCall(
                     contents, 
                     ANALYSIS_RESPONSE_SCHEMA, 
-                    ANALYSIS_SYSTEM_INSTRUCTION
+                    ANALYSIS_SYSTEM_INSTRUCTION,
+                    ANALYSIS_MODEL // Pass the analysis model name
                 );
 
                 // Add the analyzed report to the static list (simulated persistence)
@@ -1410,10 +1445,8 @@
          * Uses chatHistory for context.
          */
         async function callGeminiChat(prompt, maxRetries = 3) {
-            const url = `${GEMINI_API_URL.replace('gemini-2.5-flash-preview-05-20', GEMINI_CHAT_MODEL)}${API_KEY}`;
-            
-            // The prompt is already added to chatHistory in appendMessage before this function is called
-            // We use the full chatHistory which already includes the latest user prompt
+            // Construct the URL using the base and chat model name
+            const url = `${API_BASE_URL}${CHAT_MODEL}:generateContent?key=${API_KEY}`;
             
             const payload = {
                 // The history accumulates in appendMessage
