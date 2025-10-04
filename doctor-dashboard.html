@@ -196,18 +196,11 @@
 
             <!-- Settings and Logout -->
             <div class="mt-8 space-y-2 border-t pt-4">
-                <!-- NEW: Switch System Button -->
-                <button 
-                    onclick="openSystemChooser()"
-                    class="nav-item w-full flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg font-semibold"
-                >
-                    <i class="fas fa-exchange-alt w-5 text-xl mr-4"></i> Switch System
-                </button>
-                <!-- END NEW -->
                 
                 <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg" data-section="settings" onclick="switchSection('settings')">
                     <i class="fas fa-cog w-5 text-xl mr-4"></i> Settings
                 </a>
+                <!-- LOGOUT BUTTON: Redirects to index.html after logout -->
                 <a href="#" class="nav-item flex items-center p-3 text-red-500 hover:bg-red-100/70 transition duration-150 rounded-lg" onclick="logout()">
                     <i class="fas fa-sign-out-alt w-5 text-xl mr-4"></i> Logout
                 </a>
@@ -455,7 +448,7 @@
 
         // --- Navigation and Utility Functions ---
         
-        // NEW: Function to toggle sidebar visibility on mobile
+        // Function to toggle sidebar visibility on mobile
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             if (window.innerWidth < 768) {
@@ -515,19 +508,10 @@
             localStorage.clear();
             showToast('Logged out successfully!', 'success');
             
-            // ADDED: Redirect after 1 second to simulate navigating to a login page
+            // MODIFIED: Redirects to index.html as requested
             setTimeout(() => {
-                window.location.href = 'login.html'; 
+                window.location.href = 'index.html'; 
             }, 1000);
-        }
-
-        /**
-         * Navigates to the system chooser page.
-         */
-        function openSystemChooser() {
-            showToast('Switching System... (Navigating to choose-system.html)', 'info');
-            // This is the intended navigation action.
-            window.location.href = 'choose-system.html';
         }
 
         // --- Gemini API Implementation for Clinical Analysis ---
