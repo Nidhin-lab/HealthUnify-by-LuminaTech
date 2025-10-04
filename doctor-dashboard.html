@@ -514,21 +514,19 @@
         function logout() {
             localStorage.clear();
             showToast('Logged out successfully!', 'success');
+            
+            // ADDED: Redirect after 1 second to simulate navigating to a login page
+            setTimeout(() => {
+                window.location.href = 'login.html'; 
+            }, 1000);
         }
 
         /**
          * Navigates to the system chooser page.
-         * Since `choose-system.hyml` is likely a local file in the environment, 
-         * we use window.location.href to simulate opening it.
          */
         function openSystemChooser() {
-            // In a real application, you would navigate to the new HTML file.
-            // Example: window.location.href = 'choose-system.hyml';
             showToast('Switching System... (Navigating to choose-system.hyml)', 'info');
-            
-            // For the purpose of this environment, we simulate the navigation
-            // by logging a message and optionally changing content if the file existed.
-            // In a live environment, the line below would execute the navigation:
+            // This is the intended navigation action.
             window.location.href = 'choose-system.hyml';
         }
 
