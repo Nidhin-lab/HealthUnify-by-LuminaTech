@@ -3,477 +3,733 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Dashboard | HealthUnify by LuminaTech</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Doctor Dashboard | AI-Powered HealthUnify</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Consolidated Custom Styles -->
+    
     <style>
+        /* CSS adapted for a modern, dark 'doctor-theme' with glass effects */
         :root {
-            --doctor-color: #1E88E5; /* Blue */
-            --doctor-light: #42a5f5;
-            --dashboard-bg: #f4f7fa;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow-dark: rgba(0, 0, 0, 0.1);
-            --shadow-light: rgba(255, 255, 255, 0.8);
+            --primary-color: #0078D4; /* Microsoft Blue */
+            --secondary-color: #00B7C3; /* Teal */
+            --background-dark: #121212;
+            --surface-dark: #1e1e1e;
+            --card-dark: #2c2c2c;
+            --text-light: #ffffff;
+            --text-secondary: #aaaaaa;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--dashboard-bg);
-            /* Removed flex from body to handle mobile layout stacking */
-            min-height: 100vh;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 16px;
         }
 
         .sidebar {
-            background: linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 100%);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-            height: 100vh;
-            /* Desktop Styles: Sticky, full height, width 64 */
-            position: sticky;
-            top: 0;
+            width: 280px;
+            min-width: 280px;
+            transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out;
+            background: var(--surface-dark);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
-            transition: transform 0.3s ease-in-out;
         }
 
-        /* Mobile Styles for Sidebar (Activated when 'open' class is added by JS) */
-        @media (max-width: 767px) {
-            .sidebar {
-                position: fixed;
-                width: 75%; /* Takes up 3/4 of screen */
-                z-index: 50;
-                /* Initially off-screen */
-                transform: translateX(-100%);
-            }
-            .sidebar.open {
-                /* Slide in */
-                transform: translateX(0);
-                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
-            }
+        .sidebar.collapsed {
+            width: 80px;
+            min-width: 80px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            flex-grow: 1;
+            font-size: 1.5em;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            color: var(--text-light);
+        }
+
+        .sidebar.collapsed .logo-text,
+        .sidebar.collapsed .nav-item span {
+            display: none;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--card-dark);
+        }
+
+        .sidebar-nav {
+            padding: 10px 0;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+            border-left: 4px solid transparent;
+            margin: 5px 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-light);
         }
 
         .nav-item.active {
-            background-color: var(--doctor-color);
-            color: white !important;
-            box-shadow: 0 4px 10px rgba(30, 136, 229, 0.4);
+            background: rgba(0, 119, 212, 0.2);
+            border-left: 4px solid var(--primary-color);
+            color: var(--primary-color);
         }
 
-        .nav-item.active .fa-solid, .nav-item.active .fa-regular, .nav-item.active .fa-brain {
-            color: white !important;
+        .nav-item i {
+            width: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            margin-right: 15px;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 12px 0;
         }
 
-        .main-content-area {
-            min-height: 100vh;
-            background-color: var(--dashboard-bg);
-            padding: 24px;
+        .sidebar.collapsed .nav-item i {
+            margin-right: 0;
         }
 
-        /* Adjust padding for mobile to clear the fixed menu button */
-        @media (max-width: 767px) {
-             .main-content-area {
-                padding: 1rem;
-                padding-top: 5rem; /* Add space for the fixed menu button/header */
-            }
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 15px 30px;
+            background: var(--surface-dark);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .profile-menu button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .profile-menu button:hover {
+            background-color: #0063ad;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
         }
 
         .content-section {
             display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            height: 100%;
         }
 
         .content-section.active {
             display: block;
-            opacity: 1;
         }
 
-        .card {
-            background-color: white;
+        /* ----- AI Specific Styles ----- */
+
+        .ai-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 20px;
+        }
+
+        /* --- Chat Window for AI Assistant --- */
+        .chat-window {
+            height: calc(100vh - 160px); /* Adjust based on header/padding */
+            display: flex;
+            flex-direction: column;
+            background: var(--card-dark);
             border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
+            overflow: hidden;
         }
 
-        /* Toast Styles */
-        #toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
         }
 
-        .toast {
-            padding: 12px 20px;
+        .chat-input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid var(--surface-dark);
+            background: var(--surface-dark);
+        }
+
+        .chat-input-area textarea {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            background: var(--card-dark);
+            color: var(--text-light);
+            resize: none;
+            max-height: 100px;
+            outline: none;
+            margin-right: 10px;
+        }
+
+        .chat-input-area button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background-color: #0099a4;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 0.95em;
+            line-height: 1.4;
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background-color: var(--card-dark);
+            color: var(--text-light);
+            border: 1px solid var(--glass-border);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .ai-message strong {
+            color: var(--secondary-color);
+        }
+
+        /* --- Analysis Card for Clinical Analysis --- */
+
+        .analysis-card {
+            background: var(--card-dark);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .analysis-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .analysis-card textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            background: var(--surface-dark);
+            border: 1px solid var(--glass-border);
             border-radius: 8px;
-            margin-top: 10px;
-            animation: slideIn 0.3s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: var(--text-light);
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+        
+        .analysis-card button {
+            margin-top: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        
+        .analysis-card button:hover {
+            background-color: #0099a4;
         }
 
-        .toast.success { background-color: #4CAF50; color: white; }
-        .toast.error { background-color: #F44336; color: white; }
-        .toast.info { background-color: #2196F3; color: white; }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+        .analysis-output {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--surface-dark);
+            border-radius: 8px;
+            min-height: 150px;
+            white-space: pre-wrap;
+            border: 1px solid var(--glass-border);
         }
-
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; display: none; }
+        
+        .analysis-output h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         /* Loading Spinner */
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            border-top: 4px solid white;
-            width: 24px;
-            height: 24px;
+            border-top: 4px solid var(--primary-color);
+            width: 30px;
+            height: 30px;
             animation: spin 1s linear infinite;
+            display: none;
+            margin: 15px auto;
+        }
+
+        .spinner.active {
+            display: block;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            transform: translateY(20px);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success { background-color: #28a745; }
+        .toast.error { background-color: #dc3545; }
+        .toast.info { background-color: var(--primary-color); }
     </style>
 </head>
-<body>
+<body class="dashboard-body doctor-theme">
+   
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <!-- Placeholder for Logo - removed image/logo.png reference -->
+            <div class="logo-text">
+                <span style="color: var(--primary-color);">Health</span><span style="color: var(--secondary-color);">Unify</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container"></div>
-    
-    <!-- Mobile Menu Toggle Button -->
-    <button id="menuToggle" onclick="toggleSidebar()" class="fixed top-4 left-4 z-50 p-3 bg-blue-600 text-white rounded-full shadow-lg md:hidden">
-        <i class="fas fa-bars text-xl"></i>
-    </button>
-
-    <!-- Main App Container: Flex layout on medium screens and up, vertical stack on mobile -->
-    <div class="flex flex-col md:flex-row min-h-screen">
+        <nav class="sidebar-nav">
+            <div class="nav-item active" data-section="dashboard" onclick="switchSection('dashboard')">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" data-section="patients" onclick="switchSection('patients')">
+                <i class="fas fa-users"></i>
+                <span>My Patients</span>
+            </div>
+            <div class="nav-item" data-section="appointments" onclick="switchSection('appointments')">
+                <i class="fas fa-calendar-check"></i>
+                <span>Appointments</span>
+            </div>
+            <div class="nav-item" data-section="consultations" onclick="switchSection('consultations')">
+                <i class="fas fa-notes-medical"></i>
+                <span>Consultations</span>
+            </div>
+            
+            <!-- NEW: AI Assistant -->
+            <div class="nav-item" data-section="ai-assistant" onclick="switchSection('ai-assistant')">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+            </div>
+            
+            <!-- NEW: AI Clinical Analysis -->
+            <div class="nav-item" data-section="clinical-analysis" onclick="switchSection('clinical-analysis')">
+                <i class="fas fa-microscope"></i>
+                <span>Clinical Analysis</span>
+            </div>
+            
+            <div class="nav-item" data-section="schedule" onclick="switchSection('schedule')">
+                <i class="fas fa-clock"></i>
+                <span>My Schedule</span>
+            </div>
+            <div class="nav-item" data-section="messages" onclick="switchSection('messages')">
+                <i class="fas fa-inbox"></i>
+                <span>Messages</span>
+            </div>
+            <div class="nav-item" data-section="settings" onclick="switchSection('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </nav>
         
-        <!-- Sidebar -->
-        <!-- Added ID 'sidebar' and Tailwind classes to hide on mobile by default -->
-        <div class="sidebar w-64 p-4 flex-col justify-between hidden md:flex" id="sidebar">
-            <div>
-                <div class="text-3xl font-extrabold text-blue-800 mb-8 flex items-center">
-                    <i class="fas fa-stethoscope mr-2 text-4xl text-blue-600"></i> HealthUnify
-                </div>
-                
-                <!-- Navigation Links -->
-                <nav class="space-y-2">
-                    <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg active" data-section="dashboard" onclick="switchSection('dashboard')">
-                        <i class="fas fa-home w-5 text-xl mr-4"></i> Dashboard
-                    </a>
-                    <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg" data-section="patients" onclick="switchSection('patients')">
-                        <i class="fas fa-user-injured w-5 text-xl mr-4"></i> My Patients
-                    </a>
-                    <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg" data-section="appointments" onclick="switchSection('appointments')">
-                        <i class="fas fa-calendar-check w-5 text-xl mr-4"></i> Appointments
-                    </a>
-                    <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg" data-section="consultations" onclick="switchSection('consultations')">
-                        <i class="fas fa-notes-medical w-5 text-xl mr-4"></i> Consultations
-                    </a>
-                    <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg" data-section="messages" onclick="switchSection('messages')">
-                        <i class="fas fa-comments w-5 text-xl mr-4"></i> Secure Messages
-                    </a>
-                    
-                    <!-- NEW: AI Analysis Section -->
-                    <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-indigo-100/70 hover:text-indigo-700 transition duration-150 rounded-lg" data-section="analysis" onclick="switchSection('analysis')">
-                        <i class="fas fa-brain w-5 text-xl mr-4"></i> Clinical AI Analysis
-                    </a>
-                    <!-- END NEW -->
-
-                    <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg" data-section="schedule" onclick="switchSection('schedule')">
-                        <i class="fas fa-clock w-5 text-xl mr-4"></i> My Schedule
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Settings and Logout -->
-            <div class="mt-8 space-y-2 border-t pt-4">
-                
-                <a href="#" class="nav-item flex items-center p-3 text-gray-700 hover:bg-blue-100/70 hover:text-blue-700 transition duration-150 rounded-lg" data-section="settings" onclick="switchSection('settings')">
-                    <i class="fas fa-cog w-5 text-xl mr-4"></i> Settings
-                </a>
-                <!-- LOGOUT BUTTON: Redirects to index.html after logout -->
-                <a href="#" class="nav-item flex items-center p-3 text-red-500 hover:bg-red-100/70 transition duration-150 rounded-lg" onclick="logout()">
-                    <i class="fas fa-sign-out-alt w-5 text-xl mr-4"></i> Logout
-                </a>
+        <div class="sidebar-footer">
+            <div class="nav-item logout-button" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
             </div>
         </div>
+    </aside>
 
-        <!-- Main Content Area -->
-        <div class="main-content-area flex-1">
+    <!-- Main Content Container -->
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title" id="pageTitle">Doctor Dashboard</h1>
+            <div class="profile-menu">
+                <button onclick="logout()">
+                    <i class="fas fa-user-circle"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
             
-            <!-- Header -->
-            <!-- Adjusted header for better mobile responsiveness -->
-            <header class="flex justify-between items-center pb-6 md:border-b border-gray-200 sticky top-0 bg-white/90 backdrop-blur-sm z-30 p-4 md:-mx-4 md:-mt-4 mb-4 rounded-b-lg shadow-md">
-                <!-- Hide logo on mobile since menu button is fixed at the top left -->
-                <h1 id="pageTitle" class="text-xl md:text-3xl font-extrabold text-gray-800 ml-8 md:ml-0">Doctor Dashboard</h1>
-                
-                <!-- Adjusted spacing and element size for mobile -->
-                <div class="flex items-center space-x-2 md:space-x-4">
-                    <button class="text-gray-500 hover:text-blue-600 transition duration-150 p-2 rounded-full bg-white shadow-md">
-                        <i class="fas fa-bell text-lg md:text-xl"></i>
-                    </button>
-                    <div class="flex items-center space-x-2 cursor-pointer p-1 rounded-full hover:bg-gray-100 transition duration-150">
-                        <img class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" src="https://placehold.co/40x40/1E88E5/FFFFFF?text=Dr" alt="Dr. Avatar">
-                        <div class="hidden sm:block">
-                            <div class="text-sm font-semibold text-gray-800">Dr. E. Vance</div>
-                            <div class="text-xs text-gray-500">Cardiologist</div>
+            <!-- Section: Dashboard (Default Active) -->
+            <section id="section-dashboard" class="content-section active">
+                <h2>Welcome Back, Dr. [User Name]!</h2>
+                <p style="color: var(--text-secondary);">Here is a summary of your key metrics and upcoming tasks.</p>
+                <div class="grid-layout">
+                    <!-- Placeholder for dashboard cards -->
+                    <div class="analysis-card"><h3>Today's Appointments: 5</h3></div>
+                    <div class="analysis-card"><h3>Pending Follow-ups: 3</h3></div>
+                    <div class="analysis-card"><h3>Recent Consultations: 12</h3></div>
+                </div>
+            </section>
+
+            <!-- Placeholder Sections -->
+            <section id="section-patients" class="content-section"><h2 style="color: var(--primary-color);">My Patients</h2><p>Patient list and records will appear here.</p></section>
+            <section id="section-appointments" class="content-section"><h2 style="color: var(--primary-color);">Appointments</h2><p>Appointment management interface will appear here.</p></section>
+            <section id="section-consultations" class="content-section"><h2 style="color: var(--primary-color);">Consultations</h2><p>Consultation history and notes will appear here.</p></section>
+            <section id="section-schedule" class="content-section"><h2 style="color: var(--primary-color);">My Schedule</h2><p>Calendar and scheduling tools will appear here.</p></section>
+            <section id="section-messages" class="content-section"><h2 style="color: var(--primary-color);">Messages</h2><p>Secure messaging with patients and staff will appear here.</p></section>
+            <section id="section-settings" class="content-section"><h2 style="color: var(--primary-color);">Settings</h2><p>Account and application settings will appear here.</p></section>
+
+            <!-- NEW SECTION: AI Assistant -->
+            <section id="section-ai-assistant" class="content-section">
+                <h2 style="color: var(--primary-color);">AI Medical Assistant</h2>
+                <p style="color: var(--text-secondary);">Ask clinical questions, check drug interactions, or get quick summaries of medical literature. (Powered by Gemini with Google Search grounding).</p>
+
+                <div class="chat-window">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai-message">
+                            <strong>AI Assistant:</strong> Hello Doctor, I am here to assist with your medical queries. How can I help you today?
                         </div>
+                    </div>
+                    <div class="spinner" id="assistantSpinner"></div>
+                    <div class="chat-input-area">
+                        <textarea id="assistantInput" placeholder="Ask a question (e.g., 'What is the standard treatment protocol for adult-onset Still’s disease?')"></textarea>
+                        <button id="sendAssistantBtn" onclick="handleAssistantChat()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </div>
                 </div>
-            </header>
-
-            <!-- Content Sections -->
-
-            <!-- 1. Dashboard Section (Active by default) -->
-            <div id="section-dashboard" class="content-section active space-y-6">
-                <!-- Stat Cards: Grid layout adjusts from 1 column on mobile to 4 on desktop -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Stat Card 1 -->
-                    <div class="card p-5 bg-blue-500 text-white flex flex-col justify-between transform transition duration-500 hover:scale-[1.02]">
-                        <div class="text-xs font-medium opacity-80">Today's Appointments</div>
-                        <div class="text-4xl font-extrabold my-2">12</div>
-                        <div class="text-sm opacity-80 flex justify-between items-center">
-                            <span>+1 New Patient</span>
-                            <i class="fas fa-calendar-alt text-2xl"></i>
-                        </div>
-                    </div>
-                    <!-- Stat Card 2 -->
-                    <div class="card p-5 bg-green-500 text-white flex flex-col justify-between transform transition duration-500 hover:scale-[1.02]">
-                        <div class="text-xs font-medium opacity-80">Total Patients</div>
-                        <div class="text-4xl font-extrabold my-2">458</div>
-                        <div class="text-sm opacity-80 flex justify-between items-center">
-                            <span>+5 since last week</span>
-                            <i class="fas fa-user-injured text-2xl"></i>
-                        </div>
-                    </div>
-                    <!-- Stat Card 3 -->
-                    <div class="card p-5 bg-yellow-500 text-white flex flex-col justify-between transform transition duration-500 hover:scale-[1.02]">
-                        <div class="text-xs font-medium opacity-80">Consultation Hours</div>
-                        <div class="text-4xl font-extrabold my-2">24h</div>
-                        <div class="text-sm opacity-80 flex justify-between items-center">
-                            <span>This Month</span>
-                            <i class="fas fa-clock text-2xl"></i>
-                        </div>
-                    </div>
-                    <!-- Stat Card 4 -->
-                    <div class="card p-5 bg-indigo-500 text-white flex flex-col justify-between transform transition duration-500 hover:scale-[1.02]">
-                        <div class="text-xs font-medium opacity-80">Open Messages</div>
-                        <div class="text-4xl font-extrabold my-2">5</div>
-                        <div class="text-sm opacity-80 flex justify-between items-center">
-                            <span>Reply needed</span>
-                            <i class="fas fa-comments text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Charts and Lists: Stack on mobile, side-by-side on desktop -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Patient Load Chart -->
-                    <div class="card p-6 lg:col-span-2">
-                        <h2 class="text-xl font-semibold mb-4 text-gray-700">Monthly Patient Load</h2>
-                        <div class="w-full h-80">
-                            <canvas id="patientLoadChart" class="w-full h-full"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Upcoming Appointments -->
-                    <div class="card p-6">
-                        <h2 class="text-xl font-semibold mb-4 text-gray-700">Next 3 Appointments</h2>
-                        <ul class="space-y-4">
-                            <li class="flex items-center justify-between p-3 border-b hover:bg-gray-50 rounded-md transition duration-150 cursor-pointer">
-                                <div>
-                                    <div class="font-medium text-gray-800">Mr. Robert D.</div>
-                                    <div class="text-sm text-gray-500">Routine Checkup</div>
-                                </div>
-                                <span class="text-sm font-semibold text-blue-600">9:00 AM</span>
-                            </li>
-                            <li class="flex items-center justify-between p-3 border-b hover:bg-gray-50 rounded-md transition duration-150 cursor-pointer">
-                                <div>
-                                    <div class="font-medium text-gray-800">Ms. Sarah J.</div>
-                                    <div class="text-sm text-gray-500">Post-op Follow-up</div>
-                                </div>
-                                <span class="text-sm font-semibold text-blue-600">10:30 AM</span>
-                            </li>
-                            <li class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-md transition duration-150 cursor-pointer">
-                                <div>
-                                    <div class="font-medium text-gray-800">Mr. Ethan K.</div>
-                                    <div class="text-sm text-gray-500">New Patient Consultation</div>
-                                </div>
-                                <span class="text-sm font-semibold text-blue-600">11:45 AM</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            </section>
             
-            <!-- 2. My Patients Section (Placeholder) -->
-            <div id="section-patients" class="content-section">
-                <div class="card p-6">
-                    <h2 class="text-2xl font-semibold mb-4 text-gray-700">My Patients</h2>
-                    <p class="text-gray-500">List of active patients, health records, and detailed charts will appear here.</p>
-                    <div class="mt-4 p-4 border rounded-lg bg-yellow-50 text-yellow-700">
-                        <i class="fas fa-exclamation-triangle mr-2"></i> This section is under development.
-                    </div>
-                </div>
-            </div>
+            <!-- NEW SECTION: AI Clinical Analysis -->
+            <section id="section-clinical-analysis" class="content-section">
+                <h2 style="color: var(--primary-color);">AI Clinical Analysis</h2>
+                <p style="color: var(--text-secondary);">Paste patient notes, lab results, or imaging reports for AI-powered clinical summary, differential diagnosis, and suggested next steps.</p>
 
-            <!-- ... other placeholder sections (appointments, consultations, messages, schedule, settings) ... -->
-            <div id="section-appointments" class="content-section"><div class="card p-6"><h2 class="text-2xl font-semibold mb-4 text-gray-700">Appointments Management</h2><p class="text-gray-500">Manage all scheduled appointments and patient queues.</p></div></div>
-            <div id="section-consultations" class="content-section"><div class="card p-6"><h2 class="text-2xl font-semibold mb-4 text-gray-700">Consultations History</h2><p class="text-gray-500">Access and review past consultation notes and diagnostic summaries.</p></div></div>
-            <div id="section-messages" class="content-section"><div class="card p-6"><h2 class="text-2xl font-semibold mb-4 text-gray-700">Secure Messages</h2><p class="text-gray-500">Communicate securely with patients and colleagues.</p></div></div>
-            <div id="section-schedule" class="content-section"><div class="card p-6"><h2 class="text-2xl font-semibold mb-4 text-gray-700">My Schedule</h2><p class="text-gray-500">View and modify your daily and weekly work schedule.</p></div></div>
-            <div id="section-settings" class="content-section"><div class="card p-6"><h2 class="text-2xl font-semibold mb-4 text-gray-700">Settings</h2><p class="text-gray-500">User profile and system configuration options.</p></div></div>
-
-
-            <!-- 3. Clinical AI Analysis Section -->
-            <div id="section-analysis" class="content-section">
-                <div class="card p-8 space-y-6">
-                    <h2 class="text-2xl font-extrabold text-indigo-700 flex items-center">
-                        <i class="fas fa-brain mr-3"></i> AI-Powered Clinical Data Analysis
-                    </h2>
-                    <p class="text-gray-600">
-                        Paste raw patient data (vitals, labs, symptoms) below. Our specialized AI will analyze the data, provide a clinical summary, highlight risks, and suggest follow-up steps. The analysis is grounded by current medical knowledge via Google Search.
-                    </p>
-
-                    <!-- Input Area -->
-                    <div>
-                        <label for="clinicalDataInput" class="block text-lg font-medium text-gray-700 mb-2">Patient Data Input</label>
-                        <textarea id="clinicalDataInput" rows="8" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 resize-none text-sm shadow-inner" placeholder="Example data:
-- Name: Elias V.
-- Age: 68
-- Vitals: BP 155/95 mmHg, HR 88 bpm, Temp 98.6°F
-- Lab Results: Total Cholesterol 245 mg/dL, LDL 160 mg/dL, Glucose 115 mg/dL (fasting)
-- Symptoms: Occasional shortness of breath, fatigue over the last 3 months."></textarea>
-                    </div>
-
-                    <!-- Action Button -->
-                    <button id="analyzeButton" onclick="analyzeClinicalData()" class="w-full flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 shadow-md">
-                        <span id="buttonText">Run AI Analysis</span>
-                        <div id="loadingSpinner" class="spinner ml-3 hidden"></div>
+                <div class="analysis-card">
+                    <h3>Input Patient Data</h3>
+                    <textarea id="clinicalDataInput" placeholder="Paste patient history, lab results (e.g., 'Patient: Jane Doe, 45 y/o female. Chief Complaint: Severe headache, fever for 3 days. Lab Results: WBC 18,000, CRP 150 mg/L...')" rows="10"></textarea>
+                    <button id="analyzeBtn" onclick="handleClinicalAnalysis()">
+                        <i class="fas fa-brain"></i> Analyze Data
                     </button>
-
-                    <!-- Output Area -->
-                    <div id="analysisOutputContainer" class="pt-6 border-t mt-6 hidden">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">AI Analysis Result</h3>
-                        <div id="analysisOutput" class="p-4 bg-gray-50 border border-indigo-200 rounded-lg min-h-[150px] text-gray-700 prose max-w-none">
-                            <!-- AI content will be inserted here -->
-                        </div>
-                        <div id="citationSources" class="mt-4 text-xs text-gray-500">
-                            <!-- Citations will be inserted here -->
-                        </div>
-                    </div>
+                    <div class="spinner" id="analysisSpinner"></div>
                 </div>
-            </div>
-            <!-- END NEW -->
 
+                <div class="analysis-output">
+                    <h4>AI Analysis Output</h4>
+                    <p id="analysisOutputText" style="color: var(--text-secondary);">The detailed clinical analysis will appear here after processing.</p>
+                </div>
+            </section>
 
-        </div>
+        </main>
     </div>
 
+    <!-- Toast Notification Area -->
+    <div id="toastContainer"></div>
+
     <script>
-        // Global utility to show floating toasts
+        const apiKey = "AIzaSyBydtgk8kzKmKiwikD5DxtkSo0345-G67Y"; // API key updated
+        const modelName = "gemini-2.5-flash-preview-05-20";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        const maxRetries = 3;
+
+        // Global function for showing toast notifications
         function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
+            const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = message;
             container.appendChild(toast);
 
             setTimeout(() => {
-                toast.remove();
-            }, 5000);
+                toast.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    container.removeChild(toast);
+                }, 500);
+            }, 3000);
         }
 
-        // --- Chart Initialization ---
-        function initCharts() {
-            const ctx = document.getElementById('patientLoadChart').getContext('2d');
-            const patientLoadChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-                    datasets: [{
-                        label: 'New Patients',
-                        data: [15, 22, 18, 30, 25, 35, 28, 40],
-                        borderColor: 'rgba(30, 136, 229, 1)',
-                        backgroundColor: 'rgba(30, 136, 229, 0.1)',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Follow-ups',
-                        data: [40, 35, 45, 50, 48, 55, 60, 52],
-                        borderColor: 'rgba(76, 175, 80, 1)',
-                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true
-                    }]
+        // Core function to call the Gemini API with exponential backoff and search grounding
+        async function callGeminiApi(userQuery, systemPrompt) {
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                        },
-                        title: {
-                            display: false
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && attempt < maxRetries - 1) {
+                            const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue; // Retry
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                        throw new Error(`API call failed with status ${response.status}`);
                     }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    }
+                    throw new Error("API response was missing expected text content.");
+
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    if (attempt === maxRetries - 1) throw error;
+                }
+            }
+            throw new Error("Gemini API call failed after multiple retries.");
+        }
+
+        // Function to create and append a message bubble
+        function appendMessage(text, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            // Format AI response with Markdown for readability
+            if (sender === 'ai') {
+                const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                          .replace(/\n/g, '<br>');
+                messageDiv.innerHTML = formattedText;
+            } else {
+                messageDiv.textContent = text;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to bottom
+        }
+
+        // AI Assistant Logic
+        async function handleAssistantChat() {
+            const inputElement = document.getElementById('assistantInput');
+            const userQuery = inputElement.value.trim();
+            const spinner = document.getElementById('assistantSpinner');
+            const sendBtn = document.getElementById('sendAssistantBtn');
+
+            if (!userQuery) {
+                showToast('Please enter a question for the assistant.', 'info');
+                return;
+            }
+
+            // 1. Display user message and clear input
+            appendMessage(userQuery, 'user');
+            inputElement.value = '';
+            inputElement.disabled = true;
+            sendBtn.disabled = true;
+            spinner.classList.add('active');
+
+            const systemPrompt = "You are a highly knowledgeable medical research assistant. Your primary goal is to provide concise, evidence-based, and highly accurate information to a practicing physician. Cite sources if discussing specific protocols or recent findings. Keep answers professional and structured.";
+
+            try {
+                const aiResponse = await callGeminiApi(userQuery, systemPrompt);
+                // 2. Display AI response
+                appendMessage(aiResponse, 'ai');
+                showToast('AI response received.', 'success');
+            } catch (error) {
+                console.error('AI Assistant Error:', error);
+                appendMessage("I apologize, but I encountered an error while processing your request. Please try again.", 'ai');
+                showToast('Failed to get AI response.', 'error');
+            } finally {
+                // 3. Cleanup
+                spinner.classList.remove('active');
+                inputElement.disabled = false;
+                sendBtn.disabled = false;
+                inputElement.focus();
+            }
+        }
+
+        // AI Clinical Analysis Logic
+        async function handleClinicalAnalysis() {
+            const inputElement = document.getElementById('clinicalDataInput');
+            const outputElement = document.getElementById('analysisOutputText');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const spinner = document.getElementById('analysisSpinner');
+
+            const clinicalData = inputElement.value.trim();
+
+            if (!clinicalData) {
+                showToast('Please paste patient data for analysis.', 'info');
+                return;
+            }
+            
+            outputElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing data...';
+            inputElement.disabled = true;
+            analyzeBtn.disabled = true;
+            spinner.classList.add('active');
+
+            const userQuery = `Analyze the following patient data, lab results, and notes: \n\n---START DATA---\n${clinicalData}\n---END DATA---\n\nProvide a structured output containing: 1. A concise clinical summary, 2. A differential diagnosis (top 3) with brief justification, and 3. Suggested next diagnostic or therapeutic steps.`;
+            
+            const systemPrompt = "You are an expert clinical consultant AI. Your goal is to analyze raw clinical data (notes, labs) and provide structured, high-quality medical summaries and recommendations to a doctor. Focus on critical findings and evidence-based medicine. Output must be structured using clear section headings.";
+
+            try {
+                const aiAnalysis = await callGeminiApi(userQuery, systemPrompt);
+                // 2. Display AI analysis
+                outputElement.textContent = aiAnalysis;
+                showToast('Clinical analysis complete.', 'success');
+            } catch (error) {
+                console.error('Clinical Analysis Error:', error);
+                outputElement.textContent = "Error: Failed to perform clinical analysis after multiple attempts. Please check the data format or try again later.";
+                showToast('Failed to perform analysis.', 'error');
+            } finally {
+                // 3. Cleanup
+                spinner.classList.remove('active');
+                inputElement.disabled = false;
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        // --- Dashboard Navigation and Initialization ---
+
+        function initDashboard() {
+            // Initial load state
+            switchSection('dashboard');
+            
+            // Sidebar toggle logic
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+            });
+            
+            // Add event listener for AI Assistant Enter key press
+            document.getElementById('assistantInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleAssistantChat();
                 }
             });
         }
 
-        window.onload = function() {
-            initCharts();
-            switchSection('dashboard');
-        };
-
-
-        // --- Navigation and Utility Functions ---
-        
-        // Function to toggle sidebar visibility on mobile
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            if (window.innerWidth < 768) {
-                sidebar.classList.toggle('hidden');
-                sidebar.classList.toggle('open');
-            }
-        }
-
-
-        // Controls switching the main content section based on sidebar click
         function switchSection(section) {
-            // 1. Hide the sidebar on mobile after selection
-            if (window.innerWidth < 768) {
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                    sidebar.classList.add('hidden');
-                }
-            }
-            
-            // 2. Navigation logic
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
-                // Check if the item is an 'a' tag before checking data-section
-                if (item.tagName === 'A' && item.dataset.section === section) {
+                if (item.dataset.section === section) {
                     item.classList.add('active');
                 }
             });
@@ -481,177 +737,31 @@
             document.querySelectorAll('.content-section').forEach(sec => {
                 sec.classList.remove('active');
             });
-            
-            const targetSection = document.getElementById('section-' + section);
-            if (targetSection) {
-                 targetSection.classList.add('active');
-            } else {
-                console.error(`Section not found for: ${section}`);
-            }
+            document.getElementById('section-' + section).classList.add('active');
 
-            // 3. Update Title
             const titles = {
                 'dashboard': 'Doctor Dashboard',
                 'patients': 'My Patients',
-                'appointments': 'Appointments Management',
-                'consultations': 'Consultations History',
-                'messages': 'Secure Messages',
-                'analysis': 'Clinical Data Analysis', 
+                'appointments': 'Appointments',
+                'consultations': 'Consultations',
+                'ai-assistant': 'AI Medical Assistant', // New Title
+                'clinical-analysis': 'AI Clinical Analysis', // New Title
+                'messages': 'Messages',
                 'schedule': 'My Schedule',
                 'settings': 'Settings'
             };
-            document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+            document.getElementById('pageTitle').textContent = titles[section];
         }
 
-        // Handles mock logout
         function logout() {
-            localStorage.clear();
+            // In a real app, this would clear server session/local tokens.
             showToast('Logged out successfully!', 'success');
-            
-            // MODIFIED: Redirects to index.html as requested
-            setTimeout(() => {
-                window.location.href = 'index.html'; 
-            }, 1000);
-        }
-
-        // --- Gemini API Implementation for Clinical Analysis ---
-
-        /**
-         * Generic fetch utility with exponential backoff for API calls.
-         */
-        async function fetchWithExponentialBackoff(url, options, maxRetries = 5, delay = 1000) {
-            for (let i = 0; i < maxRetries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.status === 429 && i < maxRetries - 1) {
-                        const waitTime = delay * Math.pow(2, i);
-                        await new Promise(resolve => setTimeout(resolve, waitTime));
-                        continue; 
-                    }
-                    if (!response.ok) {
-                        const error = await response.json();
-                        throw new Error(error.error?.message || `HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-
-                } catch (error) {
-                    if (i === maxRetries - 1) {
-                        throw error; 
-                    }
-                    // Silent retry logic.
-                    const waitTime = delay * Math.pow(2, i);
-                    await new Promise(resolve => setTimeout(resolve, waitTime));
-                }
-            }
-            throw new Error("API call failed after multiple retries.");
-        }
-
-
-        /**
-         * Performs clinical data analysis using the Gemini API with Google Search grounding.
-         */
-        async function analyzeClinicalData() {
-            const dataInput = document.getElementById('clinicalDataInput').value.trim();
-            const analyzeButton = document.getElementById('analyzeButton');
-            const buttonText = document.getElementById('buttonText');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const outputContainer = document.getElementById('analysisOutputContainer');
-            const outputDiv = document.getElementById('analysisOutput');
-            const sourcesDiv = document.getElementById('citationSources');
-
-            if (!dataInput) {
-                showToast('Please paste patient data before running the analysis.', 'error');
-                return;
-            }
-
-            // UI State: Loading
-            analyzeButton.disabled = true;
-            buttonText.textContent = 'Analyzing...';
-            loadingSpinner.classList.remove('hidden');
-            outputContainer.classList.add('hidden');
-            outputDiv.innerHTML = '';
-            sourcesDiv.innerHTML = '';
-            
-            const systemPrompt = "You are a specialized Clinical Data Analyst AI. Analyze the provided patient vital signs and lab data. Provide a concise clinical summary, highlight any potential health risks, and suggest further diagnostic steps. Respond professionally, focusing only on the clinical interpretation of the data.";
-            
-            const userQuery = `Analyze the following patient data: ${dataInput}`;
-            
-            const apiKey = ""; // Leave as-is for Canvas environment
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                tools: [{ "google_search": {} }], // Enable Google Search grounding
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
-            try {
-                const result = await fetchWithExponentialBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const candidate = result.candidates?.[0];
-
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    const text = candidate.content.parts[0].text;
-                    let sources = [];
-                    const groundingMetadata = candidate.groundingMetadata;
-                    
-                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
-                        sources = groundingMetadata.groundingAttributions
-                            .map(attribution => ({
-                                uri: attribution.web?.uri,
-                                title: attribution.web?.title,
-                            }))
-                            .filter(source => source.uri && source.title);
-                    }
-
-                    // Display Analysis Result
-                    // Using innerHTML to render Markdown formatting (like lists) which is common in Gemini responses
-                    outputDiv.innerHTML = `<div class="markdown-body">${text.replace(/\n/g, '<br>')}</div>`;
-
-                    // Display Sources
-                    if (sources.length > 0) {
-                        const uniqueSources = sources.reduce((acc, current) => {
-                            const x = acc.find(item => item.uri === current.uri);
-                            if (!x) {
-                                return acc.concat([current]);
-                            }
-                            return acc;
-                        }, []);
-
-                        let sourcesHtml = '<strong>Grounding Sources:</strong><ul class="list-disc ml-5 mt-1 space-y-1">';
-                        uniqueSources.forEach((source) => {
-                            sourcesHtml += `<li><a href="${source.uri}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">${source.title}</a></li>`;
-                        });
-                        sourcesHtml += '</ul>';
-                        sourcesDiv.innerHTML = sourcesHtml;
-                    } else {
-                         sourcesDiv.innerHTML = '<strong>Grounding Sources:</strong> None found for this specific query.';
-                    }
-
-                    outputContainer.classList.remove('hidden');
-                    showToast('Clinical analysis complete!', 'success');
-
-                } else {
-                    showToast('Analysis failed: Could not generate content.', 'error');
-                }
-
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                showToast(`An API error occurred: ${error.message}. Please try again.`, 'error');
-            } finally {
-                // UI State: Idle
-                analyzeButton.disabled = false;
-                buttonText.textContent = 'Run AI Analysis';
-                loadingSpinner.classList.add('hidden');
-            }
+            // No redirection or localStorage clear for this example, just a toast.
         }
         
+        // Initialize the dashboard on load
+        window.onload = initDashboard;
+
     </script>
 </body>
 </html>
