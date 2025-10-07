@@ -756,6 +756,9 @@
         function logout() {
             // In a real app, this would clear server session/local tokens.
             showToast('Logged out successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
             // No redirection or localStorage clear for this example, just a toast.
         }
         
